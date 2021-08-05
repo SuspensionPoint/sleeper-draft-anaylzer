@@ -1,11 +1,9 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <h1 center>Draft Analyzer</h1>
+    <h1 class="text-center">Draft Analyzer</h1>
     <draft-entry-list />
-
-    <h1>Store testing</h1>
-    <h3 v-for="entry in valuesToDisplay" :key="entry">{{ entry }}</h3>
+    <h4 v-for="entry in valuesToDisplay" :key="entry">{{ entry }}</h4>
   </q-page>
 </template>
 

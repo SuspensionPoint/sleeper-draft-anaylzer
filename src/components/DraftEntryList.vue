@@ -1,17 +1,18 @@
 <template>
   <div>
-    <q-input filled v-model="userEnteredDraftUrl" label="League ID">
-      <template v-slot:after>
-        <q-btn
-          color="black"
-          label="Add Draft"
-          dense
-          @click="onDraftSubmitted(userEnteredDraftUrl)"
-        />
-      </template>
+    <q-input
+      v-model="userEnteredDraftUrl"
+      @keydown.enter.prevent="onDraftSubmitted(userEnteredDraftUrl)"
+      label="Enter Sleeper Draft URL"
+      filled
+    >
     </q-input>
 
     <q-list bordered padding>
+      <q-item v-if="draftUrls.size <= 0" disable>
+        <q-item-section> No drafts added </q-item-section>
+      </q-item>
+
       <q-item v-for="url in draftUrls" :key="url">
         <q-item-section>
           {{ url }}
@@ -47,6 +48,7 @@ export default defineComponent({
       const draftId = parseIdFromUrl(sleeperDraftUrl);
       if (draftId) {
         store.commit('addDraft', draftId);
+        userEnteredDraftUrl.value = '';
       }
 
       // const draftsApi = new DraftsApi();
