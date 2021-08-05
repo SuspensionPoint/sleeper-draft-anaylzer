@@ -12,28 +12,30 @@
     </q-input>
 
     <q-list bordered padding>
-      <q-item v-for="url in draftUrls" :key="url" tag="label">
+      <q-item v-for="url in draftUrls" :key="url">
         <q-item-section>
-          <q-item-label>{{ url }}</q-item-label>
+          {{ url }}
         </q-item-section>
 
-        <!-- <q-item-section side>
-          <q-toggle color="blue" val="battery" />
-        </q-item-section> -->
+        <q-item-section side>
+          <q-btn icon="highlight_off" @click="removeDraft(url)" />
+        </q-item-section>
       </q-item>
     </q-list>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
+import { useStore } from 'src/store';
 // import { DraftsApi } from 'src/api/';
 
 export default defineComponent({
   // name: 'ComponentName'
   setup() {
-    let userEnteredDraftUrl = ref();
-    let draftUrls = ref(new Set<string>());
+    const store = useStore();
+    const userEnteredDraftUrl = ref();
+    const draftUrls = computed(() => store.state.draftIds);
 
     const parseIdFromUrl = (url: string): string | undefined => {
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
@@ -44,7 +46,7 @@ export default defineComponent({
     const onDraftSubmitted = (sleeperDraftUrl: string) => {
       const draftId = parseIdFromUrl(sleeperDraftUrl);
       if (draftId) {
-        draftUrls.value?.add(draftId);
+        store.commit('addDraft', draftId);
       }
 
       // const draftsApi = new DraftsApi();
@@ -70,7 +72,13 @@ export default defineComponent({
       //   });
     };
 
-    return { userEnteredDraftUrl, onDraftSubmitted, draftUrls };
+    const removeDraft = (draftId: string) => {
+      if (draftId) {
+        store.commit('removeDraft', draftId);
+      }
+    };
+
+    return { userEnteredDraftUrl, onDraftSubmitted, removeDraft, draftUrls };
   },
 });
 </script>
