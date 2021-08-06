@@ -6,6 +6,7 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 import { DraftsApi, Pick } from 'src/api/';
+import { DisplayedUserInfo } from 'src/components/models';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -25,6 +26,7 @@ export interface StateInterface {
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   idToDraftPicks: DraftPickTracker;
+  userInfo: DisplayedUserInfo[];
 }
 
 // provide typings for `this.$store`
@@ -50,6 +52,7 @@ export default store(function (/* { ssrContext } */) {
         ['336412440432500736', 'Wesley'],
       ]),
       idToDraftPicks: {},
+      userInfo: [],
     },
 
     actions: {
