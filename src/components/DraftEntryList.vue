@@ -8,10 +8,7 @@
   </q-input>
 
   <div class="q-pa-md row items-start q-gutter-md">
-    <user-analysis-card
-      v-for="[key] in Object.entries(usersToAnalyze)"
-      :key="key"
-    />
+    <user-analysis-card v-for="user in usersToAnalyze" :key="user.user_id" />
   </div>
 </template>
 
@@ -26,7 +23,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const enteredUserId = ref('204783438698381312');
-    const usersToAnalyze = computed(() => store.state.idToDraftPicks);
+    const usersToAnalyze = computed(() => store.state.userInfo);
 
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
