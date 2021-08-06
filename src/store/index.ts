@@ -20,10 +20,8 @@ import { DraftsApi } from 'src/api/';
  */
 
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   draftIds: Set<string>;
+  sleeperIdToPlayerName: Map<string, string>;
 }
 
 // provide typings for `this.$store`
@@ -41,6 +39,13 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     state: {
       draftIds: new Set<string>(),
+      sleeperIdToPlayerName: new Map<string, string>([
+        ['316081473281073152', 'Austin'],
+        ['204783438698381312', 'Bradley'],
+        ['604119831180005376', 'Chance'],
+        ['473990600014688256', 'Carby'],
+        ['336412440432500736', 'Wesley'],
+      ]),
     },
 
     actions: {
