@@ -47,31 +47,9 @@ export default defineComponent({
     const onDraftSubmitted = (sleeperDraftUrl: string) => {
       const draftId = parseIdFromUrl(sleeperDraftUrl);
       if (draftId) {
-        store.commit('addDraft', draftId);
-        userEnteredDraftUrl.value = '';
+        void store.dispatch('getDraftData', draftId);
       }
-
-      // const draftsApi = new DraftsApi();
-      // const draftId = '728382747239923712';
-
-      // await draftsApi
-      //   .draftDraftIdGet(draftId)
-      //   .catch((err) => {
-      //     console.log('Error getting draft data', err);
-      //   })
-      //   .then((draft) => {
-      //     console.table(draft);
-      //   });
-
-      // await draftsApi
-      //   .draftDraftIdPicksGet(draftId)
-      //   .catch((err) => {
-      //     console.log('error getting picks', err);
-      //   })
-      //   .then((picks) => {
-      //     draftPicks.value = picks;
-      //     console.table(picks);
-      //   });
+      userEnteredDraftUrl.value = '';
     };
 
     const removeDraft = (draftId: string) => {

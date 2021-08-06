@@ -5,6 +5,7 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex';
+import { DraftsApi } from 'src/api/';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -40,6 +41,25 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     state: {
       draftIds: new Set<string>(),
+    },
+
+    actions: {
+      async getDraftData({ commit }, draftId: string) {
+        const draftsApi = new DraftsApi();
+
+        await draftsApi
+          .draftDraftIdPicksGet(draftId)
+          .catch((err) => {
+            console.log(
+              `error getting draft data for id:[${draftId}] \n error: `,
+              err
+            );
+          })
+          .then((picks) => {
+            commit('addDraft', draftId);
+            console.table(picks);
+          });
+      },
     },
 
     mutations: {
