@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <!-- content -->
-    <h1 class="text-center">Draft Analyzer</h1>
+    <!-- <h1 class="text-center">Draft Analyzer</h1> -->
     <draft-entry-list />
   </q-page>
 </template>

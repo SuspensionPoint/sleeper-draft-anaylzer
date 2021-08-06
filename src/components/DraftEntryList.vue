@@ -13,8 +13,8 @@
   >
     <user-analysis-card
       v-for="user in usersToAnalyze"
-      :key="user"
-      :usersName="user.display_name"
+      :key="user.user_id"
+      :userInfo="user"
     />
   </div>
 </template>

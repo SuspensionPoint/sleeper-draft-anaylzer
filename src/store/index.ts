@@ -5,8 +5,10 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex';
-import { DraftsApi, Pick, UserApi } from 'src/api/';
+import { DraftsApi, Pick, UserApi, Player } from 'src/api/';
 import { DisplayedUserInfo } from 'src/components/models';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+const playersList: Map<string, Player> = require('../../players.json');
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -24,6 +26,7 @@ export interface StateInterface {
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
+  players: Map<string, Player>;
 }
 
 // provide typings for `this.$store`
@@ -49,6 +52,7 @@ export default store(function (/* { ssrContext } */) {
         ['336412440432500736', 'Wesley'],
       ]),
       userInfo: [],
+      players: playersList,
     },
 
     actions: {
@@ -58,6 +62,8 @@ export default store(function (/* { ssrContext } */) {
             console.log('Error gathering the boys data:', err);
           });
         });
+
+        console.log('ALL PLAYERS', state.players);
       },
 
       async getDraftsFromUserId({ commit, state }, userId: string) {

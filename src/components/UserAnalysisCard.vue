@@ -3,7 +3,9 @@
     <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
 
     <q-card-section>
-      <div class="text-overline text-orange-9">{{ usersName }}</div>
+      <div class="text-overline text-orange-9">
+        {{ userInfo?.display_name }}
+      </div>
       <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
       <!-- <div class="text-caption text-grey">
         <div
@@ -44,15 +46,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
-import { Pick } from 'src/api';
+import { DisplayedUserInfo } from 'src/components/models';
+// import { Pick } from 'src/api';
 
 export default defineComponent({
   // name: 'ComponentName'
   props: {
-    usersName: {
-      type: String,
-      default: '',
-    },
+    userInfo: Object as PropType<DisplayedUserInfo>,
     // draftedPlayers: {
     //   type: {} as PropType<Record<string, Pick[]>>,
     //   default: {},
