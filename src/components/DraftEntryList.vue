@@ -1,26 +1,33 @@
 <template>
-  <div>
-    <q-input
-      v-model="enteredUserId"
-      @keydown.enter.prevent="onUserIdSubmitted(enteredUserId)"
-      label="Enter Sleeper User ID"
-      filled
-    >
-    </q-input>
+  <q-input
+    v-model="enteredUserId"
+    @keydown.enter.prevent="onUserIdSubmitted(enteredUserId)"
+    label="Enter Sleeper User ID"
+    filled
+  >
+  </q-input>
+
+  <div class="q-pa-md row items-start q-gutter-md">
+    <user-analysis-card
+      v-for="value in usersToAnalyze"
+      :key="value"
+      :users-name="value"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'src/store';
-// import { DraftsApi } from 'src/api/';
+import UserAnalysisCard from 'src/components/UserAnalysisCard.vue';
 
 export default defineComponent({
+  components: { UserAnalysisCard },
   // name: 'ComponentName'
   setup() {
     const store = useStore();
     const enteredUserId = ref('204783438698381312');
-    const draftUrls = computed(() => store.state.draftIds);
+    const usersToAnalyze = computed(() => store.state.idToDraftPicks);
 
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
@@ -40,7 +47,7 @@ export default defineComponent({
       enteredUserId,
       onUserIdSubmitted,
       removeDraft,
-      draftUrls,
+      usersToAnalyze,
     };
   },
 });
