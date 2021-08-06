@@ -39,14 +39,12 @@
       <div v-show="expanded">
         <q-separator />
         <q-card-section class="text-subitle2">
-          <h5
+          <q-img
             v-for="draftPick in userInfo?.picks"
             :key="draftPick.player_id + draftPick.draft_id"
+            :src="getImageUrl(draftPick.player.player_id)"
           >
-            {{
-              draftPick.metadata.first_name + ' ' + draftPick.metadata.last_name
-            }}
-          </h5>
+          </q-img>
         </q-card-section>
       </div>
     </q-slide-transition>
@@ -64,8 +62,17 @@ export default defineComponent({
     userInfo: Object as PropType<DisplayedUserInfo>,
   },
   setup() {
+    const getImageUrl = (playerId: string): string => {
+      if (playerId) {
+        return `https://sleepercdn.com/content/nfl/players/thumb/${playerId}.jpg`;
+      }
+
+      return '';
+    };
+
     return {
       expanded: ref(false),
+      getImageUrl,
     };
   },
 });
