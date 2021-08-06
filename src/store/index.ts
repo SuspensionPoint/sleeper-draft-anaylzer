@@ -53,38 +53,62 @@ export default store(function (/* { ssrContext } */) {
     },
 
     actions: {
-      async getDraftData({ commit }, draftId: string) {
+      gatherTheBoisData({ dispatch, state }) {
+        state.idToPlayerName.forEach((value: string, key: string) => {
+          dispatch('getDraftsFromUserId', key).catch((err) => {
+            console.log('Error gathering the boys data:', err);
+          });
+        });
+      },
+
+      async getDraftsFromUserId({ dispatch }, userId: string) {
         const draftsApi = new DraftsApi();
 
-        await draftsApi
-          .draftDraftIdPicksGet(draftId)
-          .catch((err) => {
-            console.log(
-              `error getting draft data for id:[${draftId}] \n error: `,
-              err
-            );
-          })
-          .then((response) => {
-            if (response) {
-              commit('addDraft', draftId);
-              commit('addDraftPicks', response.data);
-            }
-          });
-
-        const userId = '204783438698381312';
         const sport = 'nfl';
         const season = 2021;
         await draftsApi
           .userUserIdDraftsSportSeasonGet(userId, sport, season)
           .catch((err) => {
             console.log(
-              `error getting drafts for id:[${draftId}] \n error: `,
+              `error getting drafts for id:[${userId}] \n error: `,
+              err
+            );
+          })
+          .then((response) => {
+            if (response && response.data) {
+              console.log(`Chance's Drafts From ${season}:`, response.data);
+
+              response.data.forEach((draft) => {
+                void dispatch('getDraftData', {
+                  draftId: draft.draft_id,
+                  forUserId: userId,
+                });
+              });
+            }
+          });
+      },
+
+      async getDraftData(
+        { commit },
+        payload: { draftId: string; forUserId?: string }
+      ) {
+        const draftsApi = new DraftsApi();
+
+        await draftsApi
+          .draftDraftIdPicksGet(payload.draftId)
+          .catch((err) => {
+            console.log(
+              `error getting draft data for id:[${payload.draftId}] \n error: `,
               err
             );
           })
           .then((response) => {
             if (response) {
-              console.log(`Chance's Drafts From ${season}:`, response.data);
+              // commit('addDraft', draftId);
+              commit('addDraftPicks', {
+                picks: response.data,
+                forUserId: payload.forUserId,
+              });
             }
           });
       },
@@ -99,9 +123,15 @@ export default store(function (/* { ssrContext } */) {
         state.draftIds.delete(id);
       },
 
-      addDraftPicks(state, picks: Pick[]) {
-        picks.forEach((pick) => {
+      addDraftPicks(state, payload: { picks: Pick[]; forUserId?: string }) {
+        payload.picks.forEach((pick) => {
           if (pick.picked_by != '') {
+            // If filtering by a specific user and the current pick is not that user
+            // skip the pick
+            if (payload.forUserId && payload.forUserId !== pick.picked_by) {
+              return;
+            }
+
             // This is the user's first pick that we've tracked
             // OR
             // This is the first time a user has drafted the particular player
@@ -115,7 +145,6 @@ export default store(function (/* { ssrContext } */) {
               };
               state.idToDraftPicks[pick.picked_by][pick.player_id];
             } else {
-              debugger;
               state.idToDraftPicks[pick.picked_by][pick.player_id].push(pick);
             }
           }
