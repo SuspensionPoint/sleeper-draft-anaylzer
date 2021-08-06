@@ -38,7 +38,16 @@
     <q-slide-transition>
       <div v-show="expanded">
         <q-separator />
-        <q-card-section class="text-subitle2"> </q-card-section>
+        <q-card-section class="text-subitle2">
+          <h5
+            v-for="draftPick in userInfo?.picks"
+            :key="draftPick.player_id + draftPick.draft_id"
+          >
+            {{
+              draftPick.metadata.first_name + ' ' + draftPick.metadata.last_name
+            }}
+          </h5>
+        </q-card-section>
       </div>
     </q-slide-transition>
   </q-card>
@@ -53,10 +62,6 @@ export default defineComponent({
   // name: 'ComponentName'
   props: {
     userInfo: Object as PropType<DisplayedUserInfo>,
-    // draftedPlayers: {
-    //   type: {} as PropType<Record<string, Pick[]>>,
-    //   default: {},
-    // },
   },
   setup() {
     return {
