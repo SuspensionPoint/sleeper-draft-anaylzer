@@ -6,9 +6,8 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 import { DraftsApi, Pick, UserApi, Player } from 'src/api/';
-import { DisplayedUserInfo } from 'src/components/models';
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-const playersList: Map<string, Player> = require('../../players.json');
+import { DisplayedUserInfo, DisplayedPick } from 'src/components/models';
+import playersJson from '../../players.json';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -26,7 +25,7 @@ export interface StateInterface {
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
-  players: Map<string, Player>;
+  players: Record<string, Player>;
 }
 
 // provide typings for `this.$store`
@@ -52,7 +51,7 @@ export default store(function (/* { ssrContext } */) {
         ['336412440432500736', 'Wesley'],
       ]),
       userInfo: [],
-      players: playersList,
+      players: playersJson as unknown as Record<string, Player>,
     },
 
     actions: {
@@ -62,8 +61,6 @@ export default store(function (/* { ssrContext } */) {
             console.log('Error gathering the boys data:', err);
           });
         });
-
-        console.log('ALL PLAYERS', state.players);
       },
 
       async getDraftsFromUserId({ commit, state }, userId: string) {
@@ -83,7 +80,7 @@ export default store(function (/* { ssrContext } */) {
           const userResponse = await userApi.userUserIdGet(userId);
           if (userResponse.data) {
             const user = userResponse.data;
-            const allPicksFromUser: Pick[] = [];
+            const allPicksFromUser: DisplayedPick[] = [];
             for (const draft of drafts) {
               const allPicksResponse = await draftsApi.draftDraftIdPicksGet(
                 draft.draft_id
@@ -94,7 +91,15 @@ export default store(function (/* { ssrContext } */) {
                   (pick) => pick.picked_by === user.user_id
                 );
 
-                allPicksFromUser.push(...usersPicksForThisDraft);
+                for (const userPick of usersPicksForThisDraft) {
+                  const player = state.players[userPick.player_id];
+                  if (player) {
+                    allPicksFromUser.push({
+                      ...userPick,
+                      player,
+                    });
+                  }
+                }
               }
             }
 

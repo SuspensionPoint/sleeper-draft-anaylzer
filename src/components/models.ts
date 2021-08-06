@@ -1,4 +1,4 @@
-import { User, Pick } from 'src/api';
+import { User, Pick, Player } from 'src/api';
 
 export interface Todo {
   id: number;
@@ -9,6 +9,10 @@ export interface Meta {
   totalCount: number;
 }
 
+export interface DisplayedPick extends Pick {
+  player: Player;
+}
+
 export interface DisplayedUserInfo extends User {
-  picks: Pick[];
+  picks: DisplayedPick[];
 }
