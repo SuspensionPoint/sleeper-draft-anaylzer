@@ -6,8 +6,11 @@
       <div class="text-overline text-orange-9">{{ usersName }}</div>
       <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
       <div class="text-caption text-grey">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        <p v-for="[playerId, picks] in Object.entries(draftedPlayers)" :key="playerId">
+          <h4>Player ID: {{ playerId }}</h4>
+          <h5>Times Picked:</h5>
+          <p>{{ picks }}</p>
+        </p>
       </div>
     </q-card-section>
 
@@ -30,16 +33,16 @@
     <q-slide-transition>
       <div v-show="expanded">
         <q-separator />
-        <q-card-section class="text-subitle2">
-          {{ lorem }}
-        </q-card-section>
+        <q-card-section class="text-subitle2"> </q-card-section>
       </div>
     </q-slide-transition>
   </q-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
+import { Pick } from 'src/api';
+
 export default defineComponent({
   // name: 'ComponentName'
   props: {
@@ -47,12 +50,14 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    draftedPlayers: {
+      type: {} as PropType<Record<string, Pick[]>>,
+      default: {},
+    },
   },
   setup() {
     return {
       expanded: ref(false),
-      lorem:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
     };
   },
 });
