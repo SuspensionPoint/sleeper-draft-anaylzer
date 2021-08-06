@@ -53,10 +53,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    draftedPlayers: {
-      type: {} as PropType<Record<string, Pick[]>>,
-      default: {},
-    },
+    // draftedPlayers: {
+    //   type: {} as PropType<Record<string, Pick[]>>,
+    //   default: {},
+    // },
   },
   setup() {
     return {

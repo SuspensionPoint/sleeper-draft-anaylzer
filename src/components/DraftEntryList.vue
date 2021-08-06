@@ -7,8 +7,15 @@
   >
   </q-input>
 
-  <div class="q-pa-md row items-start q-gutter-md">
-    <user-analysis-card v-for="user in usersToAnalyze" :key="user.user_id" />
+  <div
+    v-if="usersToAnalyze && usersToAnalyze.length > 0"
+    class="q-pa-md row items-start q-gutter-md"
+  >
+    <user-analysis-card
+      v-for="user in usersToAnalyze"
+      :key="user"
+      :usersName="user.display_name"
+    />
   </div>
 </template>
 
@@ -23,7 +30,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const enteredUserId = ref('204783438698381312');
-    const usersToAnalyze = computed(() => store.state.userInfo);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+    const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
 
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
