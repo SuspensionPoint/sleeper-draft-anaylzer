@@ -5,13 +5,16 @@
     <q-card-section>
       <div class="text-overline text-orange-9">{{ usersName }}</div>
       <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-      <div class="text-caption text-grey">
-        <p v-for="[playerId, picks] in Object.entries(draftedPlayers)" :key="playerId">
+      <!-- <div class="text-caption text-grey">
+        <div
+          v-for="[playerId, picks] in Object.entries(draftedPlayers)"
+          :key="playerId"
+        >
           <h4>Player ID: {{ playerId }}</h4>
           <h5>Times Picked:</h5>
           <p>{{ picks }}</p>
-        </p>
-      </div>
+        </div>
+      </div> -->
     </q-card-section>
 
     <q-card-actions>

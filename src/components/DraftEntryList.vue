@@ -9,10 +9,8 @@
 
   <div class="q-pa-md row items-start q-gutter-md">
     <user-analysis-card
-      v-for="[key, value] in Object.entries(usersToAnalyze)"
+      v-for="[key] in Object.entries(usersToAnalyze)"
       :key="key"
-      :users-name="key"
-      :drafted-players="value"
     />
   </div>
 </template>
