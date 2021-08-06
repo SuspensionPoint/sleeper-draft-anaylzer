@@ -5,7 +5,7 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex';
-import { DraftsApi } from 'src/api/';
+import { DraftsApi, Pick } from 'src/api/';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -19,9 +19,12 @@ import { DraftsApi } from 'src/api/';
  * with the Store instance.
  */
 
+export type DraftPickTracker = Record<string, Record<string, Pick[]>>;
+
 export interface StateInterface {
   draftIds: Set<string>;
-  sleeperIdToPlayerName: Map<string, string>;
+  idToPlayerName: Map<string, string>;
+  idToDraftPicks: DraftPickTracker;
 }
 
 // provide typings for `this.$store`
@@ -39,13 +42,14 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     state: {
       draftIds: new Set<string>(),
-      sleeperIdToPlayerName: new Map<string, string>([
-        ['316081473281073152', 'Austin'],
-        ['204783438698381312', 'Bradley'],
-        ['604119831180005376', 'Chance'],
+      idToPlayerName: new Map<string, string>([
+        ['316081473281073152', 'Bradley'],
+        ['204783438698381312', 'Chance'],
+        ['604119831180005376', 'Jeremy'],
         ['473990600014688256', 'Carby'],
         ['336412440432500736', 'Wesley'],
       ]),
+      idToDraftPicks: {},
     },
 
     actions: {
@@ -60,9 +64,28 @@ export default store(function (/* { ssrContext } */) {
               err
             );
           })
-          .then((picks) => {
-            commit('addDraft', draftId);
-            console.table(picks);
+          .then((response) => {
+            if (response) {
+              commit('addDraft', draftId);
+              commit('addDraftPicks', response.data);
+            }
+          });
+
+        const userId = '204783438698381312';
+        const sport = 'nfl';
+        const season = 2021;
+        await draftsApi
+          .userUserIdDraftsSportSeasonGet(userId, sport, season)
+          .catch((err) => {
+            console.log(
+              `error getting drafts for id:[${draftId}] \n error: `,
+              err
+            );
+          })
+          .then((response) => {
+            if (response) {
+              console.log(`Chance's Drafts From ${season}:`, response.data);
+            }
           });
       },
     },
@@ -74,6 +97,31 @@ export default store(function (/* { ssrContext } */) {
 
       removeDraft(state, id: string) {
         state.draftIds.delete(id);
+      },
+
+      addDraftPicks(state, picks: Pick[]) {
+        picks.forEach((pick) => {
+          if (pick.picked_by != '') {
+            // This is the user's first pick that we've tracked
+            // OR
+            // This is the first time a user has drafted the particular player
+            if (
+              !state.idToDraftPicks[pick.picked_by] ||
+              !state.idToDraftPicks[pick.picked_by][pick.player_id]
+            ) {
+              state.idToDraftPicks[pick.picked_by] = {
+                ...state.idToDraftPicks[pick.picked_by],
+                [pick.player_id]: [pick],
+              };
+              state.idToDraftPicks[pick.picked_by][pick.player_id];
+            } else {
+              debugger;
+              state.idToDraftPicks[pick.picked_by][pick.player_id].push(pick);
+            }
+          }
+        });
+
+        console.log('tracker: ', state.idToDraftPicks);
       },
     },
 

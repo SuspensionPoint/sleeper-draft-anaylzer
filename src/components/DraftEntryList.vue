@@ -1,9 +1,9 @@
 <template>
   <div>
     <q-input
-      v-model="userEnteredDraftUrl"
-      @keydown.enter.prevent="onDraftSubmitted(userEnteredDraftUrl)"
-      label="Enter Sleeper Draft URL"
+      v-model="userEnteredProfileId"
+      @keydown.enter.prevent="onDraftSubmitted(userEnteredProfileId)"
+      label="Enter Sleeper Profile ID"
       filled
     >
     </q-input>
@@ -35,7 +35,9 @@ export default defineComponent({
   // name: 'ComponentName'
   setup() {
     const store = useStore();
-    const userEnteredDraftUrl = ref();
+    const userEnteredProfileId = ref(
+      'https://sleeper.app/draft/nfl/729087749361090560'
+    );
     const draftUrls = computed(() => store.state.draftIds);
 
     const parseIdFromUrl = (url: string): string | undefined => {
@@ -49,7 +51,7 @@ export default defineComponent({
       if (draftId) {
         void store.dispatch('getDraftData', draftId);
       }
-      userEnteredDraftUrl.value = '';
+      userEnteredProfileId.value = '';
     };
 
     const removeDraft = (draftId: string) => {
@@ -58,7 +60,12 @@ export default defineComponent({
       }
     };
 
-    return { userEnteredDraftUrl, onDraftSubmitted, removeDraft, draftUrls };
+    return {
+      userEnteredProfileId,
+      onDraftSubmitted,
+      removeDraft,
+      draftUrls,
+    };
   },
 });
 </script>
