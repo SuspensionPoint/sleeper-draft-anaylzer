@@ -1,6 +1,6 @@
 <template>
   <q-card class="my-card" flat bordered>
-    <q-item>
+    <q-item class="card-header">
       <q-item-section avatar>
         <q-avatar size="75px">
           <img :src="getAvatarUrl()" />
@@ -8,7 +8,7 @@
       </q-item-section>
 
       <q-item-section>
-        <q-item-label class="card-header-label text-overline text-dark">{{
+        <q-item-label class="card-header-label text-overline card-text-color">{{
           userInfo?.display_name
         }}</q-item-label>
       </q-item-section>
@@ -16,13 +16,15 @@
 
     <!-- <q-seperator /> -->
 
-    <q-card-actions>
-      <q-item-label class="text-overline text-dark"> Draft Data </q-item-label>
+    <q-card-actions class="card-dropdown-button">
+      <q-item-label class="text-overline text-bold card-text-color">
+        Draft Data
+      </q-item-label>
 
       <q-space />
 
       <q-btn
-        color="grey"
+        class="card-text-color"
         round
         flat
         dense
@@ -31,8 +33,8 @@
       />
     </q-card-actions>
 
-    <q-slide-transition-group>
-      <!-- <div v-show="expanded">
+    <div>
+      <div class="card-back-drop" v-show="expanded">
         <q-separator />
         <q-card-section class="text-subtitle2">
           <div class="q-pa-md row items-start q-gutter-md">
@@ -43,12 +45,18 @@
             />
           </div>
         </q-card-section>
-      </div> -->
-
-      <div v-for="[player, pickArray] in playerPickMap" :key="player.player_id">
-        {{ player.search_full_name }}
       </div>
-    </q-slide-transition-group>
+
+      <!-- <div v-for="[player, pickArray] in playerPickMap" :key="player.player_id">
+        {{
+          player.first_name +
+          ' ' +
+          player.last_name +
+          ' ' +
+          `Picked ${pickArray.length} times`
+        }}
+      </div> -->
+    </div>
   </q-card>
 </template>
 
@@ -101,11 +109,40 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+$card-foreground: #00bfb3;
+$card-toggle-background: #037971;
+$card-toggle-border: #036b64;
+$card-background: #03b5aa;
+$card-text-color: #ebfffe;
+
 .my-card {
   width: 45%;
-}
 
-.card-header-label {
-  font-size: 15px;
+  .card-text-color {
+    color: $card-text-color;
+  }
+
+  .card-header {
+    background-color: $card-foreground;
+    box-shadow: -1px -14px 59px -27px rgba(0, 0, 0, 0.75) inset;
+    -webkit-box-shadow: -1px -14px 59px -27px rgba(0, 0, 0, 0.75) inset;
+    -moz-box-shadow: -1px -14px 59px -27px rgba(0, 0, 0, 0.75) inset;
+  }
+
+  .card-back-drop {
+    background-color: $card-background;
+    box-shadow: -2px 14px 45px -1px rgba(0, 0, 0, 0.27) inset;
+    -webkit-box-shadow: -2px 14px 45px -1px rgba(0, 0, 0, 0.27) inset;
+    -moz-box-shadow: -2px 14px 45px -1px rgba(0, 0, 0, 0.27) inset;
+  }
+
+  .card-dropdown-button {
+    background-color: $card-toggle-background;
+    border: 1px solid $card-toggle-border;
+  }
+
+  .card-header-label {
+    font-size: 15px;
+  }
 }
 </style>
