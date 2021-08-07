@@ -34,15 +34,14 @@
     <q-slide-transition>
       <div v-show="expanded">
         <q-separator />
-        <q-card-section class="text-subitle2">
-          <q-img
-            v-for="draftPick in userInfo?.picks"
-            :key="draftPick.player_id + draftPick.draft_id"
-            :src="getImageUrl(draftPick.player.player_id)"
-            alt="Image not found"
-            loading="lazy"
-          >
-          </q-img>
+        <q-card-section class="text-subtitle2">
+          <div class="q-pa-md row items-start q-gutter-md">
+            <player-analysis-card
+              v-for="pick in userInfo?.picks"
+              :key="pick.player_id"
+              :pick="pick"
+            />
+          </div>
         </q-card-section>
       </div>
     </q-slide-transition>
@@ -52,9 +51,12 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
 import { DisplayedUserInfo } from 'src/components/models';
+import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+
 // import { Pick } from 'src/api';
 
 export default defineComponent({
+  components: { PlayerAnalysisCard },
   // name: 'ComponentName'
   props: {
     userInfo: Object as PropType<DisplayedUserInfo>,
@@ -68,17 +70,8 @@ export default defineComponent({
       }
     };
 
-    const getImageUrl = (playerId: string): string => {
-      if (playerId) {
-        return `https://sleepercdn.com/content/nfl/players/thumb/${playerId}.jpg`;
-      }
-
-      return '';
-    };
-
     return {
       expanded: ref(false),
-      getImageUrl,
       getAvatarUrl,
     };
   },
@@ -87,8 +80,7 @@ export default defineComponent({
 
 <style lang="scss">
 .my-card {
-  width: 100%;
-  max-width: 350px;
+  width: 45%;
 }
 
 .card-header-label {
