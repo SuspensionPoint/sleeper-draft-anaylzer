@@ -62,7 +62,7 @@ export default defineComponent({
   setup(props) {
     const getAvatarUrl = (): string => {
       if (props.userInfo?.avatar) {
-        return `https://sleepercdn.com/avatars/thumbs/${props.userInfo?.avatar}`;
+        return `https://sleepercdn.com/avatars/${props.userInfo?.avatar}`;
       } else {
         return '';
       }
