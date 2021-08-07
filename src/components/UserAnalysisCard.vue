@@ -14,8 +14,6 @@
       </q-item-section>
     </q-item>
 
-    <!-- <q-seperator /> -->
-
     <q-card-actions class="card-dropdown-button" @click="expanded = !expanded">
       <q-item-label class="text-overline text-bold card-text-color">
         Draft Data
@@ -36,31 +34,27 @@
       <div class="card-back-drop" v-show="expanded">
         <q-separator />
         <q-card-section class="text-subtitle2">
-          <div class="q-pa-md row items-start q-gutter-md">
-            <player-analysis-card
-              v-for="playerToPicksMapping in playerPickMap"
-              :key="playerToPicksMapping[0].player_id"
-              :playerToPickHistory="playerToPicksMapping"
-            />
+          <div class="fit row justify-center wrap">
+            <div class="col-grow">
+              <h4 class="text-center text-overline">Most Drafted Player</h4>
+            </div>
+
+            <div class="col-grow">
+              <h4 class="text-center text-overline">Biggest Reach</h4>
+            </div>
+
+            <div class="col-grow">
+              <h4 class="text-center text-overline">Average Pick Value</h4>
+            </div>
 
             <!-- <player-analysis-card
-              v-for="pick in userInfo?.picks"
-              :key="pick.player_id"
-              :pick="pick"
+              v-for="playerToPicksMapping in playerToPickHistory"
+              :key="playerToPicksMapping[0].player_id"
+              :playerToPickHistory="playerToPicksMapping"
             /> -->
           </div>
         </q-card-section>
       </div>
-
-      <!-- <div v-for="[player, pickArray] in playerPickMap" :key="player.player_id">
-        {{
-          player.first_name +
-          ' ' +
-          player.last_name +
-          ' ' +
-          `Picked ${pickArray.length} times`
-        }}
-      </div> -->
     </div>
   </q-card>
 </template>
@@ -71,8 +65,6 @@ import { DisplayedUserInfo, DisplayedPick } from 'src/components/models';
 import { Player } from 'src/api';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
-// import { Pick } from 'src/api';
-
 export default defineComponent({
   components: { PlayerAnalysisCard },
   // name: 'ComponentName'
@@ -80,7 +72,7 @@ export default defineComponent({
     userInfo: Object as PropType<DisplayedUserInfo>,
   },
   setup(props) {
-    const playerPickMap = computed(() => {
+    const playerToPickHistory = computed(() => {
       const playerToPick = new Map<Player, DisplayedPick[]>();
 
       if (props.userInfo?.picks) {
@@ -107,7 +99,7 @@ export default defineComponent({
     return {
       expanded: ref(false),
       getAvatarUrl,
-      playerPickMap,
+      playerToPickHistory,
     };
   },
 });
