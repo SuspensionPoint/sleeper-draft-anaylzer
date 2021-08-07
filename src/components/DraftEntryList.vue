@@ -9,7 +9,7 @@
 
   <div
     v-if="usersToAnalyze && usersToAnalyze.length > 0"
-    class="q-pa-md row items-start q-gutter-md"
+    class="q-pa-md row items-start justify-between q-gutter-md"
   >
     <user-analysis-card
       v-for="user in usersToAnalyze"

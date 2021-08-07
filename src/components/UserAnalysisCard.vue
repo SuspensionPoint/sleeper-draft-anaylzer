@@ -35,16 +35,34 @@
         <q-separator />
         <q-card-section class="text-subtitle2">
           <div class="fit row justify-center wrap">
-            <div class="col-grow">
-              <h4 class="text-center text-overline">Most Drafted Player</h4>
+            <div class="text-center col-grow q-md-lg">
+              <h5 class="text-overline category-header">Most Drafted Player</h5>
+
+              <q-img
+                class="img-transparent"
+                :src="getPlayerImageUrl(mostDraftedPlayer.player_id)"
+                loading="lazy"
+              ></q-img>
+              <h4 class="text-overline">
+                {{
+                  `${mostDraftedPlayer.first_name} ${mostDraftedPlayer.last_name}`
+                }}
+              </h4>
+              <!-- <h5>
+                {{
+                  mostDraftedPlayer.first_name +
+                  ' ' +
+                  mostDraftedPlayer.last_name
+                }}
+              </h5> -->
             </div>
 
-            <div class="col-grow">
-              <h4 class="text-center text-overline">Biggest Reach</h4>
+            <div class="text-center col-grow q-md-lg">
+              <h5 class="text-overline category-header">Biggest Reach</h5>
             </div>
 
-            <div class="col-grow">
-              <h4 class="text-center text-overline">Average Pick Value</h4>
+            <div class="text-center col-grow q-md-lg">
+              <h5 class="text-overline category-header">Average Pick Value</h5>
             </div>
 
             <!-- <player-analysis-card
@@ -63,15 +81,63 @@
 import { defineComponent, ref, PropType, computed } from 'vue';
 import { DisplayedUserInfo, DisplayedPick } from 'src/components/models';
 import { Player } from 'src/api';
-import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+import { getPlayerImageUrl } from './utils';
+// import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 export default defineComponent({
-  components: { PlayerAnalysisCard },
+  // components: { PlayerAnalysisCard },
   // name: 'ComponentName'
   props: {
     userInfo: Object as PropType<DisplayedUserInfo>,
   },
   setup(props) {
+    const mostDraftedPlayer = computed(() => {
+      let mostDraftedPlayer: Player = {} as Player;
+      let prevPickArrayLength = 0;
+
+      let firstPlayer = true;
+      for (let [player, pickArray] of playerToPickHistory.value) {
+        if (firstPlayer) {
+          mostDraftedPlayer = player;
+          prevPickArrayLength = pickArray.length;
+          firstPlayer = false;
+          continue;
+        }
+
+        if (
+          pickArray.length > prevPickArrayLength &&
+          !(player.position === 'K' || player.position === 'DEF') // Exclude kickers and defense
+        ) {
+          mostDraftedPlayer = player;
+        }
+      }
+
+      return mostDraftedPlayer;
+    });
+
+    // const getMostDraftedPlayer = (
+    //   playerMapping: Map<Player, DisplayedPick[]>
+    // ): Player => {
+    //   let mostDraftedPlayer: Player = {} as Player;
+    //   let prevPickArrayLength = 0;
+
+    //   let firstPlayer = true;
+    //   for (let [player, pickArray] of playerMapping) {
+    //     if (firstPlayer) {
+    //       mostDraftedPlayer = player;
+    //       prevPickArrayLength = pickArray.length;
+    //       firstPlayer = false;
+    //       continue;
+    //     }
+
+    //     if (pickArray.length > prevPickArrayLength) {
+    //       mostDraftedPlayer = player;
+    //     }
+    //   }
+
+    //   return mostDraftedPlayer;
+    // };
+
     const playerToPickHistory = computed(() => {
       const playerToPick = new Map<Player, DisplayedPick[]>();
 
@@ -100,6 +166,8 @@ export default defineComponent({
       expanded: ref(false),
       getAvatarUrl,
       playerToPickHistory,
+      mostDraftedPlayer,
+      getPlayerImageUrl,
     };
   },
 });
@@ -142,5 +210,13 @@ $card-text-color: #ebfffe;
   .card-header-label {
     font-size: 15px;
   }
+
+  .category-header {
+    font-size: 1.2rem;
+  }
+}
+
+.img-transparent {
+  background: center center / cover transparent;
 }
 </style>
