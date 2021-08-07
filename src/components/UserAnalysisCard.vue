@@ -1,27 +1,23 @@
 <template>
   <q-card class="my-card" flat bordered>
-    <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+    <q-item>
+      <q-item-section avatar>
+        <q-avatar size="75px">
+          <img :src="getAvatarUrl()" />
+        </q-avatar>
+      </q-item-section>
 
-    <q-card-section>
-      <div class="text-overline text-orange-9">
-        {{ userInfo?.display_name }}
-      </div>
-      <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-      <!-- <div class="text-caption text-grey">
-        <div
-          v-for="[playerId, picks] in Object.entries(draftedPlayers)"
-          :key="playerId"
-        >
-          <h4>Player ID: {{ playerId }}</h4>
-          <h5>Times Picked:</h5>
-          <p>{{ picks }}</p>
-        </div>
-      </div> -->
-    </q-card-section>
+      <q-item-section>
+        <q-item-label class="card-header-label text-overline text-dark">{{
+          userInfo?.display_name
+        }}</q-item-label>
+      </q-item-section>
+    </q-item>
+
+    <q-seperator />
 
     <q-card-actions>
-      <q-btn flat color="dark" label="Share" />
-      <q-btn flat color="primary" label="Book" />
+      <q-item-label class="text-overline text-dark"> Draft Data </q-item-label>
 
       <q-space />
 
@@ -43,6 +39,8 @@
             v-for="draftPick in userInfo?.picks"
             :key="draftPick.player_id + draftPick.draft_id"
             :src="getImageUrl(draftPick.player.player_id)"
+            alt="Image not found"
+            loading="lazy"
           >
           </q-img>
         </q-card-section>
@@ -61,7 +59,15 @@ export default defineComponent({
   props: {
     userInfo: Object as PropType<DisplayedUserInfo>,
   },
-  setup() {
+  setup(props) {
+    const getAvatarUrl = (): string => {
+      if (props.userInfo?.avatar) {
+        return `https://sleepercdn.com/avatars/thumbs/${props.userInfo?.avatar}`;
+      } else {
+        return '';
+      }
+    };
+
     const getImageUrl = (playerId: string): string => {
       if (playerId) {
         return `https://sleepercdn.com/content/nfl/players/thumb/${playerId}.jpg`;
@@ -73,6 +79,7 @@ export default defineComponent({
     return {
       expanded: ref(false),
       getImageUrl,
+      getAvatarUrl,
     };
   },
 });
@@ -82,5 +89,9 @@ export default defineComponent({
 .my-card {
   width: 100%;
   max-width: 350px;
+}
+
+.card-header-label {
+  font-size: 15px;
 }
 </style>
