@@ -2,7 +2,7 @@
   <q-card class="player-card" flat bordered>
     <q-img
       class="img-transparent"
-      :src="getImageUrl(pickProp)"
+      :src="getImageUrl(playerToPickHistoryProp[0].player_id)"
       alt="Image not found"
       loading="lazy"
     >
@@ -13,25 +13,28 @@
 <script lang="ts">
 import { defineComponent, PropType, toRefs } from 'vue';
 import { DisplayedPick } from './models';
+import { Player } from 'src/api';
 
 export default defineComponent({
   // name: 'ComponentName'
   props: {
-    pick: Object as PropType<DisplayedPick>,
+    playerToPickHistory: {
+      type: Object as PropType<[Player, DisplayedPick[]]>,
+      required: true,
+    },
   },
   setup(props) {
-    const pickProp = toRefs(props).pick;
+    const playerToPickHistoryProp = toRefs(props).playerToPickHistory;
 
-    const getImageUrl = (pick: DisplayedPick | undefined): string => {
-      const url = pick?.player_id;
-      if (url) {
-        return `https://sleepercdn.com/content/nfl/players/thumb/${url}.jpg`;
+    const getImageUrl = (playerId: string | undefined): string => {
+      if (playerId) {
+        return `https://sleepercdn.com/content/nfl/players/thumb/${playerId}.jpg`;
       }
 
       return '';
     };
 
-    return { getImageUrl, pickProp };
+    return { getImageUrl, playerToPickHistoryProp };
   },
 });
 </script>

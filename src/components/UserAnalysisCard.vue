@@ -16,7 +16,7 @@
 
     <!-- <q-seperator /> -->
 
-    <q-card-actions class="card-dropdown-button">
+    <q-card-actions class="card-dropdown-button" @click="expanded = !expanded">
       <q-item-label class="text-overline text-bold card-text-color">
         Draft Data
       </q-item-label>
@@ -29,7 +29,6 @@
         flat
         dense
         :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-        @click="expanded = !expanded"
       />
     </q-card-actions>
 
@@ -39,10 +38,16 @@
         <q-card-section class="text-subtitle2">
           <div class="q-pa-md row items-start q-gutter-md">
             <player-analysis-card
+              v-for="playerToPicksMapping in playerPickMap"
+              :key="playerToPicksMapping[0].player_id"
+              :playerToPickHistory="playerToPicksMapping"
+            />
+
+            <!-- <player-analysis-card
               v-for="pick in userInfo?.picks"
               :key="pick.player_id"
               :pick="pick"
-            />
+            /> -->
           </div>
         </q-card-section>
       </div>
@@ -139,6 +144,7 @@ $card-text-color: #ebfffe;
   .card-dropdown-button {
     background-color: $card-toggle-background;
     border: 1px solid $card-toggle-border;
+    cursor: pointer;
   }
 
   .card-header-label {
