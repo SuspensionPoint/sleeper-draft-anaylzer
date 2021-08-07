@@ -1,6 +1,11 @@
 <template>
   <q-card class="player-card" flat bordered>
-    <q-img :src="getImageUrl(pickProp)" alt="Image not found" loading="lazy">
+    <q-img
+      class="img-transparent"
+      :src="getImageUrl(pickProp)"
+      alt="Image not found"
+      loading="lazy"
+    >
     </q-img>
   </q-card>
 </template>
@@ -34,5 +39,11 @@ export default defineComponent({
 <style lang="scss">
 .player-card {
   min-width: 45%;
+  background-color: transparent;
+  border: none;
+
+  .img-transparent {
+    background: center center / cover transparent;
+  }
 }
 </style>
