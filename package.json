@@ -11,7 +11,8 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "build:pwa": "quasar build -m pwa",
-    "update-playesr": "sh ./update-players.sh"
+    "update-players": "sh ./update-players.sh",
+    "update-adp": "sh ./update-adp.sh"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
