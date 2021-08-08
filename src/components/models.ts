@@ -16,3 +16,13 @@ export interface DisplayedPick extends Pick {
 export interface DisplayedUserInfo extends User {
   picks: DisplayedPick[];
 }
+
+export interface MostDraftedPlayer {
+  player: Player;
+  draftedCount: number;
+}
+
+export interface BiggestReach {
+  player: Player;
+  picksAboveAdp: number;
+}

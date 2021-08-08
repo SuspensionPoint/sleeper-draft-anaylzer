@@ -40,12 +40,12 @@
 
               <q-img
                 class="img-transparent"
-                :src="getPlayerImageUrl(mostDraftedPlayer.player_id)"
+                :src="getPlayerImageUrl(mostDraftedPlayer.player.player_id)"
                 loading="lazy"
               ></q-img>
               <h4 class="text-overline">
                 {{
-                  `${mostDraftedPlayer.first_name} ${mostDraftedPlayer.last_name}`
+                  `${mostDraftedPlayer.player.first_name} ${mostDraftedPlayer.player.last_name} - Drafted ${mostDraftedPlayer.draftedCount} times`
                 }}
               </h4>
               <!-- <h5>
@@ -79,7 +79,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
-import { DisplayedUserInfo, DisplayedPick } from 'src/components/models';
+import {
+  DisplayedUserInfo,
+  DisplayedPick,
+  MostDraftedPlayer,
+} from 'src/components/models';
 import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
@@ -93,27 +97,34 @@ export default defineComponent({
   setup(props) {
     const mostDraftedPlayer = computed(() => {
       let mostDraftedPlayer: Player = {} as Player;
-      let prevPickArrayLength = 0;
+      let draftedCount = 0;
 
-      let firstPlayer = true;
       for (let [player, pickArray] of playerToPickHistory.value) {
-        if (firstPlayer) {
-          mostDraftedPlayer = player;
-          prevPickArrayLength = pickArray.length;
-          firstPlayer = false;
-          continue;
-        }
-
-        if (
-          pickArray.length > prevPickArrayLength &&
-          !(player.position === 'K' || player.position === 'DEF') // Exclude kickers and defense
-        ) {
+        if (pickArray.length > draftedCount) {
+          draftedCount = pickArray.length;
           mostDraftedPlayer = player;
         }
       }
 
-      return mostDraftedPlayer;
+      return {
+        player: mostDraftedPlayer,
+        draftedCount,
+      } as MostDraftedPlayer;
     });
+
+    // const biggestReach = computed(() => {
+    //   let biggestReach: Player = {} as Player;
+
+    //   for (let [player, pickArray] of playerToPickHistory.value) {
+    //     const reachDiff = pickArray[0].
+
+    //   }
+
+    //   return {
+    //     player: mostDraftedPlayer,
+    //     draftedCount,
+    //   } as MostDraftedPlayer;
+    // });
 
     // const getMostDraftedPlayer = (
     //   playerMapping: Map<Player, DisplayedPick[]>
@@ -151,6 +162,7 @@ export default defineComponent({
         });
       }
 
+      console.log('player to pick', playerToPick);
       return playerToPick;
     });
 
