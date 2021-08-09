@@ -126,29 +126,6 @@ export default defineComponent({
     //   } as MostDraftedPlayer;
     // });
 
-    // const getMostDraftedPlayer = (
-    //   playerMapping: Map<Player, DisplayedPick[]>
-    // ): Player => {
-    //   let mostDraftedPlayer: Player = {} as Player;
-    //   let prevPickArrayLength = 0;
-
-    //   let firstPlayer = true;
-    //   for (let [player, pickArray] of playerMapping) {
-    //     if (firstPlayer) {
-    //       mostDraftedPlayer = player;
-    //       prevPickArrayLength = pickArray.length;
-    //       firstPlayer = false;
-    //       continue;
-    //     }
-
-    //     if (pickArray.length > prevPickArrayLength) {
-    //       mostDraftedPlayer = player;
-    //     }
-    //   }
-
-    //   return mostDraftedPlayer;
-    // };
-
     const playerToPickHistory = computed(() => {
       const playerToPick = new Map<Player, DisplayedPick[]>();
 

@@ -115,8 +115,6 @@ export default store(function (/* { ssrContext } */) {
                 for (const userPick of usersPicksForThisDraft) {
                   const player = state.players[userPick.player_id];
                   const playerAdpInfo = getPlayerAdp(state, player);
-                  debugger;
-
                   const displayPlayer = playerAdpInfo
                     ? {
                         ...player,
