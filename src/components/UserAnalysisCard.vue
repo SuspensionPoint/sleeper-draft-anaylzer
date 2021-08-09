@@ -40,12 +40,12 @@
 
               <q-img
                 class="img-transparent"
-                :src="getPlayerImageUrl(mostDraftedPlayer.player.player_id)"
+                :src="getPlayerImageUrl(mostDraftedPlayer?.player?.player_id)"
                 loading="lazy"
               ></q-img>
               <h4 class="text-overline">
                 {{
-                  `${mostDraftedPlayer.player.first_name} ${mostDraftedPlayer.player.last_name} - Drafted ${mostDraftedPlayer.draftedCount} times`
+                  `${mostDraftedPlayer?.player?.full_name} - Drafted ${mostDraftedPlayer?.draftedCount} times`
                 }}
               </h4>
               <!-- <h5>
@@ -59,6 +59,9 @@
 
             <div class="text-center col-grow q-md-lg">
               <h5 class="text-overline category-header">Biggest Reach</h5>
+              <h4 class="text-overline">
+                {{ biggestReach?.player?.full_name }}
+              </h4>
             </div>
 
             <div class="text-center col-grow q-md-lg">
@@ -82,10 +85,13 @@ import { defineComponent, ref, PropType, computed } from 'vue';
 import {
   DisplayedUserInfo,
   DisplayedPick,
+  DisplayedPlayer,
   MostDraftedPlayer,
+  BiggestReach,
 } from 'src/components/models';
 import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
+import _ from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 export default defineComponent({
@@ -112,22 +118,23 @@ export default defineComponent({
       } as MostDraftedPlayer;
     });
 
-    // const biggestReach = computed(() => {
-    //   let biggestReach: Player = {} as Player;
+    const biggestReach = computed(() => {
+      let biggestReach: BiggestReach = {} as BiggestReach;
 
-    //   for (let [player, pickArray] of playerToPickHistory.value) {
-    //     const reachDiff = pickArray[0].
+      for (let [player, pickArray] of playerToPickHistory.value) {
+        const playerAdp = player.adp;
+        if (playerAdp) {
+          const hightesPositionDrafted = pickArray.reduce((p1, p2) =>
+            p1.pick_no > p2.pick_no ? p1 : p2
+          );
+        }
+      }
 
-    //   }
-
-    //   return {
-    //     player: mostDraftedPlayer,
-    //     draftedCount,
-    //   } as MostDraftedPlayer;
-    // });
+      return biggestReach;
+    });
 
     const playerToPickHistory = computed(() => {
-      const playerToPick = new Map<Player, DisplayedPick[]>();
+      const playerToPick = new Map<DisplayedPlayer, DisplayedPick[]>();
 
       if (props.userInfo?.picks) {
         props.userInfo?.picks.forEach((pick) => {
@@ -157,6 +164,7 @@ export default defineComponent({
       playerToPickHistory,
       mostDraftedPlayer,
       getPlayerImageUrl,
+      biggestReach,
     };
   },
 });
