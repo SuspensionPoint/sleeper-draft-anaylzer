@@ -9,8 +9,13 @@ export interface Meta {
   totalCount: number;
 }
 
+export interface DisplayedPlayer extends Player {
+  adp?: number;
+  adp_formatted?: string;
+}
+
 export interface DisplayedPick extends Pick {
-  player: Player;
+  player: DisplayedPlayer;
 }
 
 export interface DisplayedUserInfo extends User {
@@ -18,11 +23,25 @@ export interface DisplayedUserInfo extends User {
 }
 
 export interface MostDraftedPlayer {
-  player: Player;
+  player: DisplayedPlayer;
   draftedCount: number;
 }
 
 export interface BiggestReach {
-  player: Player;
+  player: DisplayedPlayer;
   picksAboveAdp: number;
+}
+
+export interface PlayerADP {
+  player_id: number;
+  name: string;
+  position: string;
+  team: string;
+  adp: number;
+  adp_formatted: string;
+  times_drafted: number;
+  high: number;
+  low: number;
+  stdev: number;
+  bye: number;
 }

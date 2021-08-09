@@ -6,8 +6,14 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 import { DraftsApi, Pick, UserApi, Player } from 'src/api/';
-import { DisplayedUserInfo, DisplayedPick } from 'src/components/models';
+import {
+  DisplayedUserInfo,
+  DisplayedPick,
+  PlayerADP,
+  DisplayedPlayer,
+} from 'src/components/models';
 import playersJson from '../../players.json';
+import playersAdpJson from '../../player-adp.json';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -26,7 +32,20 @@ export interface StateInterface {
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
   players: Record<string, Player>;
+  playersAdp: PlayerADP[];
 }
+
+const getPlayerAdp = (
+  state: StateInterface,
+  player: Player
+): PlayerADP | undefined => {
+  const playerAdpSearchKey = `${player.first_name} ${player.last_name} ${player.position} ${player.team}`;
+  const playerAdpInfo = state.playersAdp.find(
+    (p) => `${p.name} ${p.position} ${p.team}` === playerAdpSearchKey
+  );
+
+  return playerAdpInfo;
+};
 
 // provide typings for `this.$store`
 declare module '@vue/runtime-core' {
@@ -52,6 +71,7 @@ export default store(function (/* { ssrContext } */) {
       ]),
       userInfo: [],
       players: playersJson as unknown as Record<string, Player>,
+      playersAdp: playersAdpJson.players as PlayerADP[],
     },
 
     actions: {
@@ -75,6 +95,7 @@ export default store(function (/* { ssrContext } */) {
           sport,
           season
         );
+
         if (draftResponse.data) {
           const drafts = draftResponse.data;
           const userResponse = await userApi.userUserIdGet(userId);
@@ -93,10 +114,21 @@ export default store(function (/* { ssrContext } */) {
 
                 for (const userPick of usersPicksForThisDraft) {
                   const player = state.players[userPick.player_id];
+                  const playerAdpInfo = getPlayerAdp(state, player);
+                  debugger;
+
+                  const displayPlayer = playerAdpInfo
+                    ? {
+                        ...player,
+                        adp: playerAdpInfo.adp,
+                        adp_formatted: playerAdpInfo.adp_formatted,
+                      }
+                    : (player as DisplayedPlayer);
+
                   if (player) {
                     allPicksFromUser.push({
                       ...userPick,
-                      player,
+                      player: displayPlayer,
                     });
                   }
                 }
