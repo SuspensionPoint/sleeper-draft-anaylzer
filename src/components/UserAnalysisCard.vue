@@ -86,6 +86,7 @@ import {
 } from 'src/components/models';
 import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
+import _ from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 export default defineComponent({
@@ -99,10 +100,11 @@ export default defineComponent({
       let mostDraftedPlayer: Player = {} as Player;
       let draftedCount = 0;
 
-      for (let [player, pickArray] of playerToPickHistory.value) {
+      for (const key in playerToPickHistory.value) {
+        const pickArray = playerToPickHistory.value[key];
         if (pickArray.length > draftedCount) {
           draftedCount = pickArray.length;
-          mostDraftedPlayer = player;
+          mostDraftedPlayer = pickArray[0].player;
         }
       }
 
@@ -127,20 +129,7 @@ export default defineComponent({
     // });
 
     const playerToPickHistory = computed(() => {
-      const playerToPick = new Map<Player, DisplayedPick[]>();
-
-      if (props.userInfo?.picks) {
-        props.userInfo?.picks.forEach((pick) => {
-          if (playerToPick.has(pick.player)) {
-            playerToPick.get(pick.player)?.push(pick);
-          } else {
-            playerToPick.set(pick.player, [pick]);
-          }
-        });
-      }
-
-      console.log('player to pick', playerToPick);
-      return playerToPick;
+      return _.groupBy(props.userInfo?.picks, 'player_id');
     });
 
     const getAvatarUrl = (): string => {
