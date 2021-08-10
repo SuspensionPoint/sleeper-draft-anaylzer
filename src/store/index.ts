@@ -67,6 +67,8 @@ export default store(function (/* { ssrContext } */) {
         ['604119831180005376', 'Jeremy'],
         ['473990600014688256', 'Carby'],
         ['336412440432500736', 'Wesley'],
+        ['78926378946674688', 'Austin'],
+        ['316088883303440384', 'Garrett'],
       ]),
       userInfo: [],
       players: playersJson as unknown as Record<string, Player>,
