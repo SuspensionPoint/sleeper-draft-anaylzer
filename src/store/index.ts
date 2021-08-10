@@ -130,6 +130,7 @@ export default store(function (/* { ssrContext } */) {
                     allPicksFromUser.push({
                       ...userPick,
                       player: displayPlayer,
+                      draftTeamCount: draft.settings.teams,
                     });
                   }
                 }

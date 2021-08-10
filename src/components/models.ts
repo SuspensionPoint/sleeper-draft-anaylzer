@@ -17,6 +17,7 @@ export interface DisplayedPlayer extends Player {
 
 export interface DisplayedPick extends Pick {
   player: DisplayedPlayer;
+  draftTeamCount: number;
 }
 
 export interface DisplayedUserInfo extends User {
@@ -29,7 +30,7 @@ export interface MostDraftedPlayer {
 }
 
 export interface BiggestReach {
-  player: DisplayedPlayer;
+  pick: DisplayedPick;
   picksAboveAdp: number;
 }
 
