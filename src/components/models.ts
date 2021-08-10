@@ -1,12 +1,18 @@
 import { User, Pick, Player } from 'src/api';
 
-export interface Todo {
-  id: number;
-  content: string;
-}
-
-export interface Meta {
-  totalCount: number;
+// fantasyfootballcalculator's model
+export interface PlayerADP {
+  player_id: number;
+  name: string;
+  position: string;
+  team: string;
+  adp: number;
+  adp_formatted: string;
+  times_drafted: number;
+  high: number;
+  low: number;
+  stdev: number;
+  bye: number;
 }
 
 export interface DisplayedPlayer extends Player {
@@ -34,16 +40,9 @@ export interface BiggestReach {
   picksAboveAdp: number;
 }
 
-export interface PlayerADP {
-  player_id: number;
-  name: string;
-  position: string;
-  team: string;
-  adp: number;
-  adp_formatted: string;
-  times_drafted: number;
-  high: number;
-  low: number;
-  stdev: number;
-  bye: number;
+export interface UserAnalysisReport {
+  userInfo: DisplayedUserInfo;
+  mostDraftedPlayer: MostDraftedPlayer;
+  biggestReach: BiggestReach;
+  averagePickValue: number;
 }
