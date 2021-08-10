@@ -9,7 +9,7 @@
 
       <q-item-section>
         <q-item-label class="card-header-label text-overline card-text-color">{{
-          userInfo?.display_name
+          report.userInfo?.display_name
         }}</q-item-label>
       </q-item-section>
     </q-item>
@@ -45,13 +45,15 @@
                   <q-img
                     class="player-img"
                     :src="
-                      getPlayerImageUrl(mostDraftedPlayer?.player?.player_id)
+                      getPlayerImageUrl(
+                        report.mostDraftedPlayer?.player?.player_id
+                      )
                     "
                     loading="lazy"
                   ></q-img>
                   <h4 class="text-overline">
                     {{
-                      `${mostDraftedPlayer?.player?.full_name} - Drafted ${mostDraftedPlayer?.draftedCount} times`
+                      `${report.mostDraftedPlayer?.player?.full_name} - Drafted ${report.mostDraftedPlayer?.draftedCount} times`
                     }}
                   </h4>
                 </div>
@@ -63,14 +65,16 @@
 
                   <q-img
                     class="player-img"
-                    :src="getPlayerImageUrl(biggestReach?.pick.player_id)"
+                    :src="
+                      getPlayerImageUrl(report.biggestReach?.pick.player_id)
+                    "
                     loading="lazy"
                   ></q-img>
                   <h4 class="text-overline">
-                    {{ biggestReach?.pick.player?.full_name }}
+                    {{ report.biggestReach?.pick.player?.full_name }}
                   </h4>
                   <p>
-                    {{ getReachText(biggestReach) }}
+                    {{ getReachText(report.biggestReach) }}
                   </p>
                 </div>
               </div>
@@ -102,8 +106,9 @@ import {
   DisplayedUserInfo,
   MostDraftedPlayer,
   BiggestReach,
+  UserAnalysisReport,
+  DisplayedPlayer,
 } from 'src/components/models';
-import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
 import _ from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
@@ -115,35 +120,28 @@ export default defineComponent({
     userInfo: Object as PropType<DisplayedUserInfo>,
   },
   setup(props) {
-    const mostDraftedPlayer = computed(() => {
-      let mostDraftedPlayer: Player = {} as Player;
-      let draftedCount = 0;
+    const report = computed((): UserAnalysisReport => {
+      let mostDraftedPlayer: MostDraftedPlayer = {
+        player: {} as DisplayedPlayer,
+        draftedCount: 0,
+      };
 
-      for (const key in playerToPickHistory.value) {
-        const pickArray = playerToPickHistory.value[key];
-        const player = pickArray[0].player;
-        if (pickArray.length > draftedCount) {
-          draftedCount = pickArray.length;
-          mostDraftedPlayer = player;
-        }
-      }
-
-      return {
-        player: mostDraftedPlayer,
-        draftedCount,
-      } as MostDraftedPlayer;
-    });
-
-    const biggestReach = computed(() => {
       let biggestReach: BiggestReach = {
         pick: {},
         picksAboveAdp: 9999, // really big #
       } as BiggestReach;
 
+      let averagePickValue = 0;
+
       for (const key in playerToPickHistory.value) {
         const pickArray = playerToPickHistory.value[key];
         const player = pickArray[0].player;
         const playerAdp = player.adp;
+
+        if (pickArray.length > mostDraftedPlayer.draftedCount) {
+          mostDraftedPlayer.draftedCount = pickArray.length;
+          mostDraftedPlayer.player = player;
+        }
 
         if (playerAdp) {
           const highestDraftPick = pickArray.reduce((p1, p2) =>
@@ -160,7 +158,12 @@ export default defineComponent({
         }
       }
 
-      return biggestReach;
+      return {
+        userInfo: props.userInfo as DisplayedUserInfo,
+        biggestReach,
+        mostDraftedPlayer,
+        averagePickValue,
+      };
     });
 
     const playerToPickHistory = computed(() => {
@@ -209,10 +212,9 @@ export default defineComponent({
       expanded: ref(false),
       getAvatarUrl,
       playerToPickHistory,
-      mostDraftedPlayer,
       getPlayerImageUrl,
-      biggestReach,
       getReachText,
+      report,
     };
   },
 });
