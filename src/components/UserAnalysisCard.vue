@@ -84,6 +84,27 @@
                   <h5 class="text-overline category-header">
                     Average Pick Value
                   </h5>
+                  <h5
+                    class="text-overline average-pick-value"
+                    v-bind:class="{
+                      'text-green': report.averagePickValue > 0,
+                      'text-red': report.averagePickValue < 0,
+                    }"
+                  >
+                    {{ report.averagePickValue.toFixed(2) }}
+                  </h5>
+                  <p>
+                    This value represents the average value of a draft pick from
+                    {{ report.userInfo.display_name }}. <br />
+                    A > 0 value represents that they typically draft a user
+                    lower than their ADP and on average how many picks past ADP
+                    they make that selection. <br />
+                    A '&lt;' 0 value suggest the opposite, that they tend to
+                    reach for players and how many picks ahead they typically do
+                    so. <br />
+                    A 0 value would suggest that they're entirely chalk and
+                    typically draft exactly at ADP.
+                  </p>
                 </div>
               </div>
 
@@ -131,7 +152,8 @@ export default defineComponent({
         picksAboveAdp: 9999, // really big #
       } as BiggestReach;
 
-      let averagePickValue = 0;
+      let totalPickValue = 0;
+      let totalNumPicks = 0;
 
       for (const key in playerToPickHistory.value) {
         const pickArray = playerToPickHistory.value[key];
@@ -144,11 +166,16 @@ export default defineComponent({
         }
 
         if (playerAdp) {
-          const highestDraftPick = pickArray.reduce((p1, p2) =>
-            p1.pick_no < p2.pick_no ? p1 : p2
-          );
-          const diffFromAdp = highestDraftPick.pick_no - playerAdp;
+          let highestDraftPick = pickArray[0];
+          for (const pick of pickArray) {
+            if (pick.pick_no < highestDraftPick.pick_no) {
+              highestDraftPick = pick;
+            }
+            totalPickValue += pick.pick_no - playerAdp;
+            totalNumPicks++;
+          }
 
+          const diffFromAdp = highestDraftPick.pick_no - playerAdp;
           if (diffFromAdp < biggestReach.picksAboveAdp) {
             biggestReach = {
               pick: highestDraftPick,
@@ -158,11 +185,18 @@ export default defineComponent({
         }
       }
 
+      console.log('user report', {
+        userInfo: props.userInfo as DisplayedUserInfo,
+        biggestReach,
+        mostDraftedPlayer,
+        averagePickValue: totalPickValue / totalNumPicks,
+      });
+
       return {
         userInfo: props.userInfo as DisplayedUserInfo,
         biggestReach,
         mostDraftedPlayer,
-        averagePickValue,
+        averagePickValue: totalPickValue / totalNumPicks,
       };
     });
 
@@ -199,8 +233,8 @@ export default defineComponent({
       const adpPickNumberString = numToText(
         Math.round((reach.pick.player.adp as number) % numTeams)
       );
-      const adpPickRound = Math.floor(
-        (reach.pick.player.adp as number) / numTeams
+      const adpPickRound = numToText(
+        Math.floor((reach.pick.player.adp as number) / numTeams)
       );
       const numTimesDrafted =
         playerToPickHistory.value[reach.pick.player_id].length;
@@ -260,6 +294,10 @@ $card-text-color: #ebfffe;
 
   .category-header {
     font-size: 1.2rem;
+  }
+
+  .average-pick-value {
+    font-size: 2rem;
   }
 }
 
