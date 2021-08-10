@@ -105,7 +105,7 @@ import {
 } from 'src/components/models';
 import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
-import _, { pick } from 'lodash';
+import _ from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 export default defineComponent({
@@ -199,8 +199,10 @@ export default defineComponent({
       const adpPickRound = Math.floor(
         (reach.pick.player.adp as number) / numTeams
       );
+      const numTimesDrafted =
+        playerToPickHistory.value[reach.pick.player_id].length;
 
-      return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round.`;
+      return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round. \n They've drafted this player ${numTimesDrafted} times.`;
     };
 
     return {
