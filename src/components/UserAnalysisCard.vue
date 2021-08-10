@@ -34,42 +34,61 @@
       <div class="card-back-drop" v-show="expanded">
         <q-separator />
         <q-card-section class="text-subtitle2">
-          <div class="fit row justify-center wrap">
-            <div class="text-center col-grow q-md-lg">
-              <h5 class="text-overline category-header">Most Drafted Player</h5>
+          <div class="row">
+            <div class="fit col justify-center wrap">
+              <div class="text-center row">
+                <div class="col">
+                  <h5 class="text-overline category-header">
+                    Most Drafted Player
+                  </h5>
 
-              <q-img
-                class="img-transparent"
-                :src="getPlayerImageUrl(mostDraftedPlayer.player.player_id)"
-                loading="lazy"
-              ></q-img>
-              <h4 class="text-overline">
-                {{
-                  `${mostDraftedPlayer.player.first_name} ${mostDraftedPlayer.player.last_name} - Drafted ${mostDraftedPlayer.draftedCount} times`
-                }}
-              </h4>
-              <!-- <h5>
-                {{
-                  mostDraftedPlayer.first_name +
-                  ' ' +
-                  mostDraftedPlayer.last_name
-                }}
-              </h5> -->
-            </div>
+                  <q-img
+                    class="player-img"
+                    :src="
+                      getPlayerImageUrl(mostDraftedPlayer?.player?.player_id)
+                    "
+                    loading="lazy"
+                  ></q-img>
+                  <h4 class="text-overline">
+                    {{
+                      `${mostDraftedPlayer?.player?.full_name} - Drafted ${mostDraftedPlayer?.draftedCount} times`
+                    }}
+                  </h4>
+                </div>
+              </div>
 
-            <div class="text-center col-grow q-md-lg">
-              <h5 class="text-overline category-header">Biggest Reach</h5>
-            </div>
+              <div class="text-center row">
+                <div class="col">
+                  <h5 class="text-overline category-header">Biggest Reach</h5>
 
-            <div class="text-center col-grow q-md-lg">
-              <h5 class="text-overline category-header">Average Pick Value</h5>
-            </div>
+                  <q-img
+                    class="player-img"
+                    :src="getPlayerImageUrl(biggestReach?.pick.player_id)"
+                    loading="lazy"
+                  ></q-img>
+                  <h4 class="text-overline">
+                    {{ biggestReach?.pick.player?.full_name }}
+                  </h4>
+                  <p>
+                    {{ getReachText(biggestReach) }}
+                  </p>
+                </div>
+              </div>
 
-            <!-- <player-analysis-card
+              <div class="text-center row">
+                <div class="col">
+                  <h5 class="text-overline category-header">
+                    Average Pick Value
+                  </h5>
+                </div>
+              </div>
+
+              <!-- <player-analysis-card
               v-for="playerToPicksMapping in playerToPickHistory"
               :key="playerToPicksMapping[0].player_id"
               :playerToPickHistory="playerToPicksMapping"
             /> -->
+            </div>
           </div>
         </q-card-section>
       </div>
@@ -81,12 +100,12 @@
 import { defineComponent, ref, PropType, computed } from 'vue';
 import {
   DisplayedUserInfo,
-  DisplayedPick,
   MostDraftedPlayer,
+  BiggestReach,
 } from 'src/components/models';
 import { Player } from 'src/api';
 import { getPlayerImageUrl } from './utils';
-import _ from 'lodash';
+import _, { pick } from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 export default defineComponent({
@@ -102,9 +121,10 @@ export default defineComponent({
 
       for (const key in playerToPickHistory.value) {
         const pickArray = playerToPickHistory.value[key];
+        const player = pickArray[0].player;
         if (pickArray.length > draftedCount) {
           draftedCount = pickArray.length;
-          mostDraftedPlayer = pickArray[0].player;
+          mostDraftedPlayer = player;
         }
       }
 
@@ -114,19 +134,34 @@ export default defineComponent({
       } as MostDraftedPlayer;
     });
 
-    // const biggestReach = computed(() => {
-    //   let biggestReach: Player = {} as Player;
+    const biggestReach = computed(() => {
+      let biggestReach: BiggestReach = {
+        pick: {},
+        picksAboveAdp: 9999, // really big #
+      } as BiggestReach;
 
-    //   for (let [player, pickArray] of playerToPickHistory.value) {
-    //     const reachDiff = pickArray[0].
+      for (const key in playerToPickHistory.value) {
+        const pickArray = playerToPickHistory.value[key];
+        const player = pickArray[0].player;
+        const playerAdp = player.adp;
 
-    //   }
+        if (playerAdp) {
+          const highestDraftPick = pickArray.reduce((p1, p2) =>
+            p1.pick_no < p2.pick_no ? p1 : p2
+          );
+          const diffFromAdp = highestDraftPick.pick_no - playerAdp;
 
-    //   return {
-    //     player: mostDraftedPlayer,
-    //     draftedCount,
-    //   } as MostDraftedPlayer;
-    // });
+          if (diffFromAdp < biggestReach.picksAboveAdp) {
+            biggestReach = {
+              pick: highestDraftPick,
+              picksAboveAdp: Math.round(diffFromAdp),
+            };
+          }
+        }
+      }
+
+      return biggestReach;
+    });
 
     const playerToPickHistory = computed(() => {
       return _.groupBy(props.userInfo?.picks, 'player_id');
@@ -140,12 +175,42 @@ export default defineComponent({
       }
     };
 
+    const numToText = (d: number): string => {
+      if (d > 3 && d < 21) return `${d}th`;
+      switch (d % 10) {
+        case 1:
+          return `${d}st`;
+        case 2:
+          return `${d}nd`;
+        case 3:
+          return `${d}rd`;
+        default:
+          return `${d}th`;
+      }
+    };
+
+    const getReachText = (reach: BiggestReach): string => {
+      const numTeams = reach.pick.draftTeamCount;
+      const pickNumber = numToText(reach.pick.pick_no % numTeams);
+      const roundSelectedString = numToText(reach.pick.round);
+      const adpPickNumberString = numToText(
+        Math.round((reach.pick.player.adp as number) % numTeams)
+      );
+      const adpPickRound = Math.floor(
+        (reach.pick.player.adp as number) / numTeams
+      );
+
+      return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round.`;
+    };
+
     return {
       expanded: ref(false),
       getAvatarUrl,
       playerToPickHistory,
       mostDraftedPlayer,
       getPlayerImageUrl,
+      biggestReach,
+      getReachText,
     };
   },
 });
@@ -194,7 +259,8 @@ $card-text-color: #ebfffe;
   }
 }
 
-.img-transparent {
+.player-img {
   background: center center / cover transparent;
+  width: 150px;
 }
 </style>

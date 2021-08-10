@@ -10,6 +10,7 @@ export interface Meta {
 }
 
 export interface DisplayedPlayer extends Player {
+  full_name: string;
   adp?: number;
   adp_formatted?: string;
 }

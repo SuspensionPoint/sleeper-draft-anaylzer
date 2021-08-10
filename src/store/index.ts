@@ -10,7 +10,6 @@ import {
   DisplayedUserInfo,
   DisplayedPick,
   PlayerADP,
-  DisplayedPlayer,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
@@ -118,10 +117,14 @@ export default store(function (/* { ssrContext } */) {
                   const displayPlayer = playerAdpInfo
                     ? {
                         ...player,
+                        full_name: `${player.first_name} ${player.last_name}`,
                         adp: playerAdpInfo.adp,
                         adp_formatted: playerAdpInfo.adp_formatted,
                       }
-                    : (player as DisplayedPlayer);
+                    : {
+                        ...player,
+                        full_name: `${player.first_name} ${player.last_name}`,
+                      };
 
                   if (player) {
                     allPicksFromUser.push({
