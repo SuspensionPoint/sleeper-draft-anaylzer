@@ -356,7 +356,8 @@ $card-foreground: #00bfb3;
 $card-toggle-background: #037971;
 $card-toggle-border: #036b64;
 $card-background: #03b5aa;
-$card-text-color: #ebfffe;
+$card-text-color: #eef1f7;
+$accent-color: #fead58;
 
 .player-card {
   p,
@@ -365,10 +366,10 @@ $card-text-color: #ebfffe;
     margin: 0;
   }
 
-  border: 1px solid white;
+  border: 4px solid $card-toggle-background;
   margin: 50px;
   padding: 30px;
-  background-color: #eef1f7;
+  background-color: $card-text-color;
   box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
   border-radius: 15px;
   max-width: 325px;
@@ -382,8 +383,10 @@ $card-text-color: #ebfffe;
   }
 
   .player-img {
-    background: center center / cover $card-toggle-background;
+    background: center center / cover $accent-color;
     margin: 25px 0;
+    border: 3px solid $card-toggle-background;
+    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
   }
 
   .value {
