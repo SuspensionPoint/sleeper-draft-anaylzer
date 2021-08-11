@@ -3,7 +3,7 @@
     <q-item class="card-header">
       <q-item-section avatar>
         <q-avatar size="75px">
-          <img :src="getAvatarUrl()" />
+          <img :src="getAvatarUrl($props.userInfo)" />
         </q-avatar>
       </q-item-section>
 
@@ -168,7 +168,7 @@ import {
   UserAnalysisReport,
   DisplayedPlayer,
 } from 'src/components/models';
-import { getPlayerImageUrl } from './utils';
+import { getPlayerImageUrl, getAvatarUrl } from './utils';
 import _, { Dictionary } from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
@@ -296,14 +296,6 @@ export default defineComponent({
       return _.groupBy(props.userInfo?.picks, 'player_id');
     });
 
-    const getAvatarUrl = (): string => {
-      if (props.userInfo?.avatar) {
-        return `https://sleepercdn.com/avatars/${props.userInfo?.avatar}`;
-      } else {
-        return '';
-      }
-    };
-
     const numToText = (d: number): string => {
       if (d > 3 && d < 21) return `${d}th`;
       switch (d % 10) {
@@ -349,27 +341,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$theme-dark: black;
-$theme-light: white;
-$theme-accent-light: #f1eee5;
-$theme-accent-medium: #ca5757;
-$theme-accent-dark: #33658a;
-
-$card-foreground: $theme-light;
-$card-toggle-background: $theme-dark;
-$card-toggle-border: $theme-dark;
-$card-toggle-color: $theme-light;
-$card-background: $theme-accent-light;
-// $card-text-color: #eef1f7;
-$card-text-color: $theme-dark;
-$accent-color: $theme-accent-medium;
-
-// $card-foreground: #00bfb3;
-// $card-toggle-background: #037971;
-// $card-toggle-border: #036b64;
-// $card-background: #03b5aa;
-// $card-text-color: #eef1f7;
-// $accent-color: #fead58;
+@import 'src/css/app.scss';
 
 .player-card {
   p,

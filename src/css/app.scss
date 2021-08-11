@@ -1,1 +1,15 @@
 // app global css in SCSS form
+$theme-dark: black;
+$theme-light: white;
+$theme-accent-light: #f1eee5;
+$theme-accent-medium: #ca5757;
+$theme-accent-dark: #33658a;
+
+$card-foreground: $theme-light;
+$card-toggle-background: $theme-dark;
+$card-toggle-border: $theme-dark;
+$card-toggle-color: $theme-light;
+$card-background: $theme-accent-light;
+// $card-text-color: #eef1f7;
+$card-text-color: $theme-dark;
+$accent-color: $theme-accent-medium;
