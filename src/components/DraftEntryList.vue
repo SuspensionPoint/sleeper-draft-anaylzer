@@ -2,7 +2,7 @@
   <q-input
     v-model="enteredUserId"
     @keydown.enter.prevent="onUserIdSubmitted(enteredUserId)"
-    label="Enter Sleeper User ID"
+    label="Enter Sleeper User ID or Draft URL"
     filled
   >
   </q-input>
@@ -35,6 +35,12 @@ export default defineComponent({
 
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
+        // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+        const isDraftUrl = userId.match(/(?!\/)\d+(?=)/);
+        if (isDraftUrl) {
+          void store.dispatch('getUserInfoFromDraft', isDraftUrl.shift());
+        }
+
         // void store.dispatch('getDraftData', profileId);
         void store.dispatch('getDraftsFromUserId', userId);
       }

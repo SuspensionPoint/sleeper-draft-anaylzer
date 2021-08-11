@@ -5,7 +5,7 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex';
-import { DraftsApi, Pick, UserApi, Player } from 'src/api/';
+import { DraftsApi, Pick, UserApi, Player, Draft } from 'src/api/';
 import {
   DisplayedUserInfo,
   DisplayedPick,
@@ -13,6 +13,7 @@ import {
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
+import _ from 'lodash';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -27,6 +28,8 @@ import playersAdpJson from '../../player-adp.json';
  */
 
 export interface StateInterface {
+  sport: string;
+  season: number;
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
@@ -60,8 +63,11 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     state: {
+      sport: 'nfl',
+      season: 2021,
       draftIds: new Set<string>(),
       idToPlayerName: new Map<string, string>([
+        // ['572842365927186432', 'Gurnels'],
         ['316081473281073152', 'Bradley'],
         ['204783438698381312', 'Chance'],
         ['604119831180005376', 'Jeremy'],
@@ -86,16 +92,18 @@ export default store(function (/* { ssrContext } */) {
       },
 
       async getDraftsFromUserId({ commit, state }, userId: string) {
+        if (state.userInfo.find((user) => user.user_id === userId)) {
+          console.error(`User with id ${userId} already loaded`);
+          return;
+        }
+
         const draftsApi = new DraftsApi();
         const userApi = new UserApi();
 
-        const sport = 'nfl';
-        const season = 2021;
-
         const draftResponse = await draftsApi.userUserIdDraftsSportSeasonGet(
           userId,
-          sport,
-          season
+          state.sport,
+          state.season
         );
 
         if (draftResponse.data) {
@@ -147,6 +155,19 @@ export default store(function (/* { ssrContext } */) {
 
             console.log('All user info:', state.userInfo);
           }
+        }
+      },
+
+      async getUserInfoFromDraft({ dispatch }, draftId: string) {
+        const draftsApi = new DraftsApi();
+
+        const draftResponse = await draftsApi.draftDraftIdGet(draftId);
+        if (draftResponse.data) {
+          const draft: Draft = draftResponse.data as unknown as Draft;
+          const draftOrder = _.keys(draft.draft_order);
+          draftOrder.forEach(
+            (userId) => void dispatch('getDraftsFromUserId', userId)
+          );
         }
       },
     },
