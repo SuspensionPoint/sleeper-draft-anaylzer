@@ -6,9 +6,18 @@
     </h5>
 
     <q-img
-      v-if="$props.image"
+      v-if="$props.image && !imageLoadError"
       class="player-img"
       :src="$props.image"
+      @error="imageLoadFailed()"
+      loading="lazy"
+    ></q-img>
+
+    <q-img
+      v-if="imageLoadError"
+      class="player-img"
+      src="~assets/player-placeholder.png"
+      @error="imageLoadError = true"
       loading="lazy"
     ></q-img>
 
@@ -30,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   // name: 'ComponentName'
@@ -52,6 +61,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const imageLoadError = ref(false);
+
     const getSignedValueString = (value: number): string => {
       const decimalPlaces = 2;
       return `${props.value && props.value < 0 ? '' : '+'}${value.toFixed(
@@ -59,7 +70,12 @@ export default defineComponent({
       )}`;
     };
 
-    return { getSignedValueString };
+    const imageLoadFailed = () => {
+      imageLoadError.value = true;
+      console.log('Image failed to load');
+    };
+
+    return { getSignedValueString, imageLoadError, imageLoadFailed };
   },
 });
 </script>
