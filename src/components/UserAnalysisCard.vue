@@ -8,21 +8,18 @@
       </q-item-section>
 
       <q-item-section>
-        <q-item-label class="card-header-label text-overline card-text-color">{{
+        <q-item-label class="card-header-label text-overline">{{
           report.userInfo?.display_name
         }}</q-item-label>
       </q-item-section>
     </q-item>
 
     <q-card-actions class="card-dropdown-button" @click="expanded = !expanded">
-      <q-item-label class="text-overline text-bold card-text-color">
-        Draft Data
-      </q-item-label>
+      <q-item-label class="text-overline text-bold"> Draft Data </q-item-label>
 
       <q-space />
 
       <q-btn
-        class="card-text-color"
         round
         flat
         dense
@@ -352,19 +349,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$theme-dark: #2f4858;
-$theme-light: #f6ae2d;
-$theme-accent-light: #86bbd8;
-$theme-accent-medium: #f26419;
+$theme-dark: black;
+$theme-light: white;
+$theme-accent-light: #f1eee5;
+$theme-accent-medium: #ca5757;
 $theme-accent-dark: #33658a;
 
-$card-foreground: $theme-accent-light;
+$card-foreground: $theme-light;
 $card-toggle-background: $theme-dark;
 $card-toggle-border: $theme-dark;
-$card-background: $theme-dark;
+$card-toggle-color: $theme-light;
+$card-background: $theme-accent-light;
 // $card-text-color: #eef1f7;
 $card-text-color: $theme-dark;
-$accent-color: $theme-light;
+$accent-color: $theme-accent-medium;
 
 // $card-foreground: #00bfb3;
 // $card-toggle-background: #037971;
@@ -413,10 +411,6 @@ $accent-color: $theme-light;
 .my-card {
   width: 45%;
 
-  .card-text-color {
-    color: $card-text-color;
-  }
-
   .card-header {
     background-color: $card-foreground;
     box-shadow: -1px -14px 59px -27px rgba(0, 0, 0, 0.75) inset;
@@ -433,6 +427,7 @@ $accent-color: $theme-light;
 
   .card-dropdown-button {
     background-color: $card-toggle-background;
+    color: $card-toggle-color;
     border: 1px solid $card-toggle-border;
     cursor: pointer;
   }
