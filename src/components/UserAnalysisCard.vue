@@ -173,7 +173,7 @@ import _, { Dictionary } from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 const DEFAULT_HIGH_ADP = 9999;
-const REACH_THRESHOLD = -0.5;
+const REACH_THRESHOLD = -6;
 
 export default defineComponent({
   // components: { PlayerAnalysisCard },
