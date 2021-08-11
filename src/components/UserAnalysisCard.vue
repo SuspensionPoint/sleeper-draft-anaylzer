@@ -352,12 +352,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$card-foreground: #00bfb3;
-$card-toggle-background: #037971;
-$card-toggle-border: #036b64;
-$card-background: #03b5aa;
-$card-text-color: #eef1f7;
-$accent-color: #fead58;
+$theme-dark: #2f4858;
+$theme-light: #f6ae2d;
+$theme-accent-light: #86bbd8;
+$theme-accent-medium: #f26419;
+$theme-accent-dark: #33658a;
+
+$card-foreground: $theme-accent-light;
+$card-toggle-background: $theme-dark;
+$card-toggle-border: $theme-dark;
+$card-background: $theme-dark;
+// $card-text-color: #eef1f7;
+$card-text-color: $theme-dark;
+$accent-color: $theme-light;
+
+// $card-foreground: #00bfb3;
+// $card-toggle-background: #037971;
+// $card-toggle-border: #036b64;
+// $card-background: #03b5aa;
+// $card-text-color: #eef1f7;
+// $accent-color: #fead58;
 
 .player-card {
   p,
@@ -366,13 +380,14 @@ $accent-color: #fead58;
     margin: 0;
   }
 
-  border: 4px solid $card-toggle-background;
+  max-width: 325px;
   margin: 50px;
   padding: 30px;
-  background-color: $card-text-color;
-  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+  border: 4px solid $card-toggle-background;
   border-radius: 15px;
-  max-width: 325px;
+  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+  background-color: $card-foreground;
+  color: $card-text-color;
 
   .category {
     font-size: 1.2rem;
@@ -385,8 +400,8 @@ $accent-color: #fead58;
   .player-img {
     background: center center / cover $accent-color;
     margin: 25px 0;
-    border: 3px solid $card-toggle-background;
-    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
+    border: 2px solid $card-toggle-background;
+    // box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
   }
 
   .value {
