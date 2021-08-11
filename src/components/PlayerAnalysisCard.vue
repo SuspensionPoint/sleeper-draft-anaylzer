@@ -2,7 +2,10 @@
   <div class="player-card">
     <h5 class="text-overline category">{{ $props.title }}</h5>
     <h5 class="name">
-      {{ $props.subTitle }}
+      {{ $props.subTitle1 }}
+    </h5>
+    <h5 class="name">
+      {{ $props.subTitle2 }}
     </h5>
 
     <q-img
@@ -47,7 +50,10 @@ export default defineComponent({
     title: {
       type: String,
     },
-    subTitle: {
+    subTitle1: {
+      type: String,
+    },
+    subTitle2: {
       type: String,
     },
     image: {

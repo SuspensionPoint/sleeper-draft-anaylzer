@@ -36,7 +36,10 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Drafted Player"
-                  :subTitle="report.mostDraftedPlayer?.player?.full_name"
+                  :subTitle1="report.mostDraftedPlayer?.player.full_name"
+                  :subTitle2="
+                    playerInfoString(report.mostDraftedPlayer?.player)
+                  "
                   :image="
                     getPlayerImageUrl(
                       report.mostDraftedPlayer?.player?.player_id
@@ -53,7 +56,10 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Biggest Reach"
-                  :subTitle="report.biggestReach?.pick.player?.full_name"
+                  :subTitle1="report.biggestReach?.pick?.player.full_name"
+                  :subTitle2="
+                    playerInfoString(report.biggestReach?.pick?.player)
+                  "
                   :image="
                     getPlayerImageUrl(report.biggestReach?.pick.player_id)
                   "
@@ -68,7 +74,10 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Common Reach"
-                  :subTitle="report.mostCommonReach?.pick.player?.full_name"
+                  :subTitle1="report.mostCommonReach?.pick?.player.full_name"
+                  :subTitle2="
+                    playerInfoString(report.mostCommonReach?.pick?.player)
+                  "
                   :image="
                     getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
                   "
@@ -101,9 +110,6 @@
                 />
               </div>
 
-              // Soo...my formatter on vs code freaks out with the above string
-              bindings in player cards. // Leaving in the commented out tags
-              below fixes the issue, so yolo
               <!-- <player-analysis-card
                 v-for="playerToPicksMapping in playerToPickHistory"
                 :key="playerToPicksMapping[0].player_id"
@@ -254,6 +260,14 @@ export default defineComponent({
       return _.groupBy(props.userInfo?.picks, 'player_id');
     });
 
+    const playerInfoString = (player: DisplayedPlayer | undefined): string => {
+      if (!player) {
+        return '';
+      }
+
+      return `${player.team} ∙ #${player.number} ∙ ${player.position}`;
+    };
+
     const numToText = (d: number): string => {
       if (d > 3 && d < 21) return `${d}th`;
       switch (d % 10) {
@@ -293,6 +307,7 @@ export default defineComponent({
       getPlayerImageUrl,
       getReachText,
       report,
+      playerInfoString,
     };
   },
 });
