@@ -28,6 +28,7 @@ export interface DisplayedPick extends Pick {
 
 export interface DisplayedUserInfo extends User {
   picks: DisplayedPick[];
+  analysis: UserAnalysisReport;
 }
 
 export interface MostDraftedPlayer {
@@ -42,7 +43,6 @@ export interface Reach {
 }
 
 export interface UserAnalysisReport {
-  userInfo: DisplayedUserInfo;
   mostDraftedPlayer: MostDraftedPlayer;
   biggestReach?: Reach;
   mostCommonReach?: Reach;

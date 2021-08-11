@@ -9,14 +9,20 @@ import { DraftsApi, Pick, UserApi, Player, Draft } from 'src/api/';
 import {
   DisplayedUserInfo,
   DisplayedPick,
+  DisplayedPlayer,
   PlayerADP,
+  MostDraftedPlayer,
+  Reach,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
-import _ from 'lodash';
+import _, { Dictionary } from 'lodash';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
+
+const DEFAULT_HIGH_ADP = 9999;
+const REACH_THRESHOLD = -6;
 
 /*
  * If not building with SSR mode, you can
@@ -148,9 +154,121 @@ export default store(function (/* { ssrContext } */) {
               }
             }
 
+            const playerToPickHistory = _.groupBy(
+              allPicksFromUser,
+              'player_id'
+            );
+
+            const mostDraftedPlayer: MostDraftedPlayer = {
+              player: {} as DisplayedPlayer,
+              draftedCount: 0,
+            };
+
+            let biggestReach: Reach = {
+              pick: {},
+              picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
+              draftedCount: 0,
+            } as Reach;
+
+            let mostCommonReach: Reach = {
+              pick: {},
+              picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
+              draftedCount: 0,
+            } as Reach;
+
+            let totalPickValue = 0;
+            let totalNumPicks = 0;
+
+            const reachMap = {} as Dictionary<Reach[]>;
+
+            for (const key in playerToPickHistory) {
+              const pickArray = playerToPickHistory[key];
+              const player = pickArray[0].player;
+              const playerAdp = player.adp;
+
+              if (pickArray.length > mostDraftedPlayer.draftedCount) {
+                mostDraftedPlayer.draftedCount = pickArray.length;
+                mostDraftedPlayer.player = player;
+              }
+
+              if (playerAdp) {
+                let highestDraftPick = pickArray[0];
+                for (const pick of pickArray) {
+                  if (pick.pick_no < highestDraftPick.pick_no) {
+                    highestDraftPick = pick;
+                  }
+
+                  totalPickValue += pick.pick_no - playerAdp;
+                  totalNumPicks++;
+
+                  const diffFromAdp = pick.pick_no - playerAdp;
+                  // A reach must have a negative difference
+                  if (diffFromAdp < REACH_THRESHOLD) {
+                    if (reachMap[player.player_id]) {
+                      reachMap[player.player_id].push({
+                        pick,
+                        picksAboveAdp: Math.round(diffFromAdp),
+                        draftedCount: pickArray.length,
+                      });
+                    } else {
+                      reachMap[player.player_id] = [
+                        {
+                          pick,
+                          picksAboveAdp: Math.round(diffFromAdp),
+                          draftedCount: pickArray.length,
+                        } as Reach,
+                      ];
+                    }
+                  }
+                }
+
+                const diffFromAdpHighest = highestDraftPick.pick_no - playerAdp;
+                // A reach must have a negative difference
+                if (diffFromAdpHighest < REACH_THRESHOLD) {
+                  if (diffFromAdpHighest < biggestReach.picksAboveAdp) {
+                    biggestReach = {
+                      pick: highestDraftPick,
+                      picksAboveAdp: Math.round(diffFromAdpHighest),
+                      draftedCount: pickArray.length,
+                    };
+                  }
+                }
+              }
+            }
+
+            let reachCounter = 0;
+            for (const player_id in reachMap) {
+              const reachList = reachMap[player_id];
+              const reach = reachMap[player_id][0];
+              const avgPicksAboveAdp = _.mean(
+                reachList.map((r) => r.picksAboveAdp)
+              );
+
+              if (reachList.length > reachCounter) {
+                reachCounter = reachList.length;
+                mostCommonReach = {
+                  pick: reach.pick,
+                  picksAboveAdp: avgPicksAboveAdp,
+                  draftedCount: reach.draftedCount,
+                };
+              }
+            }
+
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,
+              analysis: {
+                biggestReach:
+                  biggestReach.picksAboveAdp != DEFAULT_HIGH_ADP
+                    ? biggestReach
+                    : undefined,
+                mostCommonReach:
+                  mostCommonReach.picksAboveAdp != DEFAULT_HIGH_ADP
+                    ? mostCommonReach
+                    : undefined,
+                mostDraftedPlayer,
+                averagePickValue: totalPickValue / totalNumPicks,
+              },
             });
 
             console.log('All user info:', state.userInfo);

@@ -9,7 +9,7 @@
 
       <q-item-section>
         <q-item-label class="card-header-label text-overline">{{
-          report.userInfo?.display_name
+          $props.userInfo?.display_name
         }}</q-item-label>
       </q-item-section>
     </q-item>
@@ -36,60 +36,92 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Drafted Player"
-                  :subTitle="report.mostDraftedPlayer?.player.full_name"
+                  :subTitle="
+                    $props.userInfo.analysis.mostDraftedPlayer?.player.full_name
+                  "
                   :image="
                     getPlayerImageUrl(
-                      report.mostDraftedPlayer?.player?.player_id
+                      $props.userInfo.analysis.mostDraftedPlayer?.player
+                        ?.player_id
                     )
                   "
                   :description="
                     'Drafted ' +
-                    report.mostDraftedPlayer?.draftedCount +
+                    $props.userInfo.analysis.mostDraftedPlayer?.draftedCount +
                     ' time(s)'
                   "
-                  :team="report.mostDraftedPlayer?.player.team"
-                  :playerNumber="report.mostDraftedPlayer?.player.number"
-                  :playerPosition="report.mostDraftedPlayer?.player.position"
+                  :team="
+                    $props.userInfo.analysis.mostDraftedPlayer?.player.team
+                  "
+                  :playerNumber="
+                    $props.userInfo.analysis.mostDraftedPlayer?.player.number
+                  "
+                  :playerPosition="
+                    $props.userInfo.analysis.mostDraftedPlayer?.player.position
+                  "
                 />
               </div>
 
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Biggest Reach"
-                  :subTitle="report.biggestReach?.pick?.player.full_name"
+                  :subTitle="
+                    $props.userInfo.analysis.biggestReach?.pick?.player
+                      .full_name
+                  "
                   :image="
-                    getPlayerImageUrl(report.biggestReach?.pick.player_id)
+                    getPlayerImageUrl(
+                      $props.userInfo.analysis.biggestReach?.pick.player_id
+                    )
                   "
                   :description="
                     'They\'ve drafted this player ' +
-                    report.biggestReach?.draftedCount +
+                    $props.userInfo.analysis.biggestReach?.draftedCount +
                     ' time(s)'
                   "
-                  :team="report.biggestReach?.pick?.player.team"
-                  :playerNumber="report.biggestReach?.pick?.player.number"
-                  :playerPosition="report.biggestReach?.pick?.player.position"
+                  :team="
+                    $props.userInfo.analysis.biggestReach?.pick?.player.team
+                  "
+                  :playerNumber="
+                    $props.userInfo.analysis.biggestReach?.pick?.player.number
+                  "
+                  :playerPosition="
+                    $props.userInfo.analysis.biggestReach?.pick?.player.position
+                  "
                 />
               </div>
 
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Common Reach"
-                  :subTitle="report.mostCommonReach?.pick?.player.full_name"
+                  :subTitle="
+                    $props.userInfo.analysis.mostCommonReach?.pick?.player
+                      .full_name
+                  "
                   :image="
-                    getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
+                    getPlayerImageUrl(
+                      $props.userInfo.analysis.mostCommonReach?.pick.player_id
+                    )
                   "
                   :description="
-                    report.userInfo.display_name +
+                    $props.userInfo.display_name +
                     ' has drafted ' +
-                    report.mostCommonReach?.pick.player.last_name +
+                    $props.userInfo.analysis.mostCommonReach?.pick.player
+                      .last_name +
                     ' ' +
-                    report.mostCommonReach?.draftedCount +
+                    $props.userInfo.analysis.mostCommonReach?.draftedCount +
                     ' time(s)'
                   "
-                  :team="report.mostCommonReach?.pick?.player.team"
-                  :playerNumber="report.mostCommonReach?.pick?.player.number"
+                  :team="
+                    $props.userInfo.analysis.mostCommonReach?.pick?.player.team
+                  "
+                  :playerNumber="
+                    $props.userInfo.analysis.mostCommonReach?.pick?.player
+                      .number
+                  "
                   :playerPosition="
-                    report.mostCommonReach?.pick?.player.position
+                    $props.userInfo.analysis.mostCommonReach?.pick?.player
+                      .position
                   "
                 />
               </div>
@@ -97,10 +129,10 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Average Pick Value"
-                  :value="report.averagePickValue"
+                  :value="$props.userInfo.analysis.averagePickValue"
                   :description="
                     'This value represents the average value of a draft pick from ' +
-                    report.userInfo.display_name +
+                    $props.userInfo.display_name +
                     '. A > 0 value represents that they typically draft a user lower than their \
                     ADP and on average how many picks past ADP they make that selection. \n' +
                     'A < 0 value suggest the opposite, that they tend to \
@@ -126,142 +158,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
 import {
   DisplayedUserInfo,
-  MostDraftedPlayer,
   Reach,
-  UserAnalysisReport,
   DisplayedPlayer,
 } from 'src/components/models';
 import { getPlayerImageUrl, getAvatarUrl } from './utils';
-import _, { Dictionary } from 'lodash';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
-
-const DEFAULT_HIGH_ADP = 9999;
-const REACH_THRESHOLD = -6;
 
 export default defineComponent({
   components: { PlayerAnalysisCard },
   // name: 'ComponentName'
   props: {
-    userInfo: Object as PropType<DisplayedUserInfo>,
+    userInfo: {
+      type: Object as PropType<DisplayedUserInfo>,
+      required: true,
+    },
   },
-  setup(props) {
-    const report = computed((): UserAnalysisReport => {
-      let mostDraftedPlayer: MostDraftedPlayer = {
-        player: {} as DisplayedPlayer,
-        draftedCount: 0,
-      };
-
-      let biggestReach: Reach = {
-        pick: {},
-        picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
-        draftedCount: 0,
-      } as Reach;
-
-      let mostCommonReach: Reach = {
-        pick: {},
-        picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
-        draftedCount: 0,
-      } as Reach;
-
-      let totalPickValue = 0;
-      let totalNumPicks = 0;
-
-      const reachMap = {} as Dictionary<Reach[]>;
-
-      for (const key in playerToPickHistory.value) {
-        const pickArray = playerToPickHistory.value[key];
-        const player = pickArray[0].player;
-        const playerAdp = player.adp;
-
-        if (pickArray.length > mostDraftedPlayer.draftedCount) {
-          mostDraftedPlayer.draftedCount = pickArray.length;
-          mostDraftedPlayer.player = player;
-        }
-
-        if (playerAdp) {
-          let highestDraftPick = pickArray[0];
-          for (const pick of pickArray) {
-            if (pick.pick_no < highestDraftPick.pick_no) {
-              highestDraftPick = pick;
-            }
-
-            totalPickValue += pick.pick_no - playerAdp;
-            totalNumPicks++;
-
-            const diffFromAdp = pick.pick_no - playerAdp;
-            // A reach must have a negative difference
-            if (diffFromAdp < REACH_THRESHOLD) {
-              if (reachMap[player.player_id]) {
-                reachMap[player.player_id].push({
-                  pick,
-                  picksAboveAdp: Math.round(diffFromAdp),
-                  draftedCount: pickArray.length,
-                });
-              } else {
-                reachMap[player.player_id] = [
-                  {
-                    pick,
-                    picksAboveAdp: Math.round(diffFromAdp),
-                    draftedCount: pickArray.length,
-                  } as Reach,
-                ];
-              }
-            }
-          }
-
-          const diffFromAdpHighest = highestDraftPick.pick_no - playerAdp;
-          // A reach must have a negative difference
-          if (diffFromAdpHighest < REACH_THRESHOLD) {
-            if (diffFromAdpHighest < biggestReach.picksAboveAdp) {
-              biggestReach = {
-                pick: highestDraftPick,
-                picksAboveAdp: Math.round(diffFromAdpHighest),
-                draftedCount: pickArray.length,
-              };
-            }
-          }
-        }
-      }
-
-      let reachCounter = 0;
-      // debugger;
-      for (const player_id in reachMap) {
-        const reachList = reachMap[player_id];
-        const reach = reachMap[player_id][0];
-        const avgPicksAboveAdp = _.mean(reachList.map((r) => r.picksAboveAdp));
-
-        if (reachList.length > reachCounter) {
-          reachCounter = reachList.length;
-          mostCommonReach = {
-            pick: reach.pick,
-            picksAboveAdp: avgPicksAboveAdp,
-            draftedCount: reach.draftedCount,
-          };
-        }
-      }
-
-      return {
-        userInfo: props.userInfo as DisplayedUserInfo,
-        biggestReach:
-          biggestReach.picksAboveAdp != DEFAULT_HIGH_ADP
-            ? biggestReach
-            : undefined,
-        mostCommonReach:
-          mostCommonReach.picksAboveAdp != DEFAULT_HIGH_ADP
-            ? mostCommonReach
-            : undefined,
-        mostDraftedPlayer,
-        averagePickValue: totalPickValue / totalNumPicks,
-      };
-    });
-
-    const playerToPickHistory = computed(() => {
-      return _.groupBy(props.userInfo?.picks, 'player_id');
-    });
-
+  setup() {
     const playerInfoString = (player: DisplayedPlayer | undefined): string => {
       if (!player) {
         return '';
@@ -305,10 +220,8 @@ export default defineComponent({
     return {
       expanded: ref(false),
       getAvatarUrl,
-      playerToPickHistory,
       getPlayerImageUrl,
       getReachText,
-      report,
       playerInfoString,
     };
   },
