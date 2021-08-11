@@ -35,14 +35,16 @@ export interface MostDraftedPlayer {
   draftedCount: number;
 }
 
-export interface BiggestReach {
+export interface Reach {
   pick: DisplayedPick;
   picksAboveAdp: number;
+  draftedCount: number;
 }
 
 export interface UserAnalysisReport {
   userInfo: DisplayedUserInfo;
   mostDraftedPlayer: MostDraftedPlayer;
-  biggestReach: BiggestReach;
+  biggestReach?: Reach;
+  mostCommonReach?: Reach;
   averagePickValue: number;
 }

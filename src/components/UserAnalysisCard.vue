@@ -35,11 +35,12 @@
         <q-separator />
         <q-card-section class="text-subtitle2">
           <div class="row">
-            <div class="fit col justify-center wrap">
-              <div class="text-center row">
-                <div class="col">
-                  <h5 class="text-overline category-header">
-                    Most Drafted Player
+            <div class="col justify-center wrap">
+              <div class="text-center row justify-center">
+                <div class="player-card">
+                  <h5 class="text-overline category">Most Drafted Player</h5>
+                  <h5 class="name">
+                    {{ report.mostDraftedPlayer?.player?.full_name }}
                   </h5>
 
                   <q-img
@@ -51,17 +52,23 @@
                     "
                     loading="lazy"
                   ></q-img>
-                  <h4 class="text-overline">
+                  <p>
+                    Drafted {{ report.mostDraftedPlayer?.draftedCount }}
                     {{
-                      `${report.mostDraftedPlayer?.player?.full_name} - Drafted ${report.mostDraftedPlayer?.draftedCount} times`
-                    }}
-                  </h4>
+                      report.mostDraftedPlayer?.draftedCount > 1
+                        ? 'times'
+                        : 'time'
+                    }}.
+                  </p>
                 </div>
               </div>
 
-              <div class="text-center row">
-                <div class="col">
-                  <h5 class="text-overline category-header">Biggest Reach</h5>
+              <div class="text-center row justify-center">
+                <div class="player-card">
+                  <h5 class="text-overline category">Biggest Reach</h5>
+                  <h5 class="name">
+                    {{ report.biggestReach?.pick.player?.full_name }}
+                  </h5>
 
                   <q-img
                     class="player-img"
@@ -70,22 +77,56 @@
                     "
                     loading="lazy"
                   ></q-img>
-                  <h4 class="text-overline">
-                    {{ report.biggestReach?.pick.player?.full_name }}
-                  </h4>
                   <p>
-                    {{ getReachText(report.biggestReach) }}
+                    {{ getReachText(report.biggestReach) }} <br />
+                    They've drafted this player
+                    {{ report.biggestReach?.draftedCount }}
+                    {{
+                      report.biggestReach?.draftedCount &&
+                      report.biggestReach?.draftedCount > 1
+                        ? 'times'
+                        : 'time'
+                    }}.
                   </p>
                 </div>
               </div>
 
-              <div class="text-center row">
-                <div class="col">
-                  <h5 class="text-overline category-header">
-                    Average Pick Value
-                  </h5>
+              <div class="text-center row justify-center">
+                <div class="player-card">
+                  <h5 class="text-overline category">Most Common Reach</h5>
+                  <h4 class="name">
+                    {{ report.mostCommonReach?.pick.player?.full_name }}
+                  </h4>
+
+                  <q-img
+                    class="player-img"
+                    :src="
+                      getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
+                    "
+                    loading="lazy"
+                  ></q-img>
+                  <p>
+                    {{ report.userInfo.display_name }} has drafted
+                    {{ report.mostCommonReach?.pick.player.last_name }}
+                    {{ report.mostCommonReach?.draftedCount }} times. <br />
+                    Drafted on average
+                    {{
+                      report.mostCommonReach?.picksAboveAdp
+                        ? Math.round(
+                            Math.abs(report.mostCommonReach?.picksAboveAdp)
+                          )
+                        : 0
+                    }}
+                    picks above ADP.
+                  </p>
+                </div>
+              </div>
+
+              <div class="text-center row justify-center">
+                <div class="player-card">
+                  <h5 class="text-overline category">Average Pick Value</h5>
                   <h5
-                    class="text-overline average-pick-value"
+                    class="text-overline value"
                     v-bind:class="{
                       'text-green': report.averagePickValue > 0,
                       'text-red': report.averagePickValue < 0,
@@ -126,13 +167,16 @@ import { defineComponent, ref, PropType, computed } from 'vue';
 import {
   DisplayedUserInfo,
   MostDraftedPlayer,
-  BiggestReach,
+  Reach,
   UserAnalysisReport,
   DisplayedPlayer,
 } from 'src/components/models';
 import { getPlayerImageUrl } from './utils';
-import _ from 'lodash';
+import _, { Dictionary } from 'lodash';
 // import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+
+const DEFAULT_HIGH_ADP = 9999;
+const REACH_THRESHOLD = -0.5;
 
 export default defineComponent({
   // components: { PlayerAnalysisCard },
@@ -147,13 +191,22 @@ export default defineComponent({
         draftedCount: 0,
       };
 
-      let biggestReach: BiggestReach = {
+      let biggestReach: Reach = {
         pick: {},
-        picksAboveAdp: 9999, // really big #
-      } as BiggestReach;
+        picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
+        draftedCount: 0,
+      } as Reach;
+
+      let mostCommonReach: Reach = {
+        pick: {},
+        picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
+        draftedCount: 0,
+      } as Reach;
 
       let totalPickValue = 0;
       let totalNumPicks = 0;
+
+      const reachMap = {} as Dictionary<Reach[]>;
 
       for (const key in playerToPickHistory.value) {
         const pickArray = playerToPickHistory.value[key];
@@ -171,30 +224,72 @@ export default defineComponent({
             if (pick.pick_no < highestDraftPick.pick_no) {
               highestDraftPick = pick;
             }
+
             totalPickValue += pick.pick_no - playerAdp;
             totalNumPicks++;
+
+            const diffFromAdp = pick.pick_no - playerAdp;
+            // A reach must have a negative difference
+            if (diffFromAdp < REACH_THRESHOLD) {
+              if (reachMap[player.player_id]) {
+                reachMap[player.player_id].push({
+                  pick,
+                  picksAboveAdp: Math.round(diffFromAdp),
+                  draftedCount: pickArray.length,
+                });
+              } else {
+                reachMap[player.player_id] = [
+                  {
+                    pick,
+                    picksAboveAdp: Math.round(diffFromAdp),
+                    draftedCount: pickArray.length,
+                  } as Reach,
+                ];
+              }
+            }
           }
 
-          const diffFromAdp = highestDraftPick.pick_no - playerAdp;
-          if (diffFromAdp < biggestReach.picksAboveAdp) {
-            biggestReach = {
-              pick: highestDraftPick,
-              picksAboveAdp: Math.round(diffFromAdp),
-            };
+          const diffFromAdpHighest = highestDraftPick.pick_no - playerAdp;
+          // A reach must have a negative difference
+          if (diffFromAdpHighest < REACH_THRESHOLD) {
+            if (diffFromAdpHighest < biggestReach.picksAboveAdp) {
+              biggestReach = {
+                pick: highestDraftPick,
+                picksAboveAdp: Math.round(diffFromAdpHighest),
+                draftedCount: pickArray.length,
+              };
+            }
           }
         }
       }
 
-      console.log('user report', {
-        userInfo: props.userInfo as DisplayedUserInfo,
-        biggestReach,
-        mostDraftedPlayer,
-        averagePickValue: totalPickValue / totalNumPicks,
-      });
+      let reachCounter = 0;
+      // debugger;
+      for (const player_id in reachMap) {
+        const reachList = reachMap[player_id];
+        const reach = reachMap[player_id][0];
+        const avgPicksAboveAdp = _.mean(reachList.map((r) => r.picksAboveAdp));
+
+        if (reachList.length > reachCounter) {
+          reachCounter = reachList.length;
+          mostCommonReach = {
+            pick: reach.pick,
+            picksAboveAdp: avgPicksAboveAdp,
+            draftedCount: reach.draftedCount,
+          };
+        }
+      }
 
       return {
         userInfo: props.userInfo as DisplayedUserInfo,
-        biggestReach,
+        biggestReach:
+          biggestReach.picksAboveAdp != DEFAULT_HIGH_ADP
+            ? biggestReach
+            : undefined,
+        mostCommonReach:
+          mostCommonReach.picksAboveAdp != DEFAULT_HIGH_ADP
+            ? mostCommonReach
+            : undefined,
         mostDraftedPlayer,
         averagePickValue: totalPickValue / totalNumPicks,
       };
@@ -226,7 +321,11 @@ export default defineComponent({
       }
     };
 
-    const getReachText = (reach: BiggestReach): string => {
+    const getReachText = (reach: Reach | undefined): string => {
+      if (!reach) {
+        return '';
+      }
+
       const numTeams = reach.pick.draftTeamCount;
       const pickNumber = numToText(reach.pick.pick_no % numTeams);
       const roundSelectedString = numToText(reach.pick.round);
@@ -236,10 +335,8 @@ export default defineComponent({
       const adpPickRound = numToText(
         Math.floor((reach.pick.player.adp as number) / numTeams)
       );
-      const numTimesDrafted =
-        playerToPickHistory.value[reach.pick.player_id].length;
 
-      return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round. \n They've drafted this player ${numTimesDrafted} times.`;
+      return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round.`;
     };
 
     return {
@@ -260,6 +357,40 @@ $card-toggle-background: #037971;
 $card-toggle-border: #036b64;
 $card-background: #03b5aa;
 $card-text-color: #ebfffe;
+
+.player-card {
+  p,
+  h4,
+  h5 {
+    margin: 0;
+  }
+
+  border: 1px solid white;
+  margin: 50px;
+  padding: 30px;
+  background-color: #eef1f7;
+  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+  border-radius: 15px;
+  max-width: 325px;
+
+  .category {
+    font-size: 1.2rem;
+  }
+
+  .name {
+    font-size: 1.1rem;
+  }
+
+  .player-img {
+    background: center center / cover $card-toggle-background;
+    margin: 25px 0;
+  }
+
+  .value {
+    margin: 25px 0;
+    font-size: 2rem;
+  }
+}
 
 .my-card {
   width: 45%;
@@ -291,18 +422,5 @@ $card-text-color: #ebfffe;
   .card-header-label {
     font-size: 15px;
   }
-
-  .category-header {
-    font-size: 1.2rem;
-  }
-
-  .average-pick-value {
-    font-size: 2rem;
-  }
-}
-
-.player-img {
-  background: center center / cover transparent;
-  width: 150px;
 }
 </style>
