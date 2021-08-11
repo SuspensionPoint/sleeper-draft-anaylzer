@@ -398,8 +398,8 @@ $accent-color: $theme-accent-medium;
   .player-img {
     background: center center / cover $accent-color;
     margin: 25px 0;
-    border: 2px solid $card-toggle-background;
-    // box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
+    border: 3px solid $card-toggle-background;
+    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
   }
 
   .value {
