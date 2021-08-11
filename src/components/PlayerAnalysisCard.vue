@@ -1,52 +1,106 @@
 <template>
-  <q-card class="player-card" flat bordered>
+  <div class="player-card">
+    <h5 class="text-overline category">{{ $props.title }}</h5>
+    <h5 class="name">
+      {{ $props.subTitle }}
+    </h5>
+
     <q-img
-      class="img-transparent"
-      :src="getImageUrl(playerToPickHistoryProp[0].player_id)"
-      alt="Image not found"
+      v-if="$props.image"
+      class="player-img"
+      :src="$props.image"
       loading="lazy"
+    ></q-img>
+
+    <h5
+      v-if="$props.value"
+      class="text-overline value"
+      v-bind:class="{
+        'text-green': $props.value > 0,
+        'text-red': $props.value < 0,
+      }"
     >
-    </q-img>
-  </q-card>
+      {{ getSignedValueString($props.value) }}
+    </h5>
+
+    <p>
+      {{ $props.description }}
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from 'vue';
-import { DisplayedPick } from './models';
-import { Player } from 'src/api';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   // name: 'ComponentName'
   props: {
-    playerToPickHistory: {
-      type: Object as PropType<[Player, DisplayedPick[]]>,
-      required: true,
+    title: {
+      type: String,
+    },
+    subTitle: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+    value: {
+      type: Number,
+    },
+    description: {
+      type: String,
     },
   },
   setup(props) {
-    const playerToPickHistoryProp = toRefs(props).playerToPickHistory;
-
-    const getImageUrl = (playerId: string | undefined): string => {
-      if (playerId) {
-        return `https://sleepercdn.com/content/nfl/players/thumb/${playerId}.jpg`;
-      }
-
-      return '';
+    const getSignedValueString = (value: number): string => {
+      const decimalPlaces = 2;
+      return `${props.value && props.value < 0 ? '' : '+'}${value.toFixed(
+        decimalPlaces
+      )}`;
     };
 
-    return { getImageUrl, playerToPickHistoryProp };
+    return { getSignedValueString };
   },
 });
 </script>
 
 <style lang="scss">
-.player-card {
-  min-width: 45%;
-  background-color: transparent;
-  border: none;
+@import 'src/css/app.scss';
 
-  .img-transparent {
-    background: center center / cover transparent;
+.player-card {
+  p,
+  h4,
+  h5 {
+    margin: 0;
+  }
+
+  max-width: 325px;
+  margin: 50px;
+  padding: 30px;
+  border: 4px solid $card-toggle-background;
+  border-radius: 15px;
+  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+  background-color: $card-foreground;
+  color: $card-text-color;
+
+  .category {
+    font-size: 1.2rem;
+  }
+
+  .name {
+    font-size: 1.1rem;
+  }
+
+  .player-img {
+    background: center center / cover $accent-color;
+    margin: 25px 0;
+    border: 3px solid $card-toggle-background;
+    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
+  }
+
+  .value {
+    margin: 25px 0;
+    font-size: 2rem;
   }
 }
 </style>

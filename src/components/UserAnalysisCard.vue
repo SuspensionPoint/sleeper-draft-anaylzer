@@ -34,123 +34,81 @@
           <div class="row">
             <div class="col justify-center wrap">
               <div class="text-center row justify-center">
-                <div class="player-card">
-                  <h5 class="text-overline category">Most Drafted Player</h5>
-                  <h5 class="name">
-                    {{ report.mostDraftedPlayer?.player?.full_name }}
-                  </h5>
-
-                  <q-img
-                    class="player-img"
-                    :src="
-                      getPlayerImageUrl(
-                        report.mostDraftedPlayer?.player?.player_id
-                      )
-                    "
-                    loading="lazy"
-                  ></q-img>
-                  <p>
-                    Drafted {{ report.mostDraftedPlayer?.draftedCount }}
-                    {{
-                      report.mostDraftedPlayer?.draftedCount > 1
-                        ? 'times'
-                        : 'time'
-                    }}.
-                  </p>
-                </div>
+                <player-analysis-card
+                  title="Most Drafted Player"
+                  :subTitle="report.mostDraftedPlayer?.player?.full_name"
+                  :image="
+                    getPlayerImageUrl(
+                      report.mostDraftedPlayer?.player?.player_id
+                    )
+                  "
+                  :description="
+                    'Drafted ' +
+                    report.mostDraftedPlayer?.draftedCount +
+                    ' time(s)'
+                  "
+                />
               </div>
 
               <div class="text-center row justify-center">
-                <div class="player-card">
-                  <h5 class="text-overline category">Biggest Reach</h5>
-                  <h5 class="name">
-                    {{ report.biggestReach?.pick.player?.full_name }}
-                  </h5>
-
-                  <q-img
-                    class="player-img"
-                    :src="
-                      getPlayerImageUrl(report.biggestReach?.pick.player_id)
-                    "
-                    loading="lazy"
-                  ></q-img>
-                  <p>
-                    {{ getReachText(report.biggestReach) }} <br />
-                    They've drafted this player
-                    {{ report.biggestReach?.draftedCount }}
-                    {{
-                      report.biggestReach?.draftedCount &&
-                      report.biggestReach?.draftedCount > 1
-                        ? 'times'
-                        : 'time'
-                    }}.
-                  </p>
-                </div>
+                <player-analysis-card
+                  title="Biggest Reach"
+                  :subTitle="report.biggestReach?.pick.player?.full_name"
+                  :image="
+                    getPlayerImageUrl(report.biggestReach?.pick.player_id)
+                  "
+                  :description="
+                    'They\'ve drafted this player ' +
+                    report.biggestReach?.draftedCount +
+                    ' time(s)'
+                  "
+                />
               </div>
 
               <div class="text-center row justify-center">
-                <div class="player-card">
-                  <h5 class="text-overline category">Most Common Reach</h5>
-                  <h4 class="name">
-                    {{ report.mostCommonReach?.pick.player?.full_name }}
-                  </h4>
-
-                  <q-img
-                    class="player-img"
-                    :src="
-                      getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
-                    "
-                    loading="lazy"
-                  ></q-img>
-                  <p>
-                    {{ report.userInfo.display_name }} has drafted
-                    {{ report.mostCommonReach?.pick.player.last_name }}
-                    {{ report.mostCommonReach?.draftedCount }} times. <br />
-                    Drafted on average
-                    {{
-                      report.mostCommonReach?.picksAboveAdp
-                        ? Math.round(
-                            Math.abs(report.mostCommonReach?.picksAboveAdp)
-                          )
-                        : 0
-                    }}
-                    picks above ADP.
-                  </p>
-                </div>
+                <player-analysis-card
+                  title="Most Common Reach"
+                  :subTitle="report.mostCommonReach?.pick.player?.full_name"
+                  :image="
+                    getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
+                  "
+                  :description="
+                    report.userInfo.display_name +
+                    ' has drafted ' +
+                    report.mostCommonReach?.pick.player.last_name +
+                    ' ' +
+                    report.mostCommonReach?.draftedCount +
+                    ' time(s)'
+                  "
+                />
               </div>
 
               <div class="text-center row justify-center">
-                <div class="player-card">
-                  <h5 class="text-overline category">Average Pick Value</h5>
-                  <h5
-                    class="text-overline value"
-                    v-bind:class="{
-                      'text-green': report.averagePickValue > 0,
-                      'text-red': report.averagePickValue < 0,
-                    }"
-                  >
-                    {{ report.averagePickValue.toFixed(2) }}
-                  </h5>
-                  <p>
-                    This value represents the average value of a draft pick from
-                    {{ report.userInfo.display_name }}. <br />
-                    A > 0 value represents that they typically draft a user
-                    lower than their ADP and on average how many picks past ADP
-                    they make that selection. <br />
-                    A '&lt;' 0 value suggest the opposite, that they tend to
-                    reach for players and how many picks ahead they typically do
-                    so. <br />
-                    A 0 value would suggest that they're entirely chalk and
-                    typically draft exactly at ADP.
-                  </p>
-                </div>
+                <player-analysis-card
+                  title="Average Pick Value"
+                  :value="report.averagePickValue"
+                  :description="
+                    'This value represents the average value of a draft pick from ' +
+                    report.userInfo.display_name +
+                    '. A > 0 value represents that they typically draft a user lower than their \
+                    ADP and on average how many picks past ADP they make that selection. \n' +
+                    'A < 0 value suggest the opposite, that they tend to \
+                    reach for players and how many picks ahead they typically do \
+                    so. \n' +
+                    'A 0 value would suggest that they\'re entirely chalk and \
+                    typically draft exactly at ADP.'
+                  "
+                />
               </div>
 
+              // Soo...my formatter on vs code freaks out with the above string
+              bindings in player cards. // Leaving in the commented out tags
+              below fixes the issue, so yolo
               <!-- <player-analysis-card
-              v-for="playerToPicksMapping in playerToPickHistory"
-              :key="playerToPicksMapping[0].player_id"
-              :playerToPickHistory="playerToPicksMapping"
-            /> -->
+                v-for="playerToPicksMapping in playerToPickHistory"
+                :key="playerToPicksMapping[0].player_id"
+                :playerToPickHistory="playerToPicksMapping"
+              /> -->
             </div>
           </div>
         </q-card-section>
@@ -170,13 +128,13 @@ import {
 } from 'src/components/models';
 import { getPlayerImageUrl, getAvatarUrl } from './utils';
 import _, { Dictionary } from 'lodash';
-// import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 
 const DEFAULT_HIGH_ADP = 9999;
 const REACH_THRESHOLD = -6;
 
 export default defineComponent({
-  // components: { PlayerAnalysisCard },
+  components: { PlayerAnalysisCard },
   // name: 'ComponentName'
   props: {
     userInfo: Object as PropType<DisplayedUserInfo>,
@@ -342,43 +300,6 @@ export default defineComponent({
 
 <style lang="scss">
 @import 'src/css/app.scss';
-
-.player-card {
-  p,
-  h4,
-  h5 {
-    margin: 0;
-  }
-
-  max-width: 325px;
-  margin: 50px;
-  padding: 30px;
-  border: 4px solid $card-toggle-background;
-  border-radius: 15px;
-  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
-  background-color: $card-foreground;
-  color: $card-text-color;
-
-  .category {
-    font-size: 1.2rem;
-  }
-
-  .name {
-    font-size: 1.1rem;
-  }
-
-  .player-img {
-    background: center center / cover $accent-color;
-    margin: 25px 0;
-    border: 3px solid $card-toggle-background;
-    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
-  }
-
-  .value {
-    margin: 25px 0;
-    font-size: 2rem;
-  }
-}
 
 .my-card {
   width: 45%;
