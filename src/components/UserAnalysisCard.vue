@@ -36,10 +36,7 @@
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Drafted Player"
-                  :subTitle1="report.mostDraftedPlayer?.player.full_name"
-                  :subTitle2="
-                    playerInfoString(report.mostDraftedPlayer?.player)
-                  "
+                  :subTitle="report.mostDraftedPlayer?.player.full_name"
                   :image="
                     getPlayerImageUrl(
                       report.mostDraftedPlayer?.player?.player_id
@@ -50,16 +47,16 @@
                     report.mostDraftedPlayer?.draftedCount +
                     ' time(s)'
                   "
+                  :team="report.mostDraftedPlayer?.player.team"
+                  :playerNumber="report.mostDraftedPlayer?.player.number"
+                  :playerPosition="report.mostDraftedPlayer?.player.position"
                 />
               </div>
 
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Biggest Reach"
-                  :subTitle1="report.biggestReach?.pick?.player.full_name"
-                  :subTitle2="
-                    playerInfoString(report.biggestReach?.pick?.player)
-                  "
+                  :subTitle="report.biggestReach?.pick?.player.full_name"
                   :image="
                     getPlayerImageUrl(report.biggestReach?.pick.player_id)
                   "
@@ -68,16 +65,16 @@
                     report.biggestReach?.draftedCount +
                     ' time(s)'
                   "
+                  :team="report.biggestReach?.pick?.player.team"
+                  :playerNumber="report.biggestReach?.pick?.player.number"
+                  :playerPosition="report.biggestReach?.pick?.player.position"
                 />
               </div>
 
               <div class="text-center row justify-center">
                 <player-analysis-card
                   title="Most Common Reach"
-                  :subTitle1="report.mostCommonReach?.pick?.player.full_name"
-                  :subTitle2="
-                    playerInfoString(report.mostCommonReach?.pick?.player)
-                  "
+                  :subTitle="report.mostCommonReach?.pick?.player.full_name"
                   :image="
                     getPlayerImageUrl(report.mostCommonReach?.pick.player_id)
                   "
@@ -88,6 +85,11 @@
                     ' ' +
                     report.mostCommonReach?.draftedCount +
                     ' time(s)'
+                  "
+                  :team="report.mostCommonReach?.pick?.player.team"
+                  :playerNumber="report.mostCommonReach?.pick?.player.number"
+                  :playerPosition="
+                    report.mostCommonReach?.pick?.player.position
                   "
                 />
               </div>

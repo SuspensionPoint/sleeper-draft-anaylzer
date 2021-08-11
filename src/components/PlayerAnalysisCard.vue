@@ -2,15 +2,15 @@
   <div class="player-card">
     <h5 class="text-overline category">{{ $props.title }}</h5>
     <h5 class="name">
-      {{ $props.subTitle1 }}
-    </h5>
-    <h5 class="name">
-      {{ $props.subTitle2 }}
+      {{ $props.subTitle }}
     </h5>
 
     <q-img
       v-if="$props.image && !imageLoadError"
       class="player-img"
+      v-bind:class="{
+        'img-margin-bottom': !$props.playerPosition,
+      }"
       :src="$props.image"
       @error="imageLoadFailed()"
       loading="lazy"
@@ -19,10 +19,25 @@
     <q-img
       v-if="imageLoadError"
       class="player-img"
+      v-bind:class="{
+        'img-margin-bottom': !$props.playerPosition,
+      }"
       src="~assets/player-placeholder.png"
       @error="imageLoadError = true"
       loading="lazy"
     ></q-img>
+
+    <div
+      v-if="$props.playerPosition"
+      class="row justify-around img-margin-bottom"
+    >
+      <q-img class="logo-icon" :src="`logos/${$props.team}.png`" loading="lazy">
+      </q-img>
+      <p>•</p>
+      <p>#{{ $props.playerNumber }}</p>
+      <p>•</p>
+      <p>{{ $props.playerPosition }}</p>
+    </div>
 
     <h5
       v-if="$props.value"
@@ -50,10 +65,7 @@ export default defineComponent({
     title: {
       type: String,
     },
-    subTitle1: {
-      type: String,
-    },
-    subTitle2: {
+    subTitle: {
       type: String,
     },
     image: {
@@ -64,6 +76,15 @@ export default defineComponent({
     },
     description: {
       type: String,
+    },
+    team: {
+      type: String,
+    },
+    playerPosition: {
+      type: String,
+    },
+    playerNumber: {
+      type: Number,
     },
   },
   setup(props) {
@@ -115,14 +136,22 @@ export default defineComponent({
 
   .player-img {
     background: center center / cover $accent-color;
-    margin: 25px 0;
+    margin: 25px 0 10px;
     border: 3px solid $card-toggle-background;
     box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 75%);
+  }
+
+  .img-margin-bottom {
+    margin-bottom: 25px;
   }
 
   .value {
     margin: 25px 0;
     font-size: 2rem;
+  }
+
+  .logo-icon {
+    max-width: 25px;
   }
 }
 </style>
