@@ -79,6 +79,7 @@ export default store(function (/* { ssrContext } */) {
       draftIds: new Set<string>(),
       idToPlayerName: new Map<string, string>([
         // ['572842365927186432', 'Gurnels'],
+        // ['202523901442392064', 'CodeMonkey],
       ]),
       userInfo: [],
       userInfoLoading: [],
