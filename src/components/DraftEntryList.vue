@@ -29,7 +29,7 @@ export default defineComponent({
   // name: 'ComponentName'
   setup() {
     const store = useStore();
-    const enteredUserId = ref('204783438698381312');
+    const enteredUserId = ref('461582139503144960');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
 
@@ -37,12 +37,11 @@ export default defineComponent({
       if (userId) {
         // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
         const isDraftUrl = userId.match(/(?!\/)\d+(?=)/);
-        if (isDraftUrl) {
+        if (userId.includes('/') && isDraftUrl) {
           void store.dispatch('getUserInfoFromDraft', isDraftUrl.shift());
+        } else {
+          void store.dispatch('getDraftsFromUserId', userId);
         }
-
-        // void store.dispatch('getDraftData', profileId);
-        void store.dispatch('getDraftsFromUserId', userId);
       }
       enteredUserId.value = '';
     };

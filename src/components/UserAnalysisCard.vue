@@ -75,9 +75,14 @@
                     )
                   "
                   :description="
-                    'They\'ve drafted this player ' +
+                    'They\'ve drafted ' +
+                    $props.userInfo.analysis.biggestReach?.pick.player
+                      .last_name +
+                    ' ' +
                     $props.userInfo.analysis.biggestReach?.draftedCount +
-                    ' time(s)'
+                    ' time(s). They\'ve reached for him by ' +
+                    $props.userInfo.analysis.biggestReach?.picksAboveAdp +
+                    ' picks above ADP'
                   "
                   :team="
                     $props.userInfo.analysis.biggestReach?.pick?.player.team
@@ -110,7 +115,12 @@
                       .last_name +
                     ' ' +
                     $props.userInfo.analysis.mostCommonReach?.draftedCount +
-                    ' time(s)'
+                    ' time(s) \n' +
+                    'Drafted on average ' +
+                    averagePicksAboveAdp(
+                      $props.userInfo.analysis.mostCommonReach
+                    ) +
+                    ' picks above ADP.'
                   "
                   :team="
                     $props.userInfo.analysis.mostCommonReach?.pick?.player.team
@@ -217,12 +227,23 @@ export default defineComponent({
       return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round.`;
     };
 
+    const averagePicksAboveAdp = (reach: Reach | undefined): string => {
+      if (reach) {
+        return `${
+          reach?.picksAboveAdp ? Math.round(Math.abs(reach?.picksAboveAdp)) : 0
+        }`;
+      }
+
+      return '0';
+    };
+
     return {
       expanded: ref(false),
       getAvatarUrl,
       getPlayerImageUrl,
       getReachText,
       playerInfoString,
+      averagePicksAboveAdp,
     };
   },
 });
