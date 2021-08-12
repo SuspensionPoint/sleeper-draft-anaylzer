@@ -7,15 +7,22 @@
   >
   </q-input>
 
-  <div
-    v-if="usersToAnalyze && usersToAnalyze.length > 0"
-    class="q-pa-md row items-start justify-between q-gutter-y-xl"
-  >
+  <div class="q-pa-md row items-start justify-between q-gutter-y-xl">
     <user-analysis-card
       v-for="user in usersToAnalyze"
       :key="user.user_id"
       :userInfo="user"
     />
+
+    <div
+      v-for="loadingUser in usersLoading"
+      :key="`loading-${loadingUser.user_id}`"
+      class="loading-card"
+    >
+      <q-card flat>
+        <q-skeleton height="145px" square />
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -32,6 +39,9 @@ export default defineComponent({
     const enteredUserId = ref('461582139503144960');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+    const usersLoading = computed(() => store.getters.usersLoading);
 
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
@@ -57,7 +67,14 @@ export default defineComponent({
       onUserIdSubmitted,
       removeDraft,
       usersToAnalyze,
+      usersLoading,
     };
   },
 });
 </script>
+
+<style lang="scss">
+.loading-card {
+  width: 45%;
+}
+</style>

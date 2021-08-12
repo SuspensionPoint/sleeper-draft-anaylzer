@@ -17,6 +17,8 @@ import {
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
 import _, { Dictionary } from 'lodash';
+import { AxiosResponse } from 'axios';
+import { Notify } from 'quasar';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -39,6 +41,7 @@ export interface StateInterface {
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
+  userInfoLoading: string[];
   players: Record<string, Player>;
   playersAdp: PlayerADP[];
 }
@@ -76,6 +79,7 @@ export default store(function (/* { ssrContext } */) {
         // ['572842365927186432', 'Gurnels'],
       ]),
       userInfo: [],
+      userInfoLoading: [],
       players: playersJson as unknown as Record<string, Player>,
       playersAdp: playersAdpJson.players as PlayerADP[],
     },
@@ -95,14 +99,28 @@ export default store(function (/* { ssrContext } */) {
           return;
         }
 
+        commit('addUserBeingLoaded', userId);
+
         const draftsApi = new DraftsApi();
         const userApi = new UserApi();
+        let draftResponse: AxiosResponse<Draft[]> | void = {} as AxiosResponse<
+          Draft[]
+        >;
 
-        const draftResponse = await draftsApi.userUserIdDraftsSportSeasonGet(
-          userId,
-          state.sport,
-          state.season
-        );
+        await draftsApi
+          .userUserIdDraftsSportSeasonGet(userId, state.sport, state.season)
+          .catch(() => {
+            Notify.create({
+              position: 'top',
+              color: 'negative',
+              message:
+                'Failed to load drafts for the provided user. You probably entered an invalid user id or draft url. ',
+            });
+            commit('removeLoadingUser', userId);
+          })
+          .then((response) => {
+            draftResponse = response;
+          });
 
         if (draftResponse.data) {
           const drafts = draftResponse.data;
@@ -266,6 +284,8 @@ export default store(function (/* { ssrContext } */) {
             console.log('All user info:', state.userInfo);
           }
         }
+
+        commit('removeLoadingUser', userId);
       },
 
       async getUserInfoFromDraft({ dispatch }, draftId: string) {
@@ -283,6 +303,19 @@ export default store(function (/* { ssrContext } */) {
     },
 
     mutations: {
+      addUserBeingLoaded(state, userId: string) {
+        state.userInfoLoading.push(userId);
+      },
+
+      removeLoadingUser(state, userId: string) {
+        const userInfoLoadingIndex = state.userInfoLoading.findIndex(
+          (u) => u === userId
+        );
+        if (userInfoLoadingIndex != -1) {
+          state.userInfoLoading.splice(userInfoLoadingIndex, 1);
+        }
+      },
+
       addUserInfo(state, userInfo: DisplayedUserInfo) {
         state.userInfo.push(userInfo);
       },
@@ -291,6 +324,10 @@ export default store(function (/* { ssrContext } */) {
     getters: {
       displayedUserInfo: (state): DisplayedUserInfo[] => {
         return state.userInfo;
+      },
+
+      usersLoading: (state): string[] => {
+        return state.userInfoLoading;
       },
     },
 
