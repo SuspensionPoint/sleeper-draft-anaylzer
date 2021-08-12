@@ -38,6 +38,7 @@ const REACH_THRESHOLD = -6;
 export interface StateInterface {
   sport: string;
   season: number;
+  supportedScoringTypes: string[];
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
@@ -74,6 +75,7 @@ export default store(function (/* { ssrContext } */) {
     state: {
       sport: 'nfl',
       season: 2021,
+      supportedScoringTypes: ['ppr', 'std', 'half_ppr', '2qb'],
       draftIds: new Set<string>(),
       idToPlayerName: new Map<string, string>([
         // ['572842365927186432', 'Gurnels'],
@@ -129,6 +131,16 @@ export default store(function (/* { ssrContext } */) {
             const user = userResponse.data;
             const allPicksFromUser: DisplayedPick[] = [];
             for (const draft of drafts) {
+              // For now, skip non-supported scoring types.
+              // Can go back and update this to use proper ADPs for those leagues later.
+              if (
+                !state.supportedScoringTypes.includes(
+                  draft.metadata.scoring_type
+                )
+              ) {
+                continue;
+              }
+
               const allPicksResponse = await draftsApi.draftDraftIdPicksGet(
                 draft.draft_id
               );
@@ -140,6 +152,9 @@ export default store(function (/* { ssrContext } */) {
 
                 for (const userPick of usersPicksForThisDraft) {
                   const player = state.players[userPick.player_id];
+
+                  // todo: make this more dynamic buy using:
+                  // https://api.sleeper.app/projections/nfl/2021?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp_half_ppr
                   const playerAdpInfo = getPlayerAdp(state, player);
                   const displayPlayer = playerAdpInfo
                     ? {
