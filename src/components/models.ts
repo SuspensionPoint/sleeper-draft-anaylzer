@@ -46,5 +46,6 @@ export interface UserAnalysisReport {
   mostDraftedPlayer: MostDraftedPlayer;
   biggestReach?: Reach;
   mostCommonReach?: Reach;
+  topFiveReaches: Reach[];
   averagePickValue: number;
 }

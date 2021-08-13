@@ -36,7 +36,7 @@ export default defineComponent({
   // name: 'ComponentName'
   setup() {
     const store = useStore();
-    const enteredUserId = ref('461582139503144960');
+    const enteredUserId = ref('202523901442392064');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
 

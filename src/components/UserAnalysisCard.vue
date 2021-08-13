@@ -35,6 +35,7 @@
             <div class="col justify-center wrap">
               <div class="text-center row justify-center">
                 <player-analysis-card
+                  class="player-analysis-card"
                   title="Most Drafted Player"
                   :subTitle="
                     $props.userInfo.analysis.mostDraftedPlayer?.player.full_name
@@ -64,6 +65,7 @@
 
               <div class="text-center row justify-center">
                 <player-analysis-card
+                  class="player-analysis-card"
                   title="Biggest Reach"
                   :subTitle="
                     $props.userInfo.analysis.biggestReach?.pick?.player
@@ -98,6 +100,7 @@
 
               <div class="text-center row justify-center">
                 <player-analysis-card
+                  class="player-analysis-card"
                   title="Most Common Reach"
                   :subTitle="
                     $props.userInfo.analysis.mostCommonReach?.pick?.player
@@ -136,8 +139,56 @@
                 />
               </div>
 
+
+              <h5 class="text-center">Top Reaches</h5>
+              <q-scroll-area class="reach-scroll-area">
+                <div class="text-center row no-wrap justify-center">
+                  <player-analysis-card
+                    v-for="reach in $props.userInfo.analysis.topFiveReaches"
+                    :key="'reach-' + reach.pick.player_id"
+                    class="player-analysis-card-horizontal"
+                    title="Reach"
+                    :subTitle="
+                    reach?.pick?.player
+                        .full_name
+                    "
+                    :image="
+                      getPlayerImageUrl(
+                        reach?.pick.player_id
+                      )
+                    "
+                    :description="
+                      $props.userInfo.display_name +
+                      ' has drafted ' +
+                      reach?.pick.player
+                        .last_name +
+                      ' ' +
+                      reach?.draftedCount +
+                      ' time(s) \n' +
+                      'Drafted on average ' +
+                      averagePicksAboveAdp(
+                        reach
+                      ) +
+                      ' picks above ADP.'
+                    "
+                    :team="
+                    reach.pick?.player.team
+                    "
+                    :playerNumber="
+                    reach.pick?.player
+                        .number
+                    "
+                    :playerPosition="
+                    reach?.pick?.player
+                        .position
+                    "
+                  />
+                </div>
+              </q-scroll-area>
+
               <div class="text-center row justify-center">
                 <player-analysis-card
+                  class="player-analysis-card"
                   title="Average Pick Value"
                   :value="$props.userInfo.analysis.averagePickValue"
                   :description="
@@ -278,6 +329,19 @@ export default defineComponent({
 
   .card-header-label {
     font-size: 15px;
+  }
+
+  .player-analysis-card {
+    margin: 50px;
+  }
+
+  .player-analysis-card-horizontal {
+    margin: 0 50px;
+    min-width: 250px;
+  }
+
+  .reach-scroll-area {
+    height: 500px;
   }
 }
 </style>

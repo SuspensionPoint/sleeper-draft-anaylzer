@@ -118,7 +118,6 @@ export default defineComponent({
   }
 
   max-width: 325px;
-  margin: 50px;
   padding: 30px;
   border: 4px solid $card-toggle-background;
   border-radius: 15px;

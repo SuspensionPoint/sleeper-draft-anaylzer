@@ -190,6 +190,8 @@ export default store(function (/* { ssrContext } */) {
               draftedCount: 0,
             };
 
+            const topFiveReaches: Reach[] = [];
+
             let biggestReach: Reach = {
               pick: {},
               picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
@@ -262,28 +264,39 @@ export default store(function (/* { ssrContext } */) {
               }
             }
 
-            let reachCounter = 0;
-            for (const player_id in reachMap) {
-              const reachList = reachMap[player_id];
-              const reach = reachMap[player_id][0];
-              const avgPicksAboveAdp = _.mean(
-                reachList.map((r) => r.picksAboveAdp)
-              );
+            // Sort the array based on the second element
+            const sortedReachMap = Object.keys(reachMap).map((key) => [
+              key,
+              reachMap[key],
+            ]);
+            sortedReachMap.sort(
+              (first, second) => second[1].length - first[1].length
+            );
 
-              if (reachList.length > reachCounter) {
-                reachCounter = reachList.length;
-                mostCommonReach = {
-                  pick: reach.pick,
-                  picksAboveAdp: avgPicksAboveAdp,
-                  draftedCount: reach.draftedCount,
-                };
+            const slicedReachList = sortedReachMap.slice(0, 5);
+            slicedReachList.forEach(
+              (keyToPicks: (string | Reach[])[], index: number) => {
+                const reachList: Reach[] = keyToPicks[1] as Reach[];
+                const reach: Reach = reachList[0];
+                const avgPicksAboveAdp = _.mean(
+                  reachList.map((r) => r.picksAboveAdp)
+                );
+
+                reach.picksAboveAdp = avgPicksAboveAdp;
+
+                if (index === 0) {
+                  mostCommonReach = reach;
+                }
+
+                topFiveReaches.push(reach);
               }
-            }
+            );
 
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,
               analysis: {
+                topFiveReaches,
                 biggestReach:
                   biggestReach.picksAboveAdp != DEFAULT_HIGH_ADP
                     ? biggestReach
