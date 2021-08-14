@@ -259,6 +259,18 @@ export default store(function (/* { ssrContext } */) {
                       picksAboveAdp: Math.round(diffFromAdpHighest),
                       draftedCount: pickArray.length,
                     };
+
+                    if (highestDraftPick.player.adp) {
+                      biggestReach.roundNumber = Math.round(
+                        highestDraftPick.pick_no /
+                          highestDraftPick.draftTeamCount
+                      );
+                      biggestReach.pickNumber = Math.round(
+                        (biggestReach.picksAboveAdp +
+                          highestDraftPick.player.adp) %
+                          highestDraftPick.draftTeamCount
+                      );
+                    }
                   }
                 }
               }

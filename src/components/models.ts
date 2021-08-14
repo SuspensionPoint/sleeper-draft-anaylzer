@@ -39,6 +39,8 @@ export interface MostDraftedPlayer {
 export interface Reach {
   pick: DisplayedPick;
   picksAboveAdp: number;
+  roundNumber?: number;
+  pickNumber?: number;
   draftedCount: number;
 }
 

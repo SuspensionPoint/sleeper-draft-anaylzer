@@ -82,9 +82,10 @@
                       .last_name +
                     ' ' +
                     $props.userInfo.analysis.biggestReach?.draftedCount +
-                    ' time(s). They\'ve reached for him by ' +
-                    $props.userInfo.analysis.biggestReach?.picksAboveAdp +
-                    ' picks above ADP'
+                    ' time(s). They drafted him in round #' +
+                    $props.userInfo.analysis.biggestReach?.roundNumber +
+                    ' pick #' +  $props.userInfo.analysis.biggestReach?.pickNumber +
+                    ', ' +  $props.userInfo.analysis.biggestReach?.picksAboveAdp + ' picks above ADP.'
                   "
                   :team="
                     $props.userInfo.analysis.biggestReach?.pick?.player.team
@@ -336,7 +337,7 @@ export default defineComponent({
   }
 
   .player-analysis-card-horizontal {
-    margin: 0 50px;
+    margin: 0 25px;
     min-width: 250px;
   }
 
