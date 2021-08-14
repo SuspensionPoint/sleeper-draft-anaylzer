@@ -12,12 +12,13 @@
       v-for="user in usersToAnalyze"
       :key="user.user_id"
       :userInfo="user"
+      class="col-12 col-md-6"
     />
 
     <div
       v-for="loadingUser in usersLoading"
       :key="`loading-${loadingUser.user_id}`"
-      class="loading-card"
+      class="loading-card col-12 col-md-6"
     >
       <q-card flat>
         <q-skeleton height="145px" square />
