@@ -84,8 +84,11 @@
                     $props.userInfo.analysis.biggestReach?.draftedCount +
                     ' time(s). They drafted him in round #' +
                     $props.userInfo.analysis.biggestReach?.roundNumber +
-                    ' pick #' +  $props.userInfo.analysis.biggestReach?.pickNumber +
-                    ', ' +  $props.userInfo.analysis.biggestReach?.picksAboveAdp + ' picks above ADP.'
+                    ' pick #' +
+                    $props.userInfo.analysis.biggestReach?.pickNumber +
+                    ', ' +
+                    $props.userInfo.analysis.biggestReach?.picksAboveAdp +
+                    ' picks above ADP.'
                   "
                   :team="
                     $props.userInfo.analysis.biggestReach?.pick?.player.team
@@ -140,7 +143,6 @@
                 />
               </div>
 
-
               <h5 class="text-center">Top Reaches</h5>
               <q-scroll-area class="reach-scroll-area">
                 <div class="text-center row no-wrap justify-center">
@@ -149,40 +151,22 @@
                     :key="'reach-' + reach.pick.player_id"
                     class="player-analysis-card-horizontal"
                     title="Reach"
-                    :subTitle="
-                    reach?.pick?.player
-                        .full_name
-                    "
-                    :image="
-                      getPlayerImageUrl(
-                        reach?.pick.player_id
-                      )
-                    "
+                    :subTitle="reach?.pick?.player.full_name"
+                    :image="getPlayerImageUrl(reach?.pick.player_id)"
                     :description="
                       $props.userInfo.display_name +
                       ' has drafted ' +
-                      reach?.pick.player
-                        .last_name +
+                      reach?.pick.player.last_name +
                       ' ' +
                       reach?.draftedCount +
                       ' time(s) \n' +
                       'Drafted on average ' +
-                      averagePicksAboveAdp(
-                        reach
-                      ) +
+                      averagePicksAboveAdp(reach) +
                       ' picks above ADP.'
                     "
-                    :team="
-                    reach.pick?.player.team
-                    "
-                    :playerNumber="
-                    reach.pick?.player
-                        .number
-                    "
-                    :playerPosition="
-                    reach?.pick?.player
-                        .position
-                    "
+                    :team="reach.pick?.player.team"
+                    :playerNumber="reach.pick?.player.number"
+                    :playerPosition="reach?.pick?.player.position"
                   />
                 </div>
               </q-scroll-area>
@@ -338,7 +322,6 @@ export default defineComponent({
 
   .player-analysis-card-horizontal {
     margin: 0 25px;
-    min-width: 250px;
   }
 
   .reach-scroll-area {
