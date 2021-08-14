@@ -78,18 +78,21 @@
                     )
                   "
                   :description="
-                    'They\'ve drafted ' +
-                    $props.userInfo.analysis.biggestReach?.pick.player
-                      .last_name +
-                    ' ' +
+                    'Drafted ' +
                     $props.userInfo.analysis.biggestReach?.draftedCount +
-                    ' time(s). They drafted him in round #' +
+                    ' time(s). Drafted at the ' +
                     $props.userInfo.analysis.biggestReach?.roundNumber +
-                    ' pick #' +
+                    '.' +
                     $props.userInfo.analysis.biggestReach?.pickNumber +
-                    ', ' +
-                    $props.userInfo.analysis.biggestReach?.picksAboveAdp +
-                    ' picks above ADP.'
+                    ' spot. ' +
+                    Math.abs(
+                      $props.userInfo.analysis.biggestReach?.picksAboveAdp
+                        ? $props.userInfo.analysis.biggestReach?.picksAboveAdp
+                        : 0
+                    ) +
+                    ' picks above his ADP of ' +
+                    $props.userInfo.analysis.biggestReach?.pick.player
+                      .adp_formatted
                   "
                   :team="
                     $props.userInfo.analysis.biggestReach?.pick?.player.team
@@ -99,6 +102,11 @@
                   "
                   :playerPosition="
                     $props.userInfo.analysis.biggestReach?.pick?.player.position
+                  "
+                  :picks="
+                    $props.userInfo.analysis.biggestReach?.pick
+                      ? [$props.userInfo.analysis.biggestReach?.pick]
+                      : []
                   "
                 />
               </div>
@@ -117,18 +125,20 @@
                     )
                   "
                   :description="
-                    $props.userInfo.display_name +
-                    ' has drafted ' +
-                    $props.userInfo.analysis.mostCommonReach?.pick.player
-                      .last_name +
-                    ' ' +
+                    'Drafted ' +
                     $props.userInfo.analysis.mostCommonReach?.draftedCount +
-                    ' time(s) \n' +
-                    'Drafted on average ' +
+                    ' time(s). \n' +
+                    'Drafted at the ' +
+                    formattedPickSpot(
+                      $props.userInfo.analysis.mostCommonReach?.pick
+                    ) +
+                    ' spot. On average ' +
                     averagePicksAboveAdp(
                       $props.userInfo.analysis.mostCommonReach
                     ) +
-                    ' picks above ADP.'
+                    ' picks above his ADP of ' +
+                    $props.userInfo.analysis.mostCommonReach?.pick.player
+                      .adp_formatted
                   "
                   :team="
                     $props.userInfo.analysis.mostCommonReach?.pick?.player.team
@@ -140,6 +150,11 @@
                   :playerPosition="
                     $props.userInfo.analysis.mostCommonReach?.pick?.player
                       .position
+                  "
+                  :picks="
+                    $props.userInfo.analysis.mostCommonReach?.pick
+                      ? [$props.userInfo.analysis.mostCommonReach?.pick]
+                      : []
                   "
                 />
               </div>
@@ -155,15 +170,16 @@
                     :subTitle="reach?.pick?.player.full_name"
                     :image="getPlayerImageUrl(reach?.pick.player_id)"
                     :description="
-                      $props.userInfo.display_name +
-                      ' has drafted ' +
-                      reach?.pick.player.last_name +
-                      ' ' +
+                      'Drafted ' +
                       reach?.draftedCount +
-                      ' time(s) \n' +
-                      'Drafted on average ' +
-                      averagePicksAboveAdp(reach) +
-                      ' picks above ADP.'
+                      ' time(s). Drafted at the ' +
+                      formattedPickSpot(reach?.pick) +
+                      ' spot. ' +
+                      Math.abs(
+                        reach?.picksAboveAdp ? reach?.picksAboveAdp : 0
+                      ) +
+                      ' picks above his ADP of ' +
+                      reach?.pick.player.adp_formatted
                     "
                     :team="reach.pick?.player.team"
                     :playerNumber="reach.pick?.player.number"
@@ -210,6 +226,7 @@ import {
   DisplayedUserInfo,
   Reach,
   DisplayedPlayer,
+  DisplayedPick,
 } from 'src/components/models';
 import { getPlayerImageUrl, getAvatarUrl } from './utils';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
@@ -274,6 +291,16 @@ export default defineComponent({
       return '0';
     };
 
+    const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
+      if (pick) {
+        const round = pick.round;
+        const pickNumber = pick.pick_no % pick.draftTeamCount;
+        return `${round}.${pickNumber}`;
+      }
+
+      return '';
+    };
+
     return {
       expanded: ref(false),
       getAvatarUrl,
@@ -281,6 +308,7 @@ export default defineComponent({
       getReachText,
       playerInfoString,
       averagePicksAboveAdp,
+      formattedPickSpot,
     };
   },
 });

@@ -263,10 +263,11 @@ export default store(function (/* { ssrContext } */) {
                     };
 
                     if (highestDraftPick.player.adp) {
-                      biggestReach.roundNumber = Math.round(
-                        highestDraftPick.pick_no /
-                          highestDraftPick.draftTeamCount
-                      );
+                      biggestReach.roundNumber =
+                        Math.round(
+                          highestDraftPick.pick_no /
+                            highestDraftPick.draftTeamCount
+                        ) + 1;
                       biggestReach.pickNumber = Math.round(
                         (biggestReach.picksAboveAdp +
                           highestDraftPick.player.adp) %
@@ -296,7 +297,7 @@ export default store(function (/* { ssrContext } */) {
                   reachList.map((r) => r.picksAboveAdp)
                 );
 
-                reach.picksAboveAdp = avgPicksAboveAdp;
+                reach.picksAboveAdp = Math.round(avgPicksAboveAdp);
 
                 if (index === 0) {
                   mostCommonReach = reach;
