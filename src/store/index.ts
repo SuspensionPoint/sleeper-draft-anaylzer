@@ -25,6 +25,7 @@ import { Notify } from 'quasar';
 
 const DEFAULT_HIGH_ADP = 9999;
 const REACH_THRESHOLD = -6;
+const REACH_MAX_ROUND = 12;
 
 /*
  * If not building with SSR mode, you can
@@ -233,7 +234,10 @@ export default store(function (/* { ssrContext } */) {
 
                   const diffFromAdp = pick.pick_no - playerAdp;
                   // A reach must have a negative difference
-                  if (diffFromAdp < REACH_THRESHOLD) {
+                  if (
+                    diffFromAdp < REACH_THRESHOLD &&
+                    pick.round < REACH_MAX_ROUND
+                  ) {
                     if (reachMap[player.player_id]) {
                       reachMap[player.player_id].push({
                         pick,
@@ -254,7 +258,10 @@ export default store(function (/* { ssrContext } */) {
 
                 const diffFromAdpHighest = highestDraftPick.pick_no - playerAdp;
                 // A reach must have a negative difference
-                if (diffFromAdpHighest < REACH_THRESHOLD) {
+                if (
+                  diffFromAdpHighest < REACH_THRESHOLD &&
+                  highestDraftPick.round < REACH_MAX_ROUND
+                ) {
                   if (diffFromAdpHighest < biggestReach.picksAboveAdp) {
                     biggestReach = {
                       pick: highestDraftPick,
@@ -263,11 +270,10 @@ export default store(function (/* { ssrContext } */) {
                     };
 
                     if (highestDraftPick.player.adp) {
-                      biggestReach.roundNumber =
-                        Math.round(
-                          highestDraftPick.pick_no /
-                            highestDraftPick.draftTeamCount
-                        ) + 1;
+                      biggestReach.roundNumber = Math.ceil(
+                        highestDraftPick.pick_no /
+                          highestDraftPick.draftTeamCount
+                      );
                       biggestReach.pickNumber = Math.round(
                         (biggestReach.picksAboveAdp +
                           highestDraftPick.player.adp) %

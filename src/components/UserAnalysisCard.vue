@@ -295,7 +295,10 @@ export default defineComponent({
     const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
       if (pick) {
         const round = pick.round;
-        const pickNumber = pick.pick_no % pick.draftTeamCount;
+        const pickNumber =
+          pick.pick_no % pick.draftTeamCount === 0
+            ? 1
+            : pick.pick_no % pick.draftTeamCount;
         return `${round}.${pickNumber}`;
       }
 
