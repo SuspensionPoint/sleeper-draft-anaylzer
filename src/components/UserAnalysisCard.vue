@@ -184,6 +184,7 @@
                     :team="reach.pick?.player.team"
                     :playerNumber="reach.pick?.player.number"
                     :playerPosition="reach?.pick?.player.position"
+                    :picks="reach.pick ? [reach.pick] : []"
                   />
                 </div>
               </q-scroll-area>
