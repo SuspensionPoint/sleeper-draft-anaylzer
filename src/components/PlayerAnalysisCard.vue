@@ -69,63 +69,11 @@
 
       <div class="back">
         <div class="player-card">
-          <h5 class="text-overline category">BACK {{ $props.title }}</h5>
-          <h5 class="name">
-            {{ $props.subTitle }}
-          </h5>
-
-          <q-img
-            v-if="$props.image && !imageLoadError"
-            class="player-img"
-            v-bind:class="{
-              'img-margin-bottom': !$props.playerPosition,
-            }"
-            :src="$props.image"
-            @error="imageLoadFailed()"
-            loading="lazy"
-          ></q-img>
-
-          <q-img
-            v-if="imageLoadError"
-            class="player-img"
-            v-bind:class="{
-              'img-margin-bottom': !$props.playerPosition,
-            }"
-            src="~assets/player-placeholder.png"
-            @error="imageLoadError = true"
-            loading="lazy"
-          ></q-img>
-
-          <div
-            v-if="$props.playerPosition"
-            class="row justify-around img-margin-bottom"
-          >
-            <q-img
-              class="logo-icon"
-              :src="`logos/${$props.team}.png`"
-              loading="lazy"
-            >
-            </q-img>
-            <p>•</p>
-            <p>#{{ $props.playerNumber }}</p>
-            <p>•</p>
-            <p>{{ $props.playerPosition }}</p>
-          </div>
-
-          <h5
-            v-if="$props.value"
-            class="text-overline value"
-            v-bind:class="{
-              'text-green': $props.value > 0,
-              'text-red': $props.value < 0,
-            }"
-          >
-            {{ getSignedValueString($props.value) }}
-          </h5>
-
-          <p>
-            {{ $props.description }}
-          </p>
+          <q-btn
+            style="background: #ff0080; color: white"
+            @click.stop="openDrafts()"
+            label="Open Drafts"
+          />
         </div>
       </div>
     </div>
@@ -223,6 +171,10 @@ export default defineComponent({
     const flipOver = ref(false);
     const imageLoadError = ref(false);
 
+    const openDrafts = () => {
+      console.log('opening drafts');
+    };
+
     const getSignedValueString = (value: number): string => {
       const decimalPlaces = 2;
       return `${props.value && props.value < 0 ? '' : '+'}${value.toFixed(
@@ -235,7 +187,13 @@ export default defineComponent({
       console.log('Image failed to load');
     };
 
-    return { getSignedValueString, imageLoadError, imageLoadFailed, flipOver };
+    return {
+      getSignedValueString,
+      imageLoadError,
+      imageLoadFailed,
+      flipOver,
+      openDrafts,
+    };
   },
 });
 </script>
@@ -244,10 +202,11 @@ export default defineComponent({
 @import 'src/css/app.scss';
 
 $height: 475px;
+$width: 295px;
 
 .flip-container {
   height: $height;
-  width: 325px;
+  width: $width;
 
   perspective: 100;
 }
@@ -286,6 +245,7 @@ $height: 475px;
 
   // width: 100%;
   height: $height;
+  min-width: $width;
   padding: 30px;
   border: 4px solid $card-toggle-background;
   border-radius: 15px;
