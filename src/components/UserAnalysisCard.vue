@@ -37,6 +37,7 @@
                 <player-analysis-card
                   class="player-analysis-card"
                   title="Most Drafted Player"
+                  :picks="$props.userInfo.analysis.mostDraftedPlayer?.picks"
                   :subTitle="
                     $props.userInfo.analysis.mostDraftedPlayer?.player.full_name
                   "
@@ -289,8 +290,6 @@ export default defineComponent({
 @import 'src/css/app.scss';
 
 .my-card {
-  width: 45%;
-
   .card-header {
     background-color: $card-foreground;
     box-shadow: -1px -14px 59px -27px rgba(0, 0, 0, 0.75) inset;
@@ -317,7 +316,7 @@ export default defineComponent({
   }
 
   .player-analysis-card {
-    margin: 50px;
+    margin: 50px 0;
   }
 
   .player-analysis-card-horizontal {

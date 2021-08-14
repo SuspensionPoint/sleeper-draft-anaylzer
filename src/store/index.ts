@@ -188,6 +188,7 @@ export default store(function (/* { ssrContext } */) {
             const mostDraftedPlayer: MostDraftedPlayer = {
               player: {} as DisplayedPlayer,
               draftedCount: 0,
+              picks: [],
             };
 
             const topFiveReaches: Reach[] = [];
@@ -217,6 +218,7 @@ export default store(function (/* { ssrContext } */) {
               if (pickArray.length > mostDraftedPlayer.draftedCount) {
                 mostDraftedPlayer.draftedCount = pickArray.length;
                 mostDraftedPlayer.player = player;
+                mostDraftedPlayer.picks = pickArray;
               }
 
               if (playerAdp) {

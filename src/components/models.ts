@@ -34,6 +34,7 @@ export interface DisplayedUserInfo extends User {
 export interface MostDraftedPlayer {
   player: DisplayedPlayer;
   draftedCount: number;
+  picks: DisplayedPick[];
 }
 
 export interface Reach {

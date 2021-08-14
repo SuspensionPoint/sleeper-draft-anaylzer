@@ -78,70 +78,19 @@
       </div>
     </div>
   </div>
-
-  <!-- <div class="player-card">
-    <h5 class="text-overline category">{{ $props.title }}</h5>
-    <h5 class="name">
-      {{ $props.subTitle }}
-    </h5>
-
-    <q-img
-      v-if="$props.image && !imageLoadError"
-      class="player-img"
-      v-bind:class="{
-        'img-margin-bottom': !$props.playerPosition,
-      }"
-      :src="$props.image"
-      @error="imageLoadFailed()"
-      loading="lazy"
-    ></q-img>
-
-    <q-img
-      v-if="imageLoadError"
-      class="player-img"
-      v-bind:class="{
-        'img-margin-bottom': !$props.playerPosition,
-      }"
-      src="~assets/player-placeholder.png"
-      @error="imageLoadError = true"
-      loading="lazy"
-    ></q-img>
-
-    <div
-      v-if="$props.playerPosition"
-      class="row justify-around img-margin-bottom"
-    >
-      <q-img class="logo-icon" :src="`logos/${$props.team}.png`" loading="lazy">
-      </q-img>
-      <p>•</p>
-      <p>#{{ $props.playerNumber }}</p>
-      <p>•</p>
-      <p>{{ $props.playerPosition }}</p>
-    </div>
-
-    <h5
-      v-if="$props.value"
-      class="text-overline value"
-      v-bind:class="{
-        'text-green': $props.value > 0,
-        'text-red': $props.value < 0,
-      }"
-    >
-      {{ getSignedValueString($props.value) }}
-    </h5>
-
-    <p>
-      {{ $props.description }}
-    </p>
-  </div> -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
+import { openDraftUrl } from './sleeper';
+import { DisplayedPick } from './models';
 
 export default defineComponent({
   // name: 'ComponentName'
   props: {
+    picks: {
+      type: Object as PropType<DisplayedPick[]>,
+    },
     title: {
       type: String,
     },
@@ -172,7 +121,7 @@ export default defineComponent({
     const imageLoadError = ref(false);
 
     const openDrafts = () => {
-      console.log('opening drafts');
+      props.picks?.forEach((pick) => openDraftUrl(pick));
     };
 
     const getSignedValueString = (value: number): string => {
