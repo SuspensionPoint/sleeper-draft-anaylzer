@@ -65,47 +65,10 @@
               </div>
 
               <div class="text-center row justify-center">
-                <player-analysis-card
+                <reach-analysis-card
                   class="player-analysis-card"
                   title="Biggest Reach"
-                  :subTitle="
-                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
-                      .full_name
-                  "
-                  :image="
-                    getPlayerImageUrl(
-                      $props.userInfo.analysis.biggestReach?.picks[0].player_id
-                    )
-                  "
-                  :description="
-                    'Drafted ' +
-                    $props.userInfo.analysis.biggestReach?.draftedCount +
-                    ' time(s). Drafted at the ' +
-                    $props.userInfo.analysis.biggestReach?.roundNumber +
-                    '.' +
-                    $props.userInfo.analysis.biggestReach?.pickNumber +
-                    ' spot. ' +
-                    Math.abs(
-                      $props.userInfo.analysis.biggestReach?.picksAboveAdp
-                        ? $props.userInfo.analysis.biggestReach?.picksAboveAdp
-                        : 0
-                    ) +
-                    ' picks above his ADP of ' +
-                    $props.userInfo.analysis.biggestReach?.picks[0].player
-                      .adp_formatted
-                  "
-                  :team="
-                    $props.userInfo.analysis.biggestReach?.picks[0]?.player.team
-                  "
-                  :playerNumber="
-                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
-                      .number
-                  "
-                  :playerPosition="
-                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
-                      .position
-                  "
-                  :picks="$props.userInfo.analysis.biggestReach?.picks"
+                  :reach="$props.userInfo.analysis.biggestReach"
                 />
               </div>
 
