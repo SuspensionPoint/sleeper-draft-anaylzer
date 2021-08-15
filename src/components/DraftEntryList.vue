@@ -12,7 +12,7 @@
       v-for="user in usersToAnalyze"
       :key="user.user_id"
       :userInfo="user"
-      class="col-12 col-md-6"
+      class="col-12 col-md-6 analysis-list"
     />
 
     <div
@@ -77,5 +77,9 @@ export default defineComponent({
 <style lang="scss">
 .loading-card {
   width: 45%;
+}
+
+.analysis-list {
+  padding: 10px;
 }
 </style>

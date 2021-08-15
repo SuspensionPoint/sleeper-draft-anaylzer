@@ -48,6 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { getSignedValueString } from './utils';
 
 export default defineComponent({
   // name: 'ComponentName'
@@ -68,17 +69,9 @@ export default defineComponent({
       type: String,
     },
   },
-  setup(props) {
+  setup() {
     const flipOver = ref(false);
     const imageLoadError = ref(false);
-
-    const getSignedValueString = (value: number): string => {
-      const decimalPlaces = 2;
-      return `${props.value && props.value < 0 ? '' : '+'}${value.toFixed(
-        decimalPlaces
-      )}`;
-    };
-
     const imageLoadFailed = () => {
       imageLoadError.value = true;
       console.log('Image failed to load');

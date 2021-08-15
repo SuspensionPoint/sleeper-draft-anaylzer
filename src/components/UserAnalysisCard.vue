@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card" flat bordered>
+  <q-card class="my-card" flat>
     <q-item class="card-header">
       <q-item-section avatar>
         <q-avatar size="75px">
@@ -11,6 +11,18 @@
         <q-item-label class="card-header-label text-overline">{{
           $props.userInfo?.display_name
         }}</q-item-label>
+      </q-item-section>
+
+      <q-item-section side>
+        <q-item-label
+          class="card-header-label text-overline"
+          v-bind:class="{
+            'text-green': $props.userInfo.analysis.averagePickValue > 0,
+            'text-red': $props.userInfo.analysis.averagePickValue < 0,
+          }"
+        >
+          {{ getSignedValueString($props.userInfo.analysis.averagePickValue) }}
+        </q-item-label>
       </q-item-section>
     </q-item>
 
@@ -134,8 +146,12 @@ import {
   Reach,
   DisplayedPlayer,
 } from 'src/components/models';
-import { getPlayerImageUrl, getAvatarUrl, formattedPickSpot } from './utils';
-import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+import {
+  getPlayerImageUrl,
+  getAvatarUrl,
+  formattedPickSpot,
+  getSignedValueString,
+} from './utils';
 import AnalysisCard from './AnalysisCard.vue';
 import ReachAnalysisCard from './ReachAnalysisCard.vue';
 import MostDraftedAnalysisCard from './MostDraftedAnalysisCard.vue';
@@ -143,7 +159,6 @@ import PositionalAnalysisCard from './PositionalAnalysisCard.vue';
 
 export default defineComponent({
   components: {
-    PlayerAnalysisCard,
     AnalysisCard,
     ReachAnalysisCard,
     MostDraftedAnalysisCard,
@@ -225,6 +240,7 @@ export default defineComponent({
       averagePicksAboveAdp,
       formattedPickSpot,
       favoriteFormattedPickSpot,
+      getSignedValueString,
     };
   },
 });
@@ -256,7 +272,7 @@ export default defineComponent({
   }
 
   .card-header-label {
-    font-size: 15px;
+    font-size: 17.5px;
   }
 
   .player-analysis-card {
