@@ -229,13 +229,13 @@ export default store(function (/* { ssrContext } */) {
             const topFiveReaches: Reach[] = [];
 
             let biggestReach: Reach = {
-              pick: {},
+              picks: [],
               picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
               draftedCount: 0,
             } as Reach;
 
             let mostCommonReach: Reach = {
-              pick: {},
+              picks: [],
               picksAboveAdp: DEFAULT_HIGH_ADP, // really big #
               draftedCount: 0,
             } as Reach;
@@ -343,14 +343,14 @@ export default store(function (/* { ssrContext } */) {
                   ) {
                     if (reachMap[player.player_id]) {
                       reachMap[player.player_id].push({
-                        pick,
+                        picks: [pick],
                         picksAboveAdp: Math.round(diffFromAdp),
                         draftedCount: pickArray.length,
                       });
                     } else {
                       reachMap[player.player_id] = [
                         {
-                          pick,
+                          picks: [pick],
                           picksAboveAdp: Math.round(diffFromAdp),
                           draftedCount: pickArray.length,
                         } as Reach,
@@ -367,7 +367,7 @@ export default store(function (/* { ssrContext } */) {
                 ) {
                   if (diffFromAdpHighest < biggestReach.picksAboveAdp) {
                     biggestReach = {
-                      pick: highestDraftPick,
+                      picks: [highestDraftPick],
                       picksAboveAdp: Math.round(diffFromAdpHighest),
                       draftedCount: pickArray.length,
                     };
@@ -407,6 +407,7 @@ export default store(function (/* { ssrContext } */) {
                 );
 
                 reach.picksAboveAdp = Math.round(avgPicksAboveAdp);
+                reach.picks = reachList.map((r) => r.picks[0]);
 
                 if (index === 0) {
                   mostCommonReach = reach;
@@ -415,6 +416,15 @@ export default store(function (/* { ssrContext } */) {
                 topFiveReaches.push(reach);
               }
             );
+
+            // Get full list of picks for biggest/most common reaches
+            biggestReach.picks = reachMap[biggestReach.picks[0].player_id].map(
+              (r) => r.picks[0]
+            );
+
+            mostCommonReach.picks = reachMap[
+              mostCommonReach.picks[0].player_id
+            ].map((r) => r.picks[0]);
 
             commit('addUserInfo', {
               ...user,

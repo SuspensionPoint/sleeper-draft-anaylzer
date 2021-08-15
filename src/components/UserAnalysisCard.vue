@@ -69,12 +69,12 @@
                   class="player-analysis-card"
                   title="Biggest Reach"
                   :subTitle="
-                    $props.userInfo.analysis.biggestReach?.pick?.player
+                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
                       .full_name
                   "
                   :image="
                     getPlayerImageUrl(
-                      $props.userInfo.analysis.biggestReach?.pick.player_id
+                      $props.userInfo.analysis.biggestReach?.picks[0].player_id
                     )
                   "
                   :description="
@@ -91,71 +91,29 @@
                         : 0
                     ) +
                     ' picks above his ADP of ' +
-                    $props.userInfo.analysis.biggestReach?.pick.player
+                    $props.userInfo.analysis.biggestReach?.picks[0].player
                       .adp_formatted
                   "
                   :team="
-                    $props.userInfo.analysis.biggestReach?.pick?.player.team
+                    $props.userInfo.analysis.biggestReach?.picks[0]?.player.team
                   "
                   :playerNumber="
-                    $props.userInfo.analysis.biggestReach?.pick?.player.number
+                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
+                      .number
                   "
                   :playerPosition="
-                    $props.userInfo.analysis.biggestReach?.pick?.player.position
+                    $props.userInfo.analysis.biggestReach?.picks[0]?.player
+                      .position
                   "
-                  :picks="
-                    $props.userInfo.analysis.biggestReach?.pick
-                      ? [$props.userInfo.analysis.biggestReach?.pick]
-                      : []
-                  "
+                  :picks="$props.userInfo.analysis.biggestReach?.picks"
                 />
               </div>
 
               <div class="text-center row justify-center">
-                <player-analysis-card
+                <reach-analysis-card
                   class="player-analysis-card"
                   title="Most Common Reach"
-                  :subTitle="
-                    $props.userInfo.analysis.mostCommonReach?.pick?.player
-                      .full_name
-                  "
-                  :image="
-                    getPlayerImageUrl(
-                      $props.userInfo.analysis.mostCommonReach?.pick.player_id
-                    )
-                  "
-                  :description="
-                    'Drafted ' +
-                    $props.userInfo.analysis.mostCommonReach?.draftedCount +
-                    ' time(s). \n' +
-                    'Drafted at the ' +
-                    formattedPickSpot(
-                      $props.userInfo.analysis.mostCommonReach?.pick
-                    ) +
-                    ' spot. On average ' +
-                    averagePicksAboveAdp(
-                      $props.userInfo.analysis.mostCommonReach
-                    ) +
-                    ' picks above his ADP of ' +
-                    $props.userInfo.analysis.mostCommonReach?.pick.player
-                      .adp_formatted
-                  "
-                  :team="
-                    $props.userInfo.analysis.mostCommonReach?.pick?.player.team
-                  "
-                  :playerNumber="
-                    $props.userInfo.analysis.mostCommonReach?.pick?.player
-                      .number
-                  "
-                  :playerPosition="
-                    $props.userInfo.analysis.mostCommonReach?.pick?.player
-                      .position
-                  "
-                  :picks="
-                    $props.userInfo.analysis.mostCommonReach?.pick
-                      ? [$props.userInfo.analysis.mostCommonReach?.pick]
-                      : []
-                  "
+                  :reach="$props.userInfo.analysis.mostCommonReach"
                 />
               </div>
 
@@ -164,7 +122,7 @@
                 <div class="text-center row no-wrap justify-center">
                   <reach-analysis-card
                     v-for="reach in $props.userInfo.analysis.topFiveReaches"
-                    :key="'reach-' + reach.pick.player_id"
+                    :key="'reach-' + reach.picks[0].player_id"
                     class="player-analysis-card-horizontal"
                     title="Reach"
                     :reach="reach"
@@ -390,14 +348,14 @@ export default defineComponent({
         return '';
       }
 
-      const numTeams = reach.pick.draftTeamCount;
-      const pickNumber = numToText(reach.pick.pick_no % numTeams);
-      const roundSelectedString = numToText(reach.pick.round);
+      const numTeams = reach.picks[0].draftTeamCount;
+      const pickNumber = numToText(reach.picks[0].pick_no % numTeams);
+      const roundSelectedString = numToText(reach.picks[0].round);
       const adpPickNumberString = numToText(
-        Math.round((reach.pick.player.adp as number) % numTeams)
+        Math.round((reach.picks[0].player.adp as number) % numTeams)
       );
       const adpPickRound = numToText(
-        Math.floor((reach.pick.player.adp as number) / numTeams)
+        Math.floor((reach.picks[0].player.adp as number) / numTeams)
       );
 
       return `Drafted with the ${pickNumber} pick in the ${roundSelectedString} round while his ADP is the ${adpPickNumberString} pick of the ${adpPickRound} round.`;

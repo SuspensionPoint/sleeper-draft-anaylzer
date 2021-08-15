@@ -38,7 +38,7 @@ export interface MostDraftedPlayer {
 }
 
 export interface Reach {
-  pick: DisplayedPick;
+  picks: DisplayedPick[];
   picksAboveAdp: number;
   roundNumber?: number;
   pickNumber?: number;
