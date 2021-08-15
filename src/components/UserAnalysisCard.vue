@@ -327,7 +327,7 @@
               </q-scroll-area>
 
               <div class="text-center row justify-center">
-                <player-analysis-card
+                <analysis-card
                   class="player-analysis-card"
                   title="Average Pick Value"
                   :value="$props.userInfo.analysis.averagePickValue"
@@ -368,9 +368,10 @@ import {
 } from 'src/components/models';
 import { getPlayerImageUrl, getAvatarUrl } from './utils';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
+import AnalysisCard from './AnalysisCard.vue';
 
 export default defineComponent({
-  components: { PlayerAnalysisCard },
+  components: { PlayerAnalysisCard, AnalysisCard },
   // name: 'ComponentName'
   props: {
     userInfo: {
