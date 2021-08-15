@@ -199,7 +199,7 @@ export default defineComponent({
         return '';
       }
 
-      const numTeams = reach.picks[0].draftTeamCount;
+      const numTeams = reach?.picks[0].draftTeamCount;
       const pickNumber = numToText(reach.picks[0].pick_no % numTeams);
       const roundSelectedString = numToText(reach.picks[0].round);
       const adpPickNumberString = numToText(

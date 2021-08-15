@@ -407,7 +407,7 @@ export default store(function (/* { ssrContext } */) {
                 );
 
                 reach.picksAboveAdp = Math.round(avgPicksAboveAdp);
-                reach.picks = reachList.map((r) => r.picks[0]);
+                reach.picks = reachList.map((r) => r?.picks[0]);
 
                 if (index === 0) {
                   mostCommonReach = reach;
