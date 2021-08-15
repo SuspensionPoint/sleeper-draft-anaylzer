@@ -189,6 +189,44 @@
                 </div>
               </q-scroll-area>
 
+              <h5 class="text-center">Favorite Players</h5>
+              <q-scroll-area class="reach-scroll-area">
+                <div class="text-center row no-wrap justify-center">
+                  <player-analysis-card
+                    class="player-analysis-card-horizontal"
+                    title="Favorite QB"
+                    :subTitle="
+                      $props.userInfo.analysis.favoriteQB.player.full_name
+                    "
+                    :image="
+                      getPlayerImageUrl(
+                        $props.userInfo.analysis.favoriteQB.player.player_id
+                      )
+                    "
+                    :description="
+                      'Drafted ' +
+                      $props.userInfo.analysis.favoriteQB.picks.length +
+                      ' time(s). On average drafted at the ' +
+                      favoriteFormattedPickSpot(
+                        $props.userInfo.analysis.favoriteQB.avgRoundNumber,
+                        $props.userInfo.analysis.favoriteQB.avgPickNumber,
+                        $props.userInfo.analysis.favoriteQB.picks[0]
+                          .draftTeamCount
+                      ) +
+                      ' spot.'
+                    "
+                    :team="$props.userInfo.analysis.favoriteQB.player.team"
+                    :playerNumber="
+                      $props.userInfo.analysis.favoriteQB.player.number
+                    "
+                    :playerPosition="
+                      $props.userInfo.analysis.favoriteQB.player.position
+                    "
+                    :picks="$props.userInfo.analysis.favoriteQB.picks"
+                  />
+                </div>
+              </q-scroll-area>
+
               <div class="text-center row justify-center">
                 <player-analysis-card
                   class="player-analysis-card"
@@ -292,6 +330,15 @@ export default defineComponent({
       return '0';
     };
 
+    const favoriteFormattedPickSpot = (
+      round: number,
+      pickNo: number,
+      teamCount: number
+    ): string => {
+      const pickNumber = pickNo % teamCount === 0 ? 1 : pickNo % teamCount;
+      return `${round}.${pickNumber}`;
+    };
+
     const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
       if (pick) {
         const round = pick.round;
@@ -313,6 +360,7 @@ export default defineComponent({
       playerInfoString,
       averagePicksAboveAdp,
       formattedPickSpot,
+      favoriteFormattedPickSpot,
     };
   },
 });

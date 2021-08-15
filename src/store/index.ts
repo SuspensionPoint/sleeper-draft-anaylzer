@@ -13,6 +13,7 @@ import {
   PlayerADP,
   MostDraftedPlayer,
   Reach,
+  FavoritePositionalPick,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
@@ -132,6 +133,15 @@ export default store(function (/* { ssrContext } */) {
           if (userResponse.data) {
             const user = userResponse.data;
             const allPicksFromUser: DisplayedPick[] = [];
+
+            let favoriteQB: FavoritePositionalPick = {
+              player: {} as DisplayedPlayer,
+              picks: [],
+              position: '',
+              avgRoundNumber: 0,
+              avgPickNumber: 0,
+            };
+
             for (const draft of drafts) {
               // For now, skip non-supported scoring types.
               // Can go back and update this to use proper ADPs for those leagues later.
@@ -220,6 +230,26 @@ export default store(function (/* { ssrContext } */) {
                 mostDraftedPlayer.draftedCount = pickArray.length;
                 mostDraftedPlayer.player = player;
                 mostDraftedPlayer.picks = pickArray;
+              }
+
+              switch (player.position) {
+                case 'QB': {
+                  if (pickArray.length > favoriteQB.picks.length) {
+                    favoriteQB = {
+                      player,
+                      picks: pickArray,
+                      position: player.position,
+                      avgRoundNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.round))
+                      ),
+                      avgPickNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.pick_no))
+                      ),
+                    };
+                  }
+                }
+                default:
+                  break;
               }
 
               if (playerAdp) {
@@ -328,6 +358,7 @@ export default store(function (/* { ssrContext } */) {
                     : undefined,
                 mostDraftedPlayer,
                 averagePickValue: totalPickValue / totalNumPicks,
+                favoriteQB,
               },
             });
 

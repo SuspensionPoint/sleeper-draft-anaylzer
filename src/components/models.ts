@@ -45,10 +45,23 @@ export interface Reach {
   draftedCount: number;
 }
 
+export interface FavoritePositionalPick {
+  player: DisplayedPlayer;
+  picks: DisplayedPick[];
+  position: string;
+  avgRoundNumber: number;
+  avgPickNumber: number;
+}
+
 export interface UserAnalysisReport {
   mostDraftedPlayer: MostDraftedPlayer;
   biggestReach?: Reach;
   mostCommonReach?: Reach;
   topFiveReaches: Reach[];
   averagePickValue: number;
+
+  favoriteQB: FavoritePositionalPick;
+  favoriteRB: FavoritePositionalPick;
+  favoriteWR: FavoritePositionalPick;
+  favoriteTE: FavoritePositionalPick;
 }
