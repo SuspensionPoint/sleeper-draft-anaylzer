@@ -34,33 +34,10 @@
           <div class="row">
             <div class="col justify-center wrap">
               <div class="text-center row justify-center">
-                <player-analysis-card
+                <most-drafted-analysis-card
                   class="player-analysis-card"
                   title="Most Drafted Player"
-                  :picks="$props.userInfo.analysis.mostDraftedPlayer?.picks"
-                  :subTitle="
-                    $props.userInfo.analysis.mostDraftedPlayer?.player.full_name
-                  "
-                  :image="
-                    getPlayerImageUrl(
-                      $props.userInfo.analysis.mostDraftedPlayer?.player
-                        ?.player_id
-                    )
-                  "
-                  :description="
-                    'Drafted ' +
-                    $props.userInfo.analysis.mostDraftedPlayer?.draftedCount +
-                    ' time(s)'
-                  "
-                  :team="
-                    $props.userInfo.analysis.mostDraftedPlayer?.player.team
-                  "
-                  :playerNumber="
-                    $props.userInfo.analysis.mostDraftedPlayer?.player.number
-                  "
-                  :playerPosition="
-                    $props.userInfo.analysis.mostDraftedPlayer?.player.position
-                  "
+                  :player="$props.userInfo.analysis.mostDraftedPlayer"
                 />
               </div>
 
@@ -273,9 +250,15 @@ import { getPlayerImageUrl, getAvatarUrl, formattedPickSpot } from './utils';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 import AnalysisCard from './AnalysisCard.vue';
 import ReachAnalysisCard from './ReachAnalysisCard.vue';
+import MostDraftedAnalysisCard from './MostDraftedAnalysisCard.vue';
 
 export default defineComponent({
-  components: { PlayerAnalysisCard, AnalysisCard, ReachAnalysisCard },
+  components: {
+    PlayerAnalysisCard,
+    AnalysisCard,
+    ReachAnalysisCard,
+    MostDraftedAnalysisCard,
+  },
   // name: 'ComponentName'
   props: {
     userInfo: {
