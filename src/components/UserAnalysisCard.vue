@@ -162,29 +162,12 @@
               <h5 class="text-center">Top Reaches</h5>
               <q-scroll-area class="reach-scroll-area">
                 <div class="text-center row no-wrap justify-center">
-                  <player-analysis-card
+                  <reach-analysis-card
                     v-for="reach in $props.userInfo.analysis.topFiveReaches"
                     :key="'reach-' + reach.pick.player_id"
                     class="player-analysis-card-horizontal"
                     title="Reach"
-                    :subTitle="reach?.pick?.player.full_name"
-                    :image="getPlayerImageUrl(reach?.pick.player_id)"
-                    :description="
-                      'Drafted ' +
-                      reach?.draftedCount +
-                      ' time(s). Drafted at the ' +
-                      formattedPickSpot(reach?.pick) +
-                      ' spot. ' +
-                      Math.abs(
-                        reach?.picksAboveAdp ? reach?.picksAboveAdp : 0
-                      ) +
-                      ' picks above his ADP of ' +
-                      reach?.pick.player.adp_formatted
-                    "
-                    :team="reach.pick?.player.team"
-                    :playerNumber="reach.pick?.player.number"
-                    :playerPosition="reach?.pick?.player.position"
-                    :picks="reach.pick ? [reach.pick] : []"
+                    :reach="reach"
                   />
                 </div>
               </q-scroll-area>
@@ -364,14 +347,14 @@ import {
   DisplayedUserInfo,
   Reach,
   DisplayedPlayer,
-  DisplayedPick,
 } from 'src/components/models';
-import { getPlayerImageUrl, getAvatarUrl } from './utils';
+import { getPlayerImageUrl, getAvatarUrl, formattedPickSpot } from './utils';
 import PlayerAnalysisCard from './PlayerAnalysisCard.vue';
 import AnalysisCard from './AnalysisCard.vue';
+import ReachAnalysisCard from './ReachAnalysisCard.vue';
 
 export default defineComponent({
-  components: { PlayerAnalysisCard, AnalysisCard },
+  components: { PlayerAnalysisCard, AnalysisCard, ReachAnalysisCard },
   // name: 'ComponentName'
   props: {
     userInfo: {
@@ -437,19 +420,6 @@ export default defineComponent({
     ): string => {
       const pickNumber = pickNo % teamCount === 0 ? 1 : pickNo % teamCount;
       return `${round}.${pickNumber}`;
-    };
-
-    const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
-      if (pick) {
-        const round = pick.round;
-        const pickNumber =
-          pick.pick_no % pick.draftTeamCount === 0
-            ? 1
-            : pick.pick_no % pick.draftTeamCount;
-        return `${round}.${pickNumber}`;
-      }
-
-      return '';
     };
 
     return {

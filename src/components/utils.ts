@@ -1,4 +1,4 @@
-import { DisplayedUserInfo } from '../components/models';
+import { DisplayedPick, DisplayedUserInfo } from '../components/models';
 
 export const getPlayerImageUrl = (playerId: string | undefined): string => {
   if (playerId) {
@@ -16,4 +16,17 @@ export const getAvatarUrl = (
   } else {
     return '';
   }
+};
+
+export const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
+  if (pick) {
+    const round = pick.round;
+    const pickNumber =
+      pick.pick_no % pick.draftTeamCount === 0
+        ? 1
+        : pick.pick_no % pick.draftTeamCount;
+    return `${round}.${pickNumber}`;
+  }
+
+  return '';
 };
