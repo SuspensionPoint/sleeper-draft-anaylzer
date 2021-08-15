@@ -142,6 +142,30 @@ export default store(function (/* { ssrContext } */) {
               avgPickNumber: 0,
             };
 
+            let favoriteRB: FavoritePositionalPick = {
+              player: {} as DisplayedPlayer,
+              picks: [],
+              position: '',
+              avgRoundNumber: 0,
+              avgPickNumber: 0,
+            };
+
+            let favoriteWR: FavoritePositionalPick = {
+              player: {} as DisplayedPlayer,
+              picks: [],
+              position: '',
+              avgRoundNumber: 0,
+              avgPickNumber: 0,
+            };
+
+            let favoriteTE: FavoritePositionalPick = {
+              player: {} as DisplayedPlayer,
+              picks: [],
+              position: '',
+              avgRoundNumber: 0,
+              avgPickNumber: 0,
+            };
+
             for (const draft of drafts) {
               // For now, skip non-supported scoring types.
               // Can go back and update this to use proper ADPs for those leagues later.
@@ -247,6 +271,55 @@ export default store(function (/* { ssrContext } */) {
                       ),
                     };
                   }
+                  break;
+                }
+                case 'RB': {
+                  if (pickArray.length > favoriteRB.picks.length) {
+                    favoriteRB = {
+                      player,
+                      picks: pickArray,
+                      position: player.position,
+                      avgRoundNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.round))
+                      ),
+                      avgPickNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.pick_no))
+                      ),
+                    };
+                  }
+                  break;
+                }
+                case 'WR': {
+                  if (pickArray.length > favoriteWR.picks.length) {
+                    favoriteWR = {
+                      player,
+                      picks: pickArray,
+                      position: player.position,
+                      avgRoundNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.round))
+                      ),
+                      avgPickNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.pick_no))
+                      ),
+                    };
+                  }
+                  break;
+                }
+                case 'TE': {
+                  if (pickArray.length > favoriteTE.picks.length) {
+                    favoriteTE = {
+                      player,
+                      picks: pickArray,
+                      position: player.position,
+                      avgRoundNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.round))
+                      ),
+                      avgPickNumber: Math.ceil(
+                        _.mean(pickArray.map((p) => p.pick_no))
+                      ),
+                    };
+                  }
+                  break;
                 }
                 default:
                   break;
@@ -359,6 +432,9 @@ export default store(function (/* { ssrContext } */) {
                 mostDraftedPlayer,
                 averagePickValue: totalPickValue / totalNumPicks,
                 favoriteQB,
+                favoriteRB,
+                favoriteWR,
+                favoriteTE,
               },
             });
 

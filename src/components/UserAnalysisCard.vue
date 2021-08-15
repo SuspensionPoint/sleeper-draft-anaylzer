@@ -224,6 +224,105 @@
                     "
                     :picks="$props.userInfo.analysis.favoriteQB.picks"
                   />
+
+                  <player-analysis-card
+                    class="player-analysis-card-horizontal"
+                    title="Favorite RB"
+                    :subTitle="
+                      $props.userInfo.analysis.favoriteRB.player.full_name
+                    "
+                    :image="
+                      getPlayerImageUrl(
+                        $props.userInfo.analysis.favoriteRB.player.player_id
+                      )
+                    "
+                    :description="
+                      'Drafted ' +
+                      $props.userInfo.analysis.favoriteRB.picks.length +
+                      ' time(s). On average drafted at the ' +
+                      favoriteFormattedPickSpot(
+                        $props.userInfo.analysis.favoriteRB.avgRoundNumber,
+                        $props.userInfo.analysis.favoriteRB.avgPickNumber,
+                        $props.userInfo.analysis.favoriteRB.picks[0]
+                          .draftTeamCount
+                      ) +
+                      ' spot.'
+                    "
+                    :team="$props.userInfo.analysis.favoriteRB.player.team"
+                    :playerNumber="
+                      $props.userInfo.analysis.favoriteRB.player.number
+                    "
+                    :playerPosition="
+                      $props.userInfo.analysis.favoriteRB.player.position
+                    "
+                    :picks="$props.userInfo.analysis.favoriteRB.picks"
+                  />
+
+                  <player-analysis-card
+                    class="player-analysis-card-horizontal"
+                    title="Favorite WR"
+                    :subTitle="
+                      $props.userInfo.analysis.favoriteWR.player.full_name
+                    "
+                    :image="
+                      getPlayerImageUrl(
+                        $props.userInfo.analysis.favoriteWR.player.player_id
+                      )
+                    "
+                    :description="
+                      'Drafted ' +
+                      $props.userInfo.analysis.favoriteWR.picks.length +
+                      ' time(s). On average drafted at the ' +
+                      favoriteFormattedPickSpot(
+                        $props.userInfo.analysis.favoriteWR.avgRoundNumber,
+                        $props.userInfo.analysis.favoriteWR.avgPickNumber,
+                        $props.userInfo.analysis.favoriteWR.picks[0]
+                          .draftTeamCount
+                      ) +
+                      ' spot.'
+                    "
+                    :team="$props.userInfo.analysis.favoriteWR.player.team"
+                    :playerNumber="
+                      $props.userInfo.analysis.favoriteWR.player.number
+                    "
+                    :playerPosition="
+                      $props.userInfo.analysis.favoriteWR.player.position
+                    "
+                    :picks="$props.userInfo.analysis.favoriteWR.picks"
+                  />
+
+                  <player-analysis-card
+                    class="player-analysis-card-horizontal"
+                    title="Favorite TE"
+                    :subTitle="
+                      $props.userInfo.analysis.favoriteTE.player.full_name
+                    "
+                    :image="
+                      getPlayerImageUrl(
+                        $props.userInfo.analysis.favoriteTE.player.player_id
+                      )
+                    "
+                    :description="
+                      'Drafted ' +
+                      $props.userInfo.analysis.favoriteTE.picks.length +
+                      ' time(s). On average drafted at the ' +
+                      favoriteFormattedPickSpot(
+                        $props.userInfo.analysis.favoriteTE.avgRoundNumber,
+                        $props.userInfo.analysis.favoriteTE.avgPickNumber,
+                        $props.userInfo.analysis.favoriteTE.picks[0]
+                          .draftTeamCount
+                      ) +
+                      ' spot.'
+                    "
+                    :team="$props.userInfo.analysis.favoriteTE.player.team"
+                    :playerNumber="
+                      $props.userInfo.analysis.favoriteTE.player.number
+                    "
+                    :playerPosition="
+                      $props.userInfo.analysis.favoriteTE.player.position
+                    "
+                    :picks="$props.userInfo.analysis.favoriteTE.picks"
+                  />
                 </div>
               </q-scroll-area>
 
