@@ -19,6 +19,7 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "html-to-image": "^1.7.0",
     "lodash": "^4.17.21",
     "quasar": "^2.0.0",
     "vuex": "^4.0.1"

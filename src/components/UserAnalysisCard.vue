@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card" flat>
+  <q-card class="my-card" ref="reportElement" flat>
     <q-item class="card-header">
       <q-item-section avatar>
         <q-avatar size="75px">
@@ -23,6 +23,10 @@
         >
           {{ getSignedValueString($props.userInfo.analysis.averagePickValue) }}
         </q-item-label>
+      </q-item-section>
+
+      <q-item-section side>
+        <q-btn @click="exportToPng()">PNG</q-btn>
       </q-item-section>
     </q-item>
 
@@ -170,6 +174,9 @@ import {
   formattedPickSpot,
   getSignedValueString,
 } from './utils';
+import * as htmlToImage from 'html-to-image';
+import { toPng } from 'html-to-image';
+
 import AnalysisCard from './AnalysisCard.vue';
 import ReachAnalysisCard from './ReachAnalysisCard.vue';
 import MostDraftedAnalysisCard from './MostDraftedAnalysisCard.vue';
@@ -251,6 +258,17 @@ export default defineComponent({
       return `${round}.${pickNumber}`;
     };
 
+    const reportElement = ref(null);
+    const exportToPng = () => {
+      const element = reportElement.value;
+      const element2 = document.getElementById('reportElement');
+      debugger;
+      if (element) {
+        console.log('element: ', element);
+        console.log('element2: ', element2);
+      }
+    };
+
     return {
       expanded: ref(false),
       getAvatarUrl,
@@ -261,6 +279,7 @@ export default defineComponent({
       formattedPickSpot,
       favoriteFormattedPickSpot,
       getSignedValueString,
+      exportToPng,
     };
   },
 });
