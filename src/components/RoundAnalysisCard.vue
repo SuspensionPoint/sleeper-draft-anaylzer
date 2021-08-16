@@ -16,49 +16,102 @@
           </h4>
 
           <div>
-            <q-markup-table dense>
+            <q-markup-table dense flat>
               <thead>
                 <tr>
-                  <th class="text-left">Position</th>
-                  <th class="text-right">Percentage Drafted</th>
+                  <th class="text-left"><b>Position</b></th>
+                  <th class="text-right"><b>Percentage Drafted</b></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td class="text-left">QB</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.quarterback }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.quarterback > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.quarterback < 25,
+                      }"
+                      >{{
+                        $props.roundAnalysis.distribution.quarterback
+                      }}%</span
+                    >
                   </td>
                 </tr>
 
                 <tr>
                   <td class="text-left">RB</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.runningback }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.runningback > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.runningback < 25,
+                      }"
+                      >{{
+                        $props.roundAnalysis.distribution.runningback
+                      }}%</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">WR</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.wide_receiver }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.wide_receiver > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.wide_receiver < 25,
+                      }"
+                    >
+                      {{ $props.roundAnalysis.distribution.wide_receiver }}%
+                    </span>
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">TE</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.tight_end }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.tight_end > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.tight_end < 25,
+                      }"
+                      >{{ $props.roundAnalysis.distribution.tight_end }}%</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">DEF</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.defense }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.defense > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.defense < 25,
+                      }"
+                      >{{ $props.roundAnalysis.distribution.defense }}%</span
+                    >
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">K</td>
                   <td class="text-right">
-                    {{ $props.roundAnalysis.distribution.kicker }}%
+                    <span
+                      v-bind:class="{
+                        'text-green':
+                          $props.roundAnalysis.distribution.kicker > 50,
+                        'text-red':
+                          $props.roundAnalysis.distribution.kicker < 25,
+                      }"
+                      >{{ $props.roundAnalysis.distribution.kicker }}%</span
+                    >
                   </td>
                 </tr>
               </tbody>
