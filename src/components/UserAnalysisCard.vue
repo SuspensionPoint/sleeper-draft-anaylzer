@@ -109,7 +109,7 @@
 
               <h5 class="text-center">Round Tendencies</h5>
               <q-scroll-area class="reach-scroll-area">
-                <div class="text-center row no-wrap justify-center">
+                <div class="text-center row no-wrap">
                   <round-analysis-card
                     v-for="roundAnalysis in $props.userInfo.analysis
                       .roundAnalysis"
@@ -119,7 +119,7 @@
                       '-' +
                       roundAnalysis.probabilityToDraftedPosition
                     "
-                    class="player-analysis-card-horizontal"
+                    class="col-grow player-analysis-card-horizontal"
                     :roundAnalysis="roundAnalysis"
                   />
                 </div>
