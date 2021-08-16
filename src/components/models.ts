@@ -53,11 +53,21 @@ export interface FavoritePositionalPick {
   avgPickNumber: number;
 }
 
+export interface DraftPositionDistribution {
+  quarterback: number;
+  runningback: number;
+  wide_receiver: number;
+  tight_end: number;
+  defense: number;
+  kicker: number;
+}
+
 export interface RoundAnalysis {
   round: number;
   mostDraftedPosition: string[];
   mostDraftedPositionCount: number;
   probabilityToDraftedPosition: number;
+  distribution: DraftPositionDistribution;
 }
 
 export interface UserAnalysisReport {
@@ -72,7 +82,5 @@ export interface UserAnalysisReport {
   favoriteWR: FavoritePositionalPick;
   favoriteTE: FavoritePositionalPick;
 
-  firstRoundAnalysis: RoundAnalysis;
-  secondRoundAnalysis: RoundAnalysis;
-  thirdRoundAnalysis: RoundAnalysis;
+  roundAnalysis: RoundAnalysis[];
 }

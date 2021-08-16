@@ -35,3 +35,7 @@ export const getSignedValueString = (value: number): string => {
   const decimalPlaces = 2;
   return `${value && value < 0 ? '' : '+'}${value.toFixed(decimalPlaces)}`;
 };
+
+export const decimalToPercent = (val: number): number => {
+  return Math.round(val * 100);
+};

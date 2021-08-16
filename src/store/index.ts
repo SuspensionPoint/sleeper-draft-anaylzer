@@ -15,12 +15,14 @@ import {
   FavoritePositionalPick,
   DisplayedPick,
   RoundAnalysis,
+  DraftPositionDistribution,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
 import _, { Dictionary } from 'lodash';
 import { AxiosResponse } from 'axios';
 import { Notify } from 'quasar';
+import { decimalToPercent } from 'src/components/utils';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -70,8 +72,42 @@ const getRoundAnalysis = (
   const rbs = picks.filter((p) => p.player.position === 'RB');
   const wrs = picks.filter((p) => p.player.position === 'WR');
   const tes = picks.filter((p) => p.player.position === 'TE');
-  const totalNumSelections = qbs.length + rbs.length + wrs.length + tes.length;
-  const allPositions = [qbs, rbs, wrs, tes];
+  const defenses = picks.filter((p) => p.player.position === 'DEF');
+  const kickers = picks.filter((p) => p.player.position === 'K');
+  const totalNumSelections =
+    qbs.length +
+    rbs.length +
+    wrs.length +
+    tes.length +
+    defenses.length +
+    kickers.length;
+  const allPositions = [qbs, rbs, wrs, tes, defenses, kickers];
+
+  if (totalNumSelections < 1) {
+    return {
+      round: round,
+      mostDraftedPosition: [],
+      mostDraftedPositionCount: 0,
+      probabilityToDraftedPosition: 0,
+      distribution: {
+        quarterback: 0,
+        runningback: 0,
+        wide_receiver: 0,
+        tight_end: 0,
+        defense: 0,
+        kicker: 0,
+      },
+    };
+  }
+
+  const distribution: DraftPositionDistribution = {
+    quarterback: decimalToPercent(qbs.length / totalNumSelections),
+    runningback: decimalToPercent(rbs.length / totalNumSelections),
+    wide_receiver: decimalToPercent(wrs.length / totalNumSelections),
+    tight_end: decimalToPercent(tes.length / totalNumSelections),
+    defense: decimalToPercent(defenses.length / totalNumSelections),
+    kicker: decimalToPercent(kickers.length / totalNumSelections),
+  };
 
   const lengthMap = {} as Dictionary<DisplayedPick[]>;
   for (const arr of allPositions) {
@@ -96,14 +132,15 @@ const getRoundAnalysis = (
     const positions = [
       ...new Set(combined.map((item) => item.player.position)),
     ];
-    const probality = (combined.length / totalNumSelections) * 100;
 
-    debugger;
     return {
       round: round,
       mostDraftedPosition: positions,
       mostDraftedPositionCount: combined.length,
-      probabilityToDraftedPosition: Math.round(probality),
+      probabilityToDraftedPosition: decimalToPercent(
+        combined.length / totalNumSelections
+      ),
+      distribution,
     };
   } else {
     const mostCommonPosition =
@@ -118,6 +155,7 @@ const getRoundAnalysis = (
       probabilityToDraftedPosition: Math.round(
         (mostCommonPosition.length / totalNumSelections) * 100
       ),
+      distribution,
     };
   }
 };
@@ -521,6 +559,11 @@ export default store(function (/* { ssrContext } */) {
                 favoriteRB,
                 favoriteWR,
                 favoriteTE,
+                roundAnalysis: [
+                  firstRoundSelections,
+                  secondRoundSelections,
+                  thirdRoundSelections,
+                ],
               },
             });
 
