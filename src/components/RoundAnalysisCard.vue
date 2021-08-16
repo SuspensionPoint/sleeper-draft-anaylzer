@@ -24,6 +24,10 @@
                 class="col-shrink player-img-col"
                 style="overflow: auto"
               >
+                <p class="player-name">
+                  {{ mostCommon.player.full_name }}
+                </p>
+
                 <q-img
                   v-if="imageUrl && !imageLoadError"
                   class="player-img"
@@ -324,11 +328,11 @@ $width: 400px;
   color: $card-text-color;
 
   .category {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .positions {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .value {
@@ -338,8 +342,13 @@ $width: 400px;
 
   .player-img-col {
     min-width: 105px;
-    margin: 15px 0;
+    margin: 5px 0;
     padding: 3px;
+
+    .player-name {
+      font-weight: 400;
+    }
+
     .player-img {
       background: center center / cover $accent-color;
       margin: 5px 0 5px;
