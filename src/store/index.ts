@@ -8,12 +8,13 @@ import {
 import { DraftsApi, Pick, UserApi, Player, Draft } from 'src/api/';
 import {
   DisplayedUserInfo,
-  DisplayedPick,
   DisplayedPlayer,
   PlayerADP,
   MostDraftedPlayer,
   Reach,
   FavoritePositionalPick,
+  DisplayedPick,
+  RoundAnalysis,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
@@ -59,6 +60,66 @@ const getPlayerAdp = (
   );
 
   return playerAdpInfo;
+};
+
+const getRoundAnalysis = (
+  round: number,
+  picks: DisplayedPick[]
+): RoundAnalysis => {
+  const qbs = picks.filter((p) => p.player.position === 'QB');
+  const rbs = picks.filter((p) => p.player.position === 'RB');
+  const wrs = picks.filter((p) => p.player.position === 'WR');
+  const tes = picks.filter((p) => p.player.position === 'TE');
+  const totalNumSelections = qbs.length + rbs.length + wrs.length + tes.length;
+  const allPositions = [qbs, rbs, wrs, tes];
+
+  const lengthMap = {} as Dictionary<DisplayedPick[]>;
+  for (const arr of allPositions) {
+    if (arr.length < 1) {
+      continue;
+    }
+
+    if (lengthMap[arr.length]) {
+      lengthMap[arr.length].push(...arr);
+    } else {
+      lengthMap[arr.length] = [...arr];
+    }
+  }
+
+  const sortedLengthMap = Object.entries(lengthMap).sort(
+    ([, a], [, b]) => b.length - a.length
+  );
+
+  const lengthMapKeys = _.keys(lengthMap);
+  if (lengthMapKeys.length < allPositions.length) {
+    const combined = sortedLengthMap[0][1];
+    const positions = [
+      ...new Set(combined.map((item) => item.player.position)),
+    ];
+    const probality = (combined.length / totalNumSelections) * 100;
+
+    debugger;
+    return {
+      round: round,
+      mostDraftedPosition: positions,
+      mostDraftedPositionCount: combined.length,
+      probabilityToDraftedPosition: Math.round(probality),
+    };
+  } else {
+    const mostCommonPosition =
+      allPositions[
+        allPositions.reduce((p, c, i, a) => (a[p].length > c.length ? p : i), 0)
+      ];
+
+    return {
+      round: round,
+      mostDraftedPosition: [mostCommonPosition[0].player.position],
+      mostDraftedPositionCount: mostCommonPosition.length,
+      probabilityToDraftedPosition: Math.round(
+        (mostCommonPosition.length / totalNumSelections) * 100
+      ),
+    };
+  }
 };
 
 // provide typings for `this.$store`
@@ -245,6 +306,8 @@ export default store(function (/* { ssrContext } */) {
 
             const reachMap = {} as Dictionary<Reach[]>;
 
+            const roundMap = {} as Dictionary<DisplayedPick[]>;
+
             for (const key in playerToPickHistory) {
               const pickArray = playerToPickHistory[key];
               const player = pickArray[0].player;
@@ -328,6 +391,13 @@ export default store(function (/* { ssrContext } */) {
               if (playerAdp) {
                 let highestDraftPick = pickArray[0];
                 for (const pick of pickArray) {
+                  // Add to pick round tracking
+                  if (roundMap[pick.round]) {
+                    roundMap[pick.round].push(pick);
+                  } else {
+                    roundMap[pick.round] = [pick];
+                  }
+
                   if (pick.pick_no < highestDraftPick.pick_no) {
                     highestDraftPick = pick;
                   }
@@ -426,6 +496,12 @@ export default store(function (/* { ssrContext } */) {
               mostCommonReach.picks[0].player_id
             ].map((r) => r.picks[0]);
 
+            // Get round 1st,2nd,3rd round analysis
+            const firstRoundSelections = getRoundAnalysis(1, roundMap[1]);
+            const secondRoundSelections = getRoundAnalysis(2, roundMap[2]);
+            const thirdRoundSelections = getRoundAnalysis(3, roundMap[3]);
+
+            debugger;
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,

@@ -53,6 +53,13 @@ export interface FavoritePositionalPick {
   avgPickNumber: number;
 }
 
+export interface RoundAnalysis {
+  round: number;
+  mostDraftedPosition: string[];
+  mostDraftedPositionCount: number;
+  probabilityToDraftedPosition: number;
+}
+
 export interface UserAnalysisReport {
   mostDraftedPlayer: MostDraftedPlayer;
   biggestReach?: Reach;
@@ -64,4 +71,8 @@ export interface UserAnalysisReport {
   favoriteRB: FavoritePositionalPick;
   favoriteWR: FavoritePositionalPick;
   favoriteTE: FavoritePositionalPick;
+
+  firstRoundAnalysis: RoundAnalysis;
+  secondRoundAnalysis: RoundAnalysis;
+  thirdRoundAnalysis: RoundAnalysis;
 }
