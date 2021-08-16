@@ -107,6 +107,24 @@
                 </div>
               </q-scroll-area>
 
+              <h5 class="text-center">Round Tendencies</h5>
+              <q-scroll-area class="reach-scroll-area">
+                <div class="text-center row no-wrap justify-center">
+                  <round-analysis-card
+                    v-for="roundAnalysis in $props.userInfo.analysis
+                      .roundAnalysis"
+                    :key="
+                      'round-' +
+                      roundAnalysis.round +
+                      '-' +
+                      roundAnalysis.probabilityToDraftedPosition
+                    "
+                    class="player-analysis-card-horizontal"
+                    :roundAnalysis="roundAnalysis"
+                  />
+                </div>
+              </q-scroll-area>
+
               <div class="text-center row justify-center">
                 <analysis-card
                   class="player-analysis-card"
@@ -156,6 +174,7 @@ import AnalysisCard from './AnalysisCard.vue';
 import ReachAnalysisCard from './ReachAnalysisCard.vue';
 import MostDraftedAnalysisCard from './MostDraftedAnalysisCard.vue';
 import PositionalAnalysisCard from './PositionalAnalysisCard.vue';
+import RoundAnalysisCard from './RoundAnalysisCard.vue';
 
 export default defineComponent({
   components: {
@@ -163,6 +182,7 @@ export default defineComponent({
     ReachAnalysisCard,
     MostDraftedAnalysisCard,
     PositionalAnalysisCard,
+    RoundAnalysisCard,
   },
   // name: 'ComponentName'
   props: {

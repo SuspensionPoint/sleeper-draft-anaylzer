@@ -83,9 +83,6 @@ import { FavoritePositionalPick } from './models';
 export default defineComponent({
   // name: 'ComponentName'
   props: {
-    title: {
-      type: String,
-    },
     positionalPlayer: {
       type: Object as PropType<FavoritePositionalPick>,
       required: true,
