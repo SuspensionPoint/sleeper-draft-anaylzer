@@ -265,6 +265,9 @@ export default store(function (/* { ssrContext } */) {
               avgPickNumber: 0,
             };
 
+            // Track rounds that the user has made a selection in
+            const roundsDraftedIn = new Set<number>();
+
             for (const draft of drafts) {
               // For now, skip non-supported scoring types.
               // Can go back and update this to use proper ADPs for those leagues later.
@@ -287,6 +290,7 @@ export default store(function (/* { ssrContext } */) {
 
                 for (const userPick of usersPicksForThisDraft) {
                   const player = state.players[userPick.player_id];
+                  roundsDraftedIn.add(userPick.round);
 
                   // todo: make this more dynamic buy using:
                   // https://api.sleeper.app/projections/nfl/2021?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp_half_ppr
@@ -534,12 +538,16 @@ export default store(function (/* { ssrContext } */) {
               mostCommonReach.picks[0].player_id
             ].map((r) => r.picks[0]);
 
-            // Get round 1st,2nd,3rd round analysis
-            const firstRoundSelections = getRoundAnalysis(1, roundMap[1]);
-            const secondRoundSelections = getRoundAnalysis(2, roundMap[2]);
-            const thirdRoundSelections = getRoundAnalysis(3, roundMap[3]);
+            const roundAnalysis: RoundAnalysis[] = [];
+            roundsDraftedIn.forEach((round) => {
+              const roundNumber = Number(round);
+              if (roundMap[roundNumber]) {
+                roundAnalysis.push(
+                  getRoundAnalysis(roundNumber, roundMap[roundNumber])
+                );
+              }
+            });
 
-            debugger;
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,
@@ -559,11 +567,7 @@ export default store(function (/* { ssrContext } */) {
                 favoriteRB,
                 favoriteWR,
                 favoriteTE,
-                roundAnalysis: [
-                  firstRoundSelections,
-                  secondRoundSelections,
-                  thirdRoundSelections,
-                ],
+                roundAnalysis,
               },
             });
 
