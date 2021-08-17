@@ -140,9 +140,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Quasar App',
-        short_name: 'Quasar App',
-        description: 'A Quasar Framework app',
+        name: 'Sleeper Stats',
+        short_name: 'Sleeper Stats',
+        description: 'Analyze Draft History for Sleeper Users',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

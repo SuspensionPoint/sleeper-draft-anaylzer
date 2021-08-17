@@ -1,8 +1,8 @@
 {
   "name": "sleeper-draft-anaylzer",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "Analyze Draft History for Sleeper Users",
+  "productName": "Sleeper Stats",
   "author": "Jeremy",
   "private": true,
   "scripts": {
