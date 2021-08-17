@@ -307,14 +307,17 @@ export default store(function (/* { ssrContext } */) {
     actions: {
       gatherTheBoisData({ dispatch, state }) {
         state.idToPlayerName.forEach((value: string, key: string) => {
-          dispatch('getDraftsFromUserId', key).catch((err) => {
-            console.log('Error gathering the boys data:', err);
-          });
+          dispatch('getDraftsFromUserId', { userId: key, year: 2020 }).catch(
+            (err) => {
+              console.log('Error gathering the boys data:', err);
+            }
+          );
         });
       },
 
-      async getDraftsFromUserId({ commit, state }, userId: string) {
+      async getDraftsFromUserId({ commit, state }, { userId, year }) {
         if (state.userInfo.find((user) => user.user_id === userId)) {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           console.error(`User with id ${userId} already loaded`);
           return;
         }
@@ -664,6 +667,15 @@ export default store(function (/* { ssrContext } */) {
               }
             });
 
+            // Route to page
+            // const router = useRouter();
+            // void router.push({
+            //   path: '/report/:year/:idList',
+            //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            //   params: { year, idList: [] },
+            // });
+            console.log(year);
+
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,
@@ -702,7 +714,11 @@ export default store(function (/* { ssrContext } */) {
           const draft: Draft = draftResponse.data as unknown as Draft;
           const draftOrder = _.keys(draft.draft_order);
           draftOrder.forEach(
-            (userId) => void dispatch('getDraftsFromUserId', userId)
+            (userId) =>
+              void dispatch('getDraftsFromUserId', {
+                userId,
+                year: draft.season,
+              })
           );
         }
       },

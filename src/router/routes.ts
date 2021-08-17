@@ -9,6 +9,14 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  {
+    path: '/report/:year/:idList',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/DraftAnalyzer.vue') },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

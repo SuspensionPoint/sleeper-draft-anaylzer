@@ -35,18 +35,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
+import { useRoute } from 'vue-router';
 import UserAnalysisCard from 'src/components/UserAnalysisCard.vue';
+import { DisplayedUserInfo } from './models';
 
 export default defineComponent({
   components: { UserAnalysisCard },
   // name: 'ComponentName'
   setup() {
     const store = useStore();
+    const route = useRoute();
     const enteredUserId = ref('202523901442392064');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
+
+    // Track entered userIds
+    watch(usersToAnalyze.value, () => {
+      const infoList: DisplayedUserInfo[] =
+        usersToAnalyze.value as DisplayedUserInfo[];
+      const idList = infoList.map((info) => info.user_id).join(',');
+      const path = route.path;
+
+      if (!path.includes('/report/')) {
+        const url = window.location.origin + `#/report/${2020}` + path;
+        history.pushState(null, 'Sleeper Stats', url + idList);
+      }
+    });
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersLoading = computed(() => store.getters.usersLoading);
@@ -58,7 +74,7 @@ export default defineComponent({
         if (userId.includes('/') && isDraftUrl) {
           void store.dispatch('getUserInfoFromDraft', isDraftUrl.shift());
         } else {
-          void store.dispatch('getDraftsFromUserId', userId);
+          void store.dispatch('getDraftsFromUserId', { userId, year: 2020 });
         }
       }
       enteredUserId.value = '';
@@ -82,6 +98,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.q-field--float .q-field__label {
+  font-weight: bold;
+}
+
 .loading-card {
   width: 45%;
 }
