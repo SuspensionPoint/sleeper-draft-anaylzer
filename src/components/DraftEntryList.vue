@@ -16,17 +16,20 @@
       v-for="user in usersToAnalyze"
       :key="user.user_id"
       :userInfo="user"
-      class="col-12 col-md-6 analysis-list shadowed"
+      class="col-12 col-md-6 shadowed"
     />
 
     <div
       v-for="loadingUser in usersLoading"
       :key="`loading-${loadingUser.user_id}`"
-      class="loading-card col-12 col-md-6 shadowed"
+      class="loading-card col-12 col-md-6"
     >
-      <q-card flat>
-        <q-skeleton height="145px" square />
-      </q-card>
+      <q-skeleton
+        height="145px"
+        class="bg-blue-teal-10"
+        square
+        animation="pulse-y"
+      />
     </div>
   </div>
 </template>
@@ -83,11 +86,7 @@ export default defineComponent({
   width: 45%;
 }
 
-.analysis-list {
-  padding: 10px;
-}
-
 .shadowed {
-  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+  box-shadow: -7px 7px 14px 0px #191527;
 }
 </style>
