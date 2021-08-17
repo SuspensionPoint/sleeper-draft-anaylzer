@@ -28,7 +28,7 @@
           </q-item-label>
         </q-item-section>
 
-        <q-item-section side>
+        <q-item-section v-if="enableExport" side>
           <q-btn v-if="!exporting" @click="exportToPng()">PNG</q-btn>
         </q-item-section>
       </q-item>
@@ -330,6 +330,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const enableExport = false;
     const reportElement = ref();
     const expanded = ref(false);
     const exporting = ref(false);
@@ -369,6 +370,7 @@ export default defineComponent({
       exportToPng,
       reportElement,
       exporting,
+      enableExport,
     };
   },
 });
