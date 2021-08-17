@@ -307,7 +307,7 @@ export default store(function (/* { ssrContext } */) {
     actions: {
       gatherTheBoisData({ dispatch, state }) {
         state.idToPlayerName.forEach((value: string, key: string) => {
-          dispatch('getDraftsFromUserId', { userId: key, year: 2020 }).catch(
+          dispatch('getDraftsFromUserId', { userId: key, season: 2020 }).catch(
             (err) => {
               console.log('Error gathering the boys data:', err);
             }
@@ -315,13 +315,14 @@ export default store(function (/* { ssrContext } */) {
         });
       },
 
-      async getDraftsFromUserId({ commit, state }, { userId, year }) {
+      async getDraftsFromUserId({ commit, state }, { userId, season }) {
         if (state.userInfo.find((user) => user.user_id === userId)) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           console.error(`User with id ${userId} already loaded`);
           return;
         }
 
+        commit('setSeason', season);
         commit('addUserBeingLoaded', userId);
 
         const draftsApi = new DraftsApi();
@@ -330,7 +331,7 @@ export default store(function (/* { ssrContext } */) {
           await draftsApi.userUserIdDraftsSportSeasonGet(
             userId,
             state.sport,
-            state.season
+            season
           );
 
         if (draftResponse.data.length > 0) {
@@ -662,7 +663,7 @@ export default store(function (/* { ssrContext } */) {
             //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             //   params: { year, idList: [] },
             // });
-            console.log(year);
+            console.log(season);
 
             commit('addUserInfo', {
               ...user,
@@ -735,6 +736,10 @@ export default store(function (/* { ssrContext } */) {
 
       addUserInfo(state, userInfo: DisplayedUserInfo) {
         state.userInfo.push(userInfo);
+      },
+
+      setSeason(state, season: number) {
+        state.season = season;
       },
     },
 

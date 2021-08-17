@@ -19,13 +19,13 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
 
-    const draftYear = route.params.year;
+    const season = route.params.year;
     const ids = route.params.idList as string;
-    if (draftYear && ids) {
+    if (season && ids) {
       const idList = ids === '' ? [] : ids.split(',');
       idList.forEach((user_id: string) => {
         store
-          .dispatch('getDraftsFromUserId', { userId: user_id, year: draftYear })
+          .dispatch('getDraftsFromUserId', { userId: user_id, season })
           .catch((err) => {
             console.log(`Error loading data for user id: ${user_id}`, err);
           });
