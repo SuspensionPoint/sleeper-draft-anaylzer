@@ -65,6 +65,7 @@ export interface DraftPositionDistribution {
 export interface RoundAnalysis {
   round: number;
   mostDraftedPosition: string[];
+  mostDraftedPlayersOfPositions: MostDraftedPlayer[];
   mostDraftedPositionCount: number;
   probabilityToDraftedPosition: number;
   distribution: DraftPositionDistribution;

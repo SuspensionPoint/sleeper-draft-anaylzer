@@ -120,22 +120,117 @@
                 </q-scroll-area>
 
                 <h5 class="text-center">Round Tendencies</h5>
-                <q-scroll-area class="reach-scroll-area">
-                  <div class="text-center row no-wrap justify-center">
-                    <round-analysis-card
-                      v-for="roundAnalysis in $props.userInfo.analysis
-                        .roundAnalysis"
-                      :key="
-                        'round-' +
-                        roundAnalysis.round +
-                        '-' +
-                        roundAnalysis.probabilityToDraftedPosition
-                      "
-                      class="player-analysis-card-horizontal"
-                      :roundAnalysis="roundAnalysis"
-                    />
-                  </div>
-                </q-scroll-area>
+                <div
+                  v-if="
+                    !exporting ||
+                    $props.userInfo.analysis.roundAnalysis.length <= 5
+                  "
+                >
+                  <q-scroll-area class="reach-scroll-area">
+                    <div class="text-center row no-wrap justify-center">
+                      <round-analysis-card
+                        v-for="roundAnalysis in $props.userInfo.analysis
+                          .roundAnalysis"
+                        :key="
+                          'round-' +
+                          roundAnalysis.round +
+                          '-' +
+                          roundAnalysis.probabilityToDraftedPosition
+                        "
+                        class="player-analysis-card-horizontal"
+                        :roundAnalysis="roundAnalysis"
+                      />
+                    </div>
+                  </q-scroll-area>
+                </div>
+
+                <div v-if="exporting">
+                  <q-scroll-area
+                    v-if="$props.userInfo.analysis.roundAnalysis.length > 5"
+                    class="reach-scroll-area"
+                  >
+                    <div class="text-center row no-wrap justify-center">
+                      <round-analysis-card
+                        v-for="roundAnalysis in $props.userInfo.analysis.roundAnalysis.slice(
+                          0,
+                          5
+                        )"
+                        :key="
+                          'round-' +
+                          roundAnalysis.round +
+                          '-' +
+                          roundAnalysis.probabilityToDraftedPosition
+                        "
+                        class="player-analysis-card-horizontal"
+                        :roundAnalysis="roundAnalysis"
+                      />
+                    </div>
+                  </q-scroll-area>
+
+                  <q-scroll-area
+                    v-if="$props.userInfo.analysis.roundAnalysis.length > 10"
+                    class="reach-scroll-area"
+                  >
+                    <div class="text-center row no-wrap justify-center">
+                      <round-analysis-card
+                        v-for="roundAnalysis in $props.userInfo.analysis.roundAnalysis.slice(
+                          5,
+                          10
+                        )"
+                        :key="
+                          'round-' +
+                          roundAnalysis.round +
+                          '-' +
+                          roundAnalysis.probabilityToDraftedPosition
+                        "
+                        class="player-analysis-card-horizontal"
+                        :roundAnalysis="roundAnalysis"
+                      />
+                    </div>
+                  </q-scroll-area>
+
+                  <q-scroll-area
+                    v-if="$props.userInfo.analysis.roundAnalysis.length > 10"
+                    class="reach-scroll-area"
+                  >
+                    <div class="text-center row no-wrap justify-center">
+                      <round-analysis-card
+                        v-for="roundAnalysis in $props.userInfo.analysis.roundAnalysis.slice(
+                          10
+                        )"
+                        :key="
+                          'round-' +
+                          roundAnalysis.round +
+                          '-' +
+                          roundAnalysis.probabilityToDraftedPosition
+                        "
+                        class="player-analysis-card-horizontal"
+                        :roundAnalysis="roundAnalysis"
+                      />
+                    </div>
+                  </q-scroll-area>
+
+                  <q-scroll-area
+                    v-if="$props.userInfo.analysis.roundAnalysis.length < 10"
+                    class="reach-scroll-area"
+                  >
+                    <div class="text-center row no-wrap justify-center">
+                      <round-analysis-card
+                        v-for="roundAnalysis in $props.userInfo.analysis.roundAnalysis.slice(
+                          5
+                        )"
+                        :key="
+                          'round-' +
+                          roundAnalysis.round +
+                          '-' +
+                          roundAnalysis.probabilityToDraftedPosition
+                        "
+                        class="player-analysis-card-horizontal"
+                        :roundAnalysis="roundAnalysis"
+                      />
+                    </div>
+                  </q-scroll-area>
+                </div>
 
                 <div class="text-center row justify-center">
                   <analysis-card
@@ -155,12 +250,6 @@
                     "
                   />
                 </div>
-
-                <!-- <player-analysis-card
-                v-for="playerToPicksMapping in playerToPickHistory"
-                :key="playerToPicksMapping[0].player_id"
-                :playerToPickHistory="playerToPicksMapping"
-              /> -->
               </div>
             </div>
           </q-card-section>

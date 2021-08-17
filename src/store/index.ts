@@ -64,6 +64,34 @@ const getPlayerAdp = (
   return playerAdpInfo;
 };
 
+const getMostOccuringPlayer = (
+  picks: DisplayedPick[]
+): MostDraftedPlayer | undefined => {
+  if (picks.length < 1) {
+    return;
+  }
+
+  const idToPickHistory = _.groupBy(picks, 'player_id');
+  const mostDraftedPlayer: MostDraftedPlayer = {
+    player: {} as DisplayedPlayer,
+    draftedCount: 0,
+    picks: [],
+  };
+
+  for (const key in idToPickHistory) {
+    const pickArray = idToPickHistory[key];
+    const player = pickArray[0].player;
+
+    if (pickArray.length > mostDraftedPlayer.draftedCount) {
+      mostDraftedPlayer.draftedCount = pickArray.length;
+      mostDraftedPlayer.player = player;
+      mostDraftedPlayer.picks = pickArray;
+    }
+  }
+
+  return mostDraftedPlayer;
+};
+
 const getRoundAnalysis = (
   round: number,
   picks: DisplayedPick[]
@@ -74,6 +102,14 @@ const getRoundAnalysis = (
   const tes = picks.filter((p) => p.player.position === 'TE');
   const defenses = picks.filter((p) => p.player.position === 'DEF');
   const kickers = picks.filter((p) => p.player.position === 'K');
+
+  const mostCommonQb = getMostOccuringPlayer(qbs);
+  const mostCommonRb = getMostOccuringPlayer(rbs);
+  const mostCommonWr = getMostOccuringPlayer(wrs);
+  const mostCommonTe = getMostOccuringPlayer(tes);
+  const mostCommonDef = getMostOccuringPlayer(defenses);
+  const mostCommonK = getMostOccuringPlayer(kickers);
+
   const totalNumSelections =
     qbs.length +
     rbs.length +
@@ -81,7 +117,10 @@ const getRoundAnalysis = (
     tes.length +
     defenses.length +
     kickers.length;
-  const allPositions = [qbs, rbs, wrs, tes, defenses, kickers];
+  const allPositions = [qbs, rbs, wrs, tes, defenses, kickers].filter(
+    (arr) => arr.length
+  );
+  const mostDraftedPlayersOfPositions: MostDraftedPlayer[] = [];
 
   if (totalNumSelections < 1) {
     return {
@@ -97,6 +136,7 @@ const getRoundAnalysis = (
         defense: 0,
         kicker: 0,
       },
+      mostDraftedPlayersOfPositions,
     };
   }
 
@@ -133,6 +173,44 @@ const getRoundAnalysis = (
       ...new Set(combined.map((item) => item.player.position)),
     ];
 
+    positions.forEach((pos) => {
+      switch (pos) {
+        case 'QB':
+          if (mostCommonQb) {
+            mostDraftedPlayersOfPositions.push(mostCommonQb);
+          }
+          break;
+        case 'RB':
+          if (mostCommonRb) {
+            mostDraftedPlayersOfPositions.push(mostCommonRb);
+          }
+          break;
+        case 'WR':
+          if (mostCommonWr) {
+            mostDraftedPlayersOfPositions.push(mostCommonWr);
+          }
+          break;
+        case 'TE':
+          if (mostCommonTe) {
+            mostDraftedPlayersOfPositions.push(mostCommonTe);
+          }
+          break;
+        case 'DEF':
+          if (mostCommonDef) {
+            mostDraftedPlayersOfPositions.push(mostCommonDef);
+          }
+          break;
+        case 'K':
+          if (mostCommonK) {
+            mostDraftedPlayersOfPositions.push(mostCommonK);
+          }
+          break;
+
+        default:
+          break;
+      }
+    });
+
     return {
       round: round,
       mostDraftedPosition: positions,
@@ -141,12 +219,49 @@ const getRoundAnalysis = (
         combined.length / totalNumSelections
       ),
       distribution,
+      mostDraftedPlayersOfPositions,
     };
   } else {
     const mostCommonPosition =
       allPositions[
         allPositions.reduce((p, c, i, a) => (a[p].length > c.length ? p : i), 0)
       ];
+
+    switch (mostCommonPosition[0].player.position) {
+      case 'QB':
+        if (mostCommonQb) {
+          mostDraftedPlayersOfPositions.push(mostCommonQb);
+        }
+        break;
+      case 'RB':
+        if (mostCommonRb) {
+          mostDraftedPlayersOfPositions.push(mostCommonRb);
+        }
+        break;
+      case 'WR':
+        if (mostCommonWr) {
+          mostDraftedPlayersOfPositions.push(mostCommonWr);
+        }
+        break;
+      case 'TE':
+        if (mostCommonTe) {
+          mostDraftedPlayersOfPositions.push(mostCommonTe);
+        }
+        break;
+      case 'DEF':
+        if (mostCommonDef) {
+          mostDraftedPlayersOfPositions.push(mostCommonDef);
+        }
+        break;
+      case 'K':
+        if (mostCommonK) {
+          mostDraftedPlayersOfPositions.push(mostCommonK);
+        }
+        break;
+
+      default:
+        break;
+    }
 
     return {
       round: round,
@@ -156,6 +271,7 @@ const getRoundAnalysis = (
         (mostCommonPosition.length / totalNumSelections) * 100
       ),
       distribution,
+      mostDraftedPlayersOfPositions,
     };
   }
 };
