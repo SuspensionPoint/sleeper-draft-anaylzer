@@ -57,7 +57,27 @@
           <q-card-section class="text-subtitle2">
             <div class="row">
               <div class="col justify-center wrap">
+                <h5 class="text-center">Grade, Anomalies, and Common Picks</h5>
                 <div v-if="!exporting">
+                  <div class="text-center row justify-center">
+                    <analysis-card
+                      class="player-analysis-card-vertical-first"
+                      title="Average Pick Value"
+                      :value="$props.userInfo.analysis.averagePickValue"
+                      :description="
+                        'This value represents the average value of a draft pick from ' +
+                        $props.userInfo.display_name +
+                        '. A > 0 value represents that they typically draft a user lower than their \
+                    ADP and on average how many picks past ADP they make that selection. \n' +
+                        'A < 0 value suggest the opposite, that they tend to \
+                    reach for players and how many picks ahead they typically do \
+                    so. \n' +
+                        'A 0 value would suggest that they\'re entirely chalk and \
+                    typically draft exactly at ADP.'
+                      "
+                    />
+                  </div>
+
                   <div class="text-center row justify-center">
                     <most-drafted-analysis-card
                       class="player-analysis-card"
@@ -84,9 +104,24 @@
                 </div>
 
                 <div v-if="exporting">
-                  <h5 class="text-center">Anomalies and Common Picks</h5>
                   <q-scroll-area class="reach-scroll-area">
                     <div class="text-center row no-wrap justify-center">
+                      <analysis-card
+                        class="player-analysis-card-horizontal"
+                        title="Average Pick Value"
+                        :value="$props.userInfo.analysis.averagePickValue"
+                        :description="
+                          'This value represents the average value of a draft pick from ' +
+                          $props.userInfo.display_name +
+                          '. A > 0 value represents that they typically draft a user lower than their \
+                    ADP and on average how many picks past ADP they make that selection. \n' +
+                          'A < 0 value suggest the opposite, that they tend to \
+                    reach for players and how many picks ahead they typically do \
+                    so. \n' +
+                          'A 0 value would suggest that they\'re entirely chalk and \
+                    typically draft exactly at ADP.'
+                        "
+                      />
                       <most-drafted-analysis-card
                         class="player-analysis-card-horizontal"
                         title="Most Drafted Player"
@@ -256,26 +291,6 @@
                     </div>
                   </q-scroll-area>
                 </div>
-
-                <h5 class="text-center">Grade</h5>
-                <div class="text-center row justify-center">
-                  <analysis-card
-                    class="player-analysis-card-horizontal"
-                    title="Average Pick Value"
-                    :value="$props.userInfo.analysis.averagePickValue"
-                    :description="
-                      'This value represents the average value of a draft pick from ' +
-                      $props.userInfo.display_name +
-                      '. A > 0 value represents that they typically draft a user lower than their \
-                    ADP and on average how many picks past ADP they make that selection. \n' +
-                      'A < 0 value suggest the opposite, that they tend to \
-                    reach for players and how many picks ahead they typically do \
-                    so. \n' +
-                      'A 0 value would suggest that they\'re entirely chalk and \
-                    typically draft exactly at ADP.'
-                    "
-                  />
-                </div>
               </div>
             </div>
           </q-card-section>
@@ -314,7 +329,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const reportElement = ref();
     const expanded = ref(false);
     const exporting = ref(false);
@@ -333,7 +348,7 @@ export default defineComponent({
           })
           .then(function (dataUrl) {
             const link = document.createElement('a');
-            link.download = 'my-image-name.jpeg';
+            link.download = `${props.userInfo.display_name}-analysis.jpeg`;
             link.href = dataUrl;
             link.click();
             expanded.value = false;
@@ -371,6 +386,7 @@ export default defineComponent({
   }
 
   .card-back-drop {
+    padding-bottom: 100px;
     background-color: $card-background;
     box-shadow: -2px 14px 45px -1px rgba(0, 0, 0, 0.27) inset;
     -webkit-box-shadow: -2px 14px 45px -1px rgba(0, 0, 0, 0.27) inset;
@@ -388,8 +404,12 @@ export default defineComponent({
     font-size: 17.5px;
   }
 
+  .player-analysis-card-vertical-first {
+    margin: 0 0 25px;
+  }
+
   .player-analysis-card {
-    margin: 50px 0;
+    margin: 25px 0;
   }
 
   .player-analysis-card-horizontal {
