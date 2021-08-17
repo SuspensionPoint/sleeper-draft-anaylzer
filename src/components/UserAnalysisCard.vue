@@ -57,28 +57,53 @@
           <q-card-section class="text-subtitle2">
             <div class="row">
               <div class="col justify-center wrap">
-                <div class="text-center row justify-center">
-                  <most-drafted-analysis-card
-                    class="player-analysis-card"
-                    title="Most Drafted Player"
-                    :player="$props.userInfo.analysis.mostDraftedPlayer"
-                  />
+                <div v-if="!exporting">
+                  <div class="text-center row justify-center">
+                    <most-drafted-analysis-card
+                      class="player-analysis-card"
+                      title="Most Drafted Player"
+                      :player="$props.userInfo.analysis.mostDraftedPlayer"
+                    />
+                  </div>
+
+                  <div class="text-center row justify-center">
+                    <reach-analysis-card
+                      class="player-analysis-card"
+                      title="Biggest Reach"
+                      :reach="$props.userInfo.analysis.biggestReach"
+                    />
+                  </div>
+
+                  <div class="text-center row justify-center">
+                    <reach-analysis-card
+                      class="player-analysis-card"
+                      title="Most Common Reach"
+                      :reach="$props.userInfo.analysis.mostCommonReach"
+                    />
+                  </div>
                 </div>
 
-                <div class="text-center row justify-center">
-                  <reach-analysis-card
-                    class="player-analysis-card"
-                    title="Biggest Reach"
-                    :reach="$props.userInfo.analysis.biggestReach"
-                  />
-                </div>
-
-                <div class="text-center row justify-center">
-                  <reach-analysis-card
-                    class="player-analysis-card"
-                    title="Most Common Reach"
-                    :reach="$props.userInfo.analysis.mostCommonReach"
-                  />
+                <div v-if="exporting">
+                  <h5 class="text-center">Anomalies and Common Picks</h5>
+                  <q-scroll-area class="reach-scroll-area">
+                    <div class="text-center row no-wrap justify-center">
+                      <most-drafted-analysis-card
+                        class="player-analysis-card-horizontal"
+                        title="Most Drafted Player"
+                        :player="$props.userInfo.analysis.mostDraftedPlayer"
+                      />
+                      <reach-analysis-card
+                        class="player-analysis-card-horizontal"
+                        title="Biggest Reach"
+                        :reach="$props.userInfo.analysis.biggestReach"
+                      />
+                      <reach-analysis-card
+                        class="player-analysis-card-horizontal"
+                        title="Most Common Reach"
+                        :reach="$props.userInfo.analysis.mostCommonReach"
+                      />
+                    </div>
+                  </q-scroll-area>
                 </div>
 
                 <h5 class="text-center">Top Reaches</h5>
@@ -232,9 +257,10 @@
                   </q-scroll-area>
                 </div>
 
+                <h5 class="text-center">Grade</h5>
                 <div class="text-center row justify-center">
                   <analysis-card
-                    class="player-analysis-card"
+                    class="player-analysis-card-horizontal"
                     title="Average Pick Value"
                     :value="$props.userInfo.analysis.averagePickValue"
                     :description="
