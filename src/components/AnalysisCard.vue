@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="flip-container"
-    v-bind:class="{ flipOver: flipOver }"
-    @click="flipOver = !flipOver"
-  >
+  <div class="flip-container" v-bind:class="{ flipOver: flipOver }">
     <div class="flipper">
       <div class="front">
         <div class="card">

@@ -68,11 +68,14 @@
       </div>
 
       <div class="back">
-        <div class="player-card">
+        <div class="player-card-back justify-center">
           <q-btn
-            style="background: #ff0080; color: white"
+            stack
+            rounded
+            glossy
+            class="open-drafts-btn"
             @click.stop="openDrafts()"
-            label="Open Drafts"
+            label="Open Drafts of This Player"
           />
         </div>
       </div>
@@ -147,7 +150,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'src/css/app.scss';
 
 $height: 475px;
@@ -185,7 +188,8 @@ $width: 295px;
   transform: rotateY(180deg);
 }
 
-.player-card {
+.player-card,
+.player-card-back {
   p,
   h4,
   h5 {
@@ -228,6 +232,16 @@ $width: 295px;
 
   .logo-icon {
     max-width: 25px;
+  }
+}
+
+.player-card-back {
+  display: flex;
+  .open-drafts-btn {
+    font-size: 1.2rem;
+    background: black;
+    color: white;
+    margin: 25% 10%;
   }
 }
 </style>

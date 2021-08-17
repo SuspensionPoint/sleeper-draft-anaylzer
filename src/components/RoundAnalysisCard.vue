@@ -221,8 +221,16 @@
       </div>
 
       <div class="back">
-        <div class="player-card">
-          <h1>back</h1>
+        <div class="player-card-back justify-center">
+          <q-btn
+            stack
+            rounded
+            glossy
+            class="open-drafts-btn"
+            @click.stop="openDrafts()"
+            label="Open Drafts
+          for Most Common Players"
+          />
         </div>
       </div>
     </div>
@@ -232,6 +240,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
 import { RoundAnalysis } from './models';
+import { openDraftUrl } from './sleeper';
 import { getPlayerImageUrl } from './utils';
 
 export default defineComponent({
@@ -260,6 +269,14 @@ export default defineComponent({
       return positions.join(' / ');
     };
 
+    const openDrafts = () => {
+      props.roundAnalysis.mostDraftedPlayersOfPositions.forEach((p) => {
+        p.picks.forEach((pick) => {
+          openDraftUrl(pick);
+        });
+      });
+    };
+
     return {
       flipOver,
       positionsToString,
@@ -267,6 +284,7 @@ export default defineComponent({
       imageLoadError,
       imageLoadFailed,
       getPlayerImageUrl,
+      openDrafts,
     };
   },
 });
@@ -310,7 +328,8 @@ $width: 400px;
   transform: rotateY(180deg);
 }
 
-.player-card {
+.player-card,
+.player-card-back {
   p,
   h4,
   h5 {
@@ -363,6 +382,16 @@ $width: 400px;
     .logo-icon {
       max-width: 25px;
     }
+  }
+}
+
+.player-card-back {
+  display: flex;
+  .open-drafts-btn {
+    font-size: 1.2rem;
+    background: black;
+    color: white;
+    margin: 25% 10%;
   }
 }
 </style>
