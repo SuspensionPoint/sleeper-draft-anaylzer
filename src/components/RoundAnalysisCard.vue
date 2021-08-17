@@ -347,9 +347,11 @@ $width: 400px;
 
     .player-name {
       font-weight: 400;
+      white-space: nowrap;
     }
 
     .player-img {
+      height: 80px;
       background: center center / cover $accent-color;
       margin: 5px 0 5px;
       border: 3px solid $card-toggle-background;
