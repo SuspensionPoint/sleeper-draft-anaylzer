@@ -29,7 +29,7 @@
         </q-item-section>
 
         <q-item-section side>
-          <q-btn @click="exportToPng()">PNG</q-btn>
+          <q-btn v-if="!exporting" @click="exportToPng()">PNG</q-btn>
         </q-item-section>
       </q-item>
 
@@ -202,16 +202,13 @@ export default defineComponent({
   setup() {
     const reportElement = ref();
     const expanded = ref(false);
+    const exporting = ref(false);
 
     const exportToPng = async () => {
       if (reportElement.value) {
         expanded.value = true;
+        exporting.value = true;
         await htmlToImage.toPng(reportElement.value, { cacheBust: true });
-
-        const originalWidth = window.outerWidth;
-        const originalHeight = window.outerHeight;
-
-        window.resizeTo(5000, originalHeight);
 
         htmlToImage
           .toPng(reportElement.value, {
@@ -220,16 +217,17 @@ export default defineComponent({
             canvasWidth: 4000,
           })
           .then(function (dataUrl) {
-            expanded.value = false;
             const link = document.createElement('a');
             link.download = 'my-image-name.jpeg';
             link.href = dataUrl;
             link.click();
-            window.resizeTo(originalWidth, originalHeight);
+            expanded.value = false;
+            exporting.value = false;
           })
           .catch(function (error) {
             console.error('Failed to export report image', error);
-            window.resizeTo(originalWidth, originalHeight);
+            expanded.value = false;
+            exporting.value = false;
           });
       }
     };
@@ -240,6 +238,7 @@ export default defineComponent({
       getSignedValueString,
       exportToPng,
       reportElement,
+      exporting,
     };
   },
 });
