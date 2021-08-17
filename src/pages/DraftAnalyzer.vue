@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page class="site-theme" padding>
     <!-- content -->
     <!-- <h1 class="text-center">Draft Analyzer</h1> -->
     <draft-entry-list />
@@ -22,4 +22,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import 'src/css/app.scss';
+
+.site-theme {
+  background-color: $theme-background-color;
+}
 </style>

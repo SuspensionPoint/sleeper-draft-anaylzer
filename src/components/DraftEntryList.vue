@@ -1,9 +1,13 @@
 <template>
   <q-input
     v-model="enteredUserId"
+    class="shadowed"
     @keydown.enter.prevent="onUserIdSubmitted(enteredUserId)"
     label="Enter Sleeper User ID or Draft URL"
-    filled
+    label-color="black"
+    bg-color="green-2"
+    squared
+    outlined
   >
   </q-input>
 
@@ -12,13 +16,13 @@
       v-for="user in usersToAnalyze"
       :key="user.user_id"
       :userInfo="user"
-      class="col-12 col-md-6 analysis-list"
+      class="col-12 col-md-6 analysis-list shadowed"
     />
 
     <div
       v-for="loadingUser in usersLoading"
       :key="`loading-${loadingUser.user_id}`"
-      class="loading-card col-12 col-md-6"
+      class="loading-card col-12 col-md-6 shadowed"
     >
       <q-card flat>
         <q-skeleton height="145px" square />
@@ -81,5 +85,9 @@ export default defineComponent({
 
 .analysis-list {
   padding: 10px;
+}
+
+.shadowed {
+  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
 }
 </style>
