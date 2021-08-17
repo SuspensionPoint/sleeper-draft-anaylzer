@@ -326,26 +326,14 @@ export default store(function (/* { ssrContext } */) {
 
         const draftsApi = new DraftsApi();
         const userApi = new UserApi();
-        let draftResponse: AxiosResponse<Draft[]> | void = {} as AxiosResponse<
-          Draft[]
-        >;
+        const draftResponse: AxiosResponse<Draft[]> | void =
+          await draftsApi.userUserIdDraftsSportSeasonGet(
+            userId,
+            state.sport,
+            state.season
+          );
 
-        await draftsApi
-          .userUserIdDraftsSportSeasonGet(userId, state.sport, state.season)
-          .catch(() => {
-            Notify.create({
-              position: 'top',
-              color: 'negative',
-              message:
-                'Failed to load drafts for the provided user. You probably entered an invalid user id or draft url. ',
-            });
-            commit('removeLoadingUser', userId);
-          })
-          .then((response) => {
-            draftResponse = response;
-          });
-
-        if (draftResponse.data) {
+        if (draftResponse.data.length > 0) {
           const drafts = draftResponse.data;
           const userResponse = await userApi.userUserIdGet(userId);
           if (userResponse.data) {
@@ -701,6 +689,13 @@ export default store(function (/* { ssrContext } */) {
 
             console.log('All user info:', state.userInfo);
           }
+        } else {
+          Notify.create({
+            position: 'bottom',
+            color: 'negative',
+            message:
+              'Failed to load drafts for the provided user. You probably entered an invalid user id or draft url. ',
+          });
         }
 
         commit('removeLoadingUser', userId);
