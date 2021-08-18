@@ -316,9 +316,21 @@ export default store(function (/* { ssrContext } */) {
       },
 
       async getDraftsFromUserId({ commit, state }, { userId, season }) {
-        if (state.userInfo.find((user) => user.user_id === userId)) {
+        const isLoaded =
+          state.userInfo.find((user) => user.user_id === userId) != undefined;
+        const isLoading =
+          state.userInfoLoading.find((id) => id === userId) != undefined;
+
+        if (isLoaded || isLoading) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           console.error(`User with id ${userId} already loaded`);
+          Notify.create({
+            position: 'bottom',
+            color: 'negative',
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            message: `User with ID ${userId} is already loaded.`,
+          });
+
           return;
         }
 

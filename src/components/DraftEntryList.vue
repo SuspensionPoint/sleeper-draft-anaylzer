@@ -56,16 +56,22 @@ export default defineComponent({
       const infoList: DisplayedUserInfo[] =
         usersToAnalyze.value as DisplayedUserInfo[];
       const idList = infoList.map((info) => info.user_id);
-      const idListUnique = [...new Set(idList)].join(',');
-
+      const idListSet = new Set<string>();
       const path = route.path;
 
+      idList.forEach((id) => {
+        if (!path.includes(id)) {
+          idListSet.add(id);
+        }
+      });
+
+      const newIdsToLoad = [...idListSet].join(',');
       if (!path.includes('/report/')) {
         const url = window.location.origin + '#/report' + path;
-        history.pushState(null, 'Sleeper Stats', url + idListUnique);
+        history.pushState(null, 'Sleeper Stats', url + newIdsToLoad);
       } else {
         const url = window.location.origin + '/#' + path;
-        history.pushState(null, 'Sleeper Stats', url + ',' + idListUnique);
+        history.pushState(null, 'Sleeper Stats', url + ',' + newIdsToLoad);
       }
     });
 

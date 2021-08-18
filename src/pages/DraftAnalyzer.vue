@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 import DraftEntryList from 'src/components/DraftEntryList.vue';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
@@ -19,10 +19,10 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
     const season = 2021;
-
     const ids = route.params.idList as string;
+
     if (season && ids) {
-      const idList = ids === '' ? [] : ids.split(',');
+      const idList = ids === '' ? [] : [...new Set(ids.split(','))];
       idList.forEach((user_id: string) => {
         store
           .dispatch('getDraftsFromUserId', {
