@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/report/:year/:idList',
+    path: '/report/:idList',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/DraftAnalyzer.vue') },

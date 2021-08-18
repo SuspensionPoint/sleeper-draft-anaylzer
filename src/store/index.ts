@@ -307,7 +307,7 @@ export default store(function (/* { ssrContext } */) {
     actions: {
       gatherTheBoisData({ dispatch, state }) {
         state.idToPlayerName.forEach((value: string, key: string) => {
-          dispatch('getDraftsFromUserId', { userId: key, season: 2020 }).catch(
+          dispatch('getDraftsFromUserId', { userId: key, season: 2021 }).catch(
             (err) => {
               console.log('Error gathering the boys data:', err);
             }
@@ -656,15 +656,6 @@ export default store(function (/* { ssrContext } */) {
               }
             });
 
-            // Route to page
-            // const router = useRouter();
-            // void router.push({
-            //   path: '/report/:year/:idList',
-            //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            //   params: { year, idList: [] },
-            // });
-            console.log(season);
-
             commit('addUserInfo', {
               ...user,
               picks: allPicksFromUser,
@@ -687,8 +678,6 @@ export default store(function (/* { ssrContext } */) {
                 roundAnalysis,
               },
             });
-
-            console.log('All user info:', state.userInfo);
           }
         } else {
           Notify.create({
@@ -709,13 +698,12 @@ export default store(function (/* { ssrContext } */) {
         if (draftResponse.data) {
           const draft: Draft = draftResponse.data as unknown as Draft;
           const draftOrder = _.keys(draft.draft_order);
-          draftOrder.forEach(
-            (userId) =>
-              void dispatch('getDraftsFromUserId', {
-                userId,
-                year: draft.season,
-              })
-          );
+          draftOrder.forEach((userId) => {
+            void dispatch('getDraftsFromUserId', {
+              userId,
+              season: draft.season,
+            });
+          });
         }
       },
     },
@@ -750,6 +738,10 @@ export default store(function (/* { ssrContext } */) {
 
       usersLoading: (state): string[] => {
         return state.userInfoLoading;
+      },
+
+      defaultSeason: (state): number => {
+        return state.season;
       },
     },
 

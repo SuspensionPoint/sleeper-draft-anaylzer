@@ -55,18 +55,23 @@ export default defineComponent({
     watch(usersToAnalyze.value, () => {
       const infoList: DisplayedUserInfo[] =
         usersToAnalyze.value as DisplayedUserInfo[];
-      const idList = infoList.map((info) => info.user_id).join(',');
+      const idList = infoList.map((info) => info.user_id);
+      const idListUnique = [...new Set(idList)].join(',');
+
       const path = route.path;
 
       if (!path.includes('/report/')) {
-        const url = window.location.origin + `#/report/${2020}` + path;
-        history.pushState(null, 'Sleeper Stats', url + idList);
+        const url = window.location.origin + '#/report' + path;
+        history.pushState(null, 'Sleeper Stats', url + idListUnique);
+      } else {
+        const url = window.location.origin + '/#' + path;
+        history.pushState(null, 'Sleeper Stats', url + ',' + idListUnique);
       }
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersLoading = computed(() => store.getters.usersLoading);
-
+    const season = 2021;
     const onUserIdSubmitted = (userId: string) => {
       if (userId) {
         // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
@@ -74,7 +79,10 @@ export default defineComponent({
         if (userId.includes('/') && isDraftUrl) {
           void store.dispatch('getUserInfoFromDraft', isDraftUrl.shift());
         } else {
-          void store.dispatch('getDraftsFromUserId', { userId, year: 2020 });
+          void store.dispatch('getDraftsFromUserId', {
+            userId,
+            season,
+          });
         }
       }
       enteredUserId.value = '';
