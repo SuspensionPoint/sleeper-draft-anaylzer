@@ -16,6 +16,7 @@ import {
   DisplayedPick,
   RoundAnalysis,
   DraftPositionDistribution,
+  MostDraftedAtPosition,
 } from 'src/components/models';
 import playersJson from '../../players.json';
 import playersAdpJson from '../../player-adp.json';
@@ -109,6 +110,14 @@ const getRoundAnalysis = (
   const mostCommonTe = getMostOccuringPlayer(tes);
   const mostCommonDef = getMostOccuringPlayer(defenses);
   const mostCommonK = getMostOccuringPlayer(kickers);
+  const mostDraftedFromEachPosition: MostDraftedAtPosition = {
+    qb: mostCommonQb,
+    rb: mostCommonRb,
+    wr: mostCommonWr,
+    te: mostCommonTe,
+    def: mostCommonDef,
+    kicker: mostCommonK,
+  };
 
   const totalNumSelections =
     qbs.length +
@@ -137,6 +146,7 @@ const getRoundAnalysis = (
         kicker: 0,
       },
       mostDraftedPlayersOfPositions,
+      mostDraftedFromEachPosition,
     };
   }
 
@@ -220,6 +230,7 @@ const getRoundAnalysis = (
       ),
       distribution,
       mostDraftedPlayersOfPositions,
+      mostDraftedFromEachPosition,
     };
   } else {
     const mostCommonPosition =
@@ -272,6 +283,7 @@ const getRoundAnalysis = (
       ),
       distribution,
       mostDraftedPlayersOfPositions,
+      mostDraftedFromEachPosition,
     };
   }
 };

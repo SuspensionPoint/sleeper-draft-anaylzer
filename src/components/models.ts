@@ -37,6 +37,15 @@ export interface MostDraftedPlayer {
   picks: DisplayedPick[];
 }
 
+export interface MostDraftedAtPosition {
+  qb?: MostDraftedPlayer;
+  rb?: MostDraftedPlayer;
+  wr?: MostDraftedPlayer;
+  te?: MostDraftedPlayer;
+  def?: MostDraftedPlayer;
+  kicker?: MostDraftedPlayer;
+}
+
 export interface Reach {
   picks: DisplayedPick[];
   picksAboveAdp: number;
@@ -66,6 +75,7 @@ export interface RoundAnalysis {
   round: number;
   mostDraftedPosition: string[];
   mostDraftedPlayersOfPositions: MostDraftedPlayer[];
+  mostDraftedFromEachPosition: MostDraftedAtPosition;
   mostDraftedPositionCount: number;
   probabilityToDraftedPosition: number;
   distribution: DraftPositionDistribution;

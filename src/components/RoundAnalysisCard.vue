@@ -13,25 +13,19 @@
             </h5>
 
             <h4 class="text-overline positions">
-              {{ positionsToString($props.roundAnalysis.mostDraftedPosition) }}
+              {{ playerToShow.player.position }}
             </h4>
 
             <div class="row no-wrap justify-around items-start content-start">
-              <div
-                v-for="mostCommon in $props.roundAnalysis
-                  .mostDraftedPlayersOfPositions"
-                :key="mostCommon.player.player_id"
-                class="col-shrink player-img-col"
-                style="overflow: auto"
-              >
+              <div class="col-shrink player-img-col" style="overflow: auto">
                 <p class="player-name">
-                  {{ mostCommon.player.full_name }}
+                  {{ playerToShow.player.full_name }}
                 </p>
 
                 <q-img
                   v-if="imageUrl && !imageLoadError"
                   class="player-img"
-                  :src="getPlayerImageUrl(mostCommon.player.player_id)"
+                  :src="getPlayerImageUrl(playerToShow.player.player_id)"
                   @error="imageLoadFailed()"
                   loading="lazy"
                 ></q-img>
@@ -45,69 +39,23 @@
                 ></q-img>
 
                 <div
-                  v-if="mostCommon.player.position"
+                  v-if="playerToShow.player.position"
                   class="row justify-around player-info"
                 >
                   <q-img
                     class="logo-icon"
-                    :src="`logos/${mostCommon.player.team}.png`"
+                    :src="`logos/${playerToShow.player.team}.png`"
                     loading="lazy"
                   >
                   </q-img>
                   <p>•</p>
-                  <p>#{{ mostCommon.player.number }}</p>
+                  <p>#{{ playerToShow.player.number }}</p>
                   <p>•</p>
                   <p>
-                    {{ mostCommon.player.position }}
+                    {{ playerToShow.player.position }}
                   </p>
                 </div>
               </div>
-              <!-- <div class="col-grow">
-              <q-img
-                v-if="imageUrl && !imageLoadError"
-                class="player-img"
-                :src="imageUrl"
-                @error="imageLoadFailed()"
-                loading="lazy"
-              ></q-img>
-
-              <q-img
-                v-if="imageLoadError"
-                class="player-img"
-                src="~assets/player-placeholder.png"
-                @error="imageLoadError = true"
-                loading="lazy"
-              ></q-img>
-
-              <div
-                v-if="
-                  $props.roundAnalysis.mostDraftedPlayersOfPositions[0]?.player
-                    .position
-                "
-                class="row justify-around img-margin-bottom"
-              >
-                <q-img
-                  class="logo-icon"
-                  :src="`logos/${$props.roundAnalysis.mostDraftedPlayersOfPositions[0]?.player.team}.png`"
-                  loading="lazy"
-                >
-                </q-img>
-                <p>•</p>
-                <p>
-                  #{{
-                    $props.roundAnalysis.mostDraftedPlayersOfPositions[0]
-                      ?.player.number
-                  }}
-                </p>
-                <p>•</p>
-                <p>
-                  {{
-                    $props.roundAnalysis.mostDraftedPlayersOfPositions[0]
-                      ?.player.position
-                  }}
-                </p>
-              </div>
-            </div> -->
             </div>
 
             <div class="row no-wrap justify-center items-start content-start">
@@ -119,7 +67,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr @click.stop="showPosition('QB')">
                     <td class="text-left">QB</td>
                     <td class="text-right">
                       <span
@@ -136,7 +84,7 @@
                     </td>
                   </tr>
 
-                  <tr>
+                  <tr @click.stop="showPosition('RB')">
                     <td class="text-left">RB</td>
                     <td class="text-right">
                       <span
@@ -152,7 +100,7 @@
                       >
                     </td>
                   </tr>
-                  <tr>
+                  <tr @click.stop="showPosition('WR')">
                     <td class="text-left">WR</td>
                     <td class="text-right">
                       <span
@@ -169,7 +117,7 @@
                       </span>
                     </td>
                   </tr>
-                  <tr>
+                  <tr @click.stop="showPosition('TE')">
                     <td class="text-left">TE</td>
                     <td class="text-right">
                       <span
@@ -185,7 +133,7 @@
                       >
                     </td>
                   </tr>
-                  <tr>
+                  <tr @click.stop="showPosition('DEF')">
                     <td class="text-left">DEF</td>
                     <td class="text-right">
                       <span
@@ -199,7 +147,7 @@
                       >
                     </td>
                   </tr>
-                  <tr>
+                  <tr @click.stop="showPosition('K')">
                     <td class="text-left">K</td>
                     <td class="text-right">
                       <span
@@ -253,6 +201,11 @@ export default defineComponent({
   },
   setup(props) {
     const flipOver = ref(false);
+
+    const playerToShow = ref(
+      props.roundAnalysis.mostDraftedPlayersOfPositions[0]
+    );
+
     const imageLoadError = ref(false);
     const imageUrl = computed(() => {
       return getPlayerImageUrl(
@@ -270,11 +223,48 @@ export default defineComponent({
     };
 
     const openDrafts = () => {
-      props.roundAnalysis.mostDraftedPlayersOfPositions.forEach((p) => {
-        p.picks.forEach((pick) => {
-          openDraftUrl(pick);
-        });
+      playerToShow.value.picks.forEach((pick) => {
+        openDraftUrl(pick);
       });
+    };
+
+    const showPosition = (pos: string) => {
+      const positions = props.roundAnalysis.mostDraftedFromEachPosition;
+      switch (pos) {
+        case 'QB':
+          if (positions.qb) {
+            playerToShow.value = positions.qb;
+          }
+          break;
+        case 'RB':
+          if (positions.rb) {
+            playerToShow.value = positions.rb;
+          }
+          break;
+        case 'WR':
+          if (positions.wr) {
+            playerToShow.value = positions.wr;
+          }
+          break;
+        case 'TE':
+          if (positions.te) {
+            playerToShow.value = positions.te;
+          }
+          break;
+        case 'DEF':
+          if (positions.def) {
+            playerToShow.value = positions.def;
+          }
+          break;
+        case 'K':
+          if (positions.kicker) {
+            playerToShow.value = positions.kicker;
+          }
+          break;
+
+        default:
+          break;
+      }
     };
 
     return {
@@ -285,6 +275,8 @@ export default defineComponent({
       imageLoadFailed,
       getPlayerImageUrl,
       openDrafts,
+      showPosition,
+      playerToShow,
     };
   },
 });
