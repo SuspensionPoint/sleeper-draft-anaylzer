@@ -9,14 +9,34 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-label class="card-header-label text-overline">{{
-            $props.userInfo?.display_name
-          }}</q-item-label>
+          <div class="row">
+            <div class="col">
+              <q-item-label
+                class="card-header-label text-overline items-center"
+                >{{ $props.userInfo?.display_name }}</q-item-label
+              >
+
+              <q-item-label class="text-overline items-center"
+                ><b>Draft Slot:</b>
+                {{
+                  $props.userInfo?.draftSlot
+                    ? $props.userInfo?.draftSlot
+                    : 'All'
+                }}</q-item-label
+              >
+            </div>
+          </div>
         </q-item-section>
 
         <q-item-section side>
           <q-item-label
-            class="card-header-label text-overline"
+            class="
+              row
+              justify-center
+              items-center
+              card-header-label
+              text-overline
+            "
             v-bind:class="{
               'text-green': $props.userInfo.analysis.averagePickValue > 0,
               'text-red': $props.userInfo.analysis.averagePickValue < 0,
