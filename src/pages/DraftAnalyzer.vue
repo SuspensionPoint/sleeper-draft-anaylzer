@@ -23,14 +23,21 @@ export default defineComponent({
 
     if (season && ids) {
       const idList = ids === '' ? [] : [...new Set(ids.split(','))];
-      idList.forEach((user_id: string) => {
+      idList.forEach((id: string) => {
+        const split = id.split(':');
+        const userId = split[0];
+        const draftSlot = split[1];
         store
           .dispatch('getDraftsFromUserId', {
-            userId: user_id,
+            userId: userId,
             season,
+            draftSlot: draftSlot ? draftSlot : 'All',
           })
           .catch((err) => {
-            console.log(`Error loading data for user id: ${user_id}`, err);
+            console.log(
+              `Error loading data for user id: ${userId} draft slot: ${draftSlot}`,
+              err
+            );
           });
       });
     }

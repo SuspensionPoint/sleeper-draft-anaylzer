@@ -1,15 +1,31 @@
 <template>
-  <q-input
-    v-model="enteredUserId"
-    class="shadowed"
-    @keydown.enter.prevent="onUserIdSubmitted(enteredUserId)"
-    label="Enter Sleeper User ID or Draft URL"
-    label-color="black"
-    bg-color="green-2"
-    squared
-    outlined
-  >
-  </q-input>
+  <div class="row justify-between">
+    <q-input
+      v-model="enteredUserId"
+      class="col-9 q-pr-sm shadowed"
+      @keydown.enter.prevent="
+        onUserIdSubmitted(enteredUserId, selectedDraftSlot)
+      "
+      label="Enter Sleeper User ID or Draft URL"
+      label-color="black"
+      bg-color="green-2"
+      squared
+      outlined
+    >
+    </q-input>
+
+    <q-select
+      class="col-3 shadowed"
+      v-model="selectedDraftSlot"
+      :options="draftSlotOptions"
+      label="Draft Slot"
+      label-color="black"
+      bg-color="green-2"
+      squared
+      outlined
+    >
+    </q-select>
+  </div>
 
   <div class="q-pa-md row items-start justify-between q-gutter-y-xl">
     <user-analysis-card
@@ -41,21 +57,33 @@ import { useRoute } from 'vue-router';
 import UserAnalysisCard from 'src/components/UserAnalysisCard.vue';
 import { DisplayedUserInfo } from './models';
 
+const MAX_NUM_TEAMS = 22;
+
 export default defineComponent({
   components: { UserAnalysisCard },
   // name: 'ComponentName'
   setup() {
     const store = useStore();
     const route = useRoute();
-    const enteredUserId = ref('202523901442392064');
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
+    const enteredUserId = ref('202523901442392064');
+    const selectedDraftSlot = ref('All');
+    const teamNumberStrings = [...Array(MAX_NUM_TEAMS).keys()]
+      .map((a) => a + 1)
+      .map((k) => String(k));
+    const draftSlotOptions = ['All', ...teamNumberStrings];
 
     // Track entered userIds
     watch(usersToAnalyze.value, () => {
       const infoList: DisplayedUserInfo[] =
         usersToAnalyze.value as DisplayedUserInfo[];
-      const idList = infoList.map((info) => info.user_id);
+      const idList = infoList.map((info) => {
+        return info.draftSlot
+          ? `${info.user_id}:${info.draftSlot}`
+          : info.user_id;
+      });
       const idListSet = new Set<string>();
       const path = route.path;
 
@@ -78,7 +106,7 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersLoading = computed(() => store.getters.usersLoading);
     const season = 2021;
-    const onUserIdSubmitted = (userId: string) => {
+    const onUserIdSubmitted = (userId: string, draftSlot: string) => {
       if (userId) {
         // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
         const isDraftUrl = userId.match(/(?!\/)\d+(?=)/);
@@ -88,6 +116,7 @@ export default defineComponent({
           void store.dispatch('getDraftsFromUserId', {
             userId,
             season,
+            draftSlot,
           });
         }
       }
@@ -106,6 +135,8 @@ export default defineComponent({
       removeDraft,
       usersToAnalyze,
       usersLoading,
+      selectedDraftSlot,
+      draftSlotOptions,
     };
   },
 });

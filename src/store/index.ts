@@ -24,6 +24,7 @@ import _, { Dictionary } from 'lodash';
 import { AxiosResponse } from 'axios';
 import { Notify } from 'quasar';
 import { decimalToPercent } from 'src/components/utils';
+import { getPickNumbers } from 'src/components/sleeper';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -327,7 +328,10 @@ export default store(function (/* { ssrContext } */) {
         });
       },
 
-      async getDraftsFromUserId({ commit, state }, { userId, season }) {
+      async getDraftsFromUserId(
+        { commit, state },
+        { userId, season, draftSlot }
+      ) {
         const isLoaded =
           state.userInfo.find((user) => user.user_id === userId) != undefined;
         const isLoading =
@@ -419,32 +423,49 @@ export default store(function (/* { ssrContext } */) {
                 const usersPicksForThisDraft: Pick[] = allPicks.filter(
                   (pick) => pick.picked_by === user.user_id
                 );
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const pickNumber = draftSlot;
+                const numTeams = draft.settings.teams;
+                const picksToAnalyze =
+                  pickNumber === 'All'
+                    ? undefined
+                    : getPickNumbers(
+                        Number(pickNumber),
+                        numTeams,
+                        draft.settings.rounds
+                      );
 
                 for (const userPick of usersPicksForThisDraft) {
-                  const player = state.players[userPick.player_id];
-                  roundsDraftedIn.add(userPick.round);
+                  if (
+                    !picksToAnalyze ||
+                    (picksToAnalyze &&
+                      picksToAnalyze.includes(userPick.pick_no))
+                  ) {
+                    const player = state.players[userPick.player_id];
+                    roundsDraftedIn.add(userPick.round);
 
-                  // todo: make this more dynamic buy using:
-                  // https://api.sleeper.app/projections/nfl/2021?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp_half_ppr
-                  const playerAdpInfo = getPlayerAdp(state, player);
-                  const displayPlayer = playerAdpInfo
-                    ? {
-                        ...player,
-                        full_name: `${player.first_name} ${player.last_name}`,
-                        adp: playerAdpInfo.adp,
-                        adp_formatted: playerAdpInfo.adp_formatted,
-                      }
-                    : {
-                        ...player,
-                        full_name: `${player.first_name} ${player.last_name}`,
-                      };
+                    // todo: make this more dynamic buy using:
+                    // https://api.sleeper.app/projections/nfl/2021?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp_half_ppr
+                    const playerAdpInfo = getPlayerAdp(state, player);
+                    const displayPlayer = playerAdpInfo
+                      ? {
+                          ...player,
+                          full_name: `${player.first_name} ${player.last_name}`,
+                          adp: playerAdpInfo.adp,
+                          adp_formatted: playerAdpInfo.adp_formatted,
+                        }
+                      : {
+                          ...player,
+                          full_name: `${player.first_name} ${player.last_name}`,
+                        };
 
-                  if (player) {
-                    allPicksFromUser.push({
-                      ...userPick,
-                      player: displayPlayer,
-                      draftTeamCount: draft.settings.teams,
-                    });
+                    if (player) {
+                      allPicksFromUser.push({
+                        ...userPick,
+                        player: displayPlayer,
+                        draftTeamCount: draft.settings.teams,
+                      });
+                    }
                   }
                 }
               }
@@ -662,13 +683,19 @@ export default store(function (/* { ssrContext } */) {
             );
 
             // Get full list of picks for biggest/most common reaches
-            biggestReach.picks = reachMap[biggestReach.picks[0].player_id].map(
-              (r) => r.picks[0]
-            );
+            biggestReach.picks =
+              _.keys(reachMap).length > 0
+                ? reachMap[biggestReach.picks[0]?.player_id].map(
+                    (r) => r.picks[0]
+                  )
+                : [];
 
-            mostCommonReach.picks = reachMap[
-              mostCommonReach.picks[0].player_id
-            ].map((r) => r.picks[0]);
+            mostCommonReach.picks =
+              _.keys(reachMap).length > 0
+                ? reachMap[mostCommonReach.picks[0]?.player_id].map(
+                    (r) => r.picks[0]
+                  )
+                : [];
 
             const roundAnalysis: RoundAnalysis[] = [];
             roundsDraftedIn.forEach((round) => {
@@ -701,6 +728,8 @@ export default store(function (/* { ssrContext } */) {
                 favoriteTE,
                 roundAnalysis,
               },
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              draftSlot: draftSlot === 'All' ? undefined : draftSlot,
             });
           }
         } else {

@@ -9,7 +9,7 @@
         <div class="player-card">
           <h5 class="text-overline category">{{ $props.title }}</h5>
           <h5 class="name">
-            {{ $props.reach?.picks[0].player.full_name }}
+            {{ $props.reach?.picks[0]?.player.full_name }}
           </h5>
 
           <q-img
@@ -29,26 +29,26 @@
           ></q-img>
 
           <div
-            v-if="$props.reach?.picks[0].player.position"
+            v-if="$props.reach?.picks[0]?.player.position"
             class="row justify-around img-margin-bottom"
           >
             <q-img
               class="logo-icon"
-              :src="`logos/${$props.reach?.picks[0].player.team}.png`"
+              :src="`logos/${$props.reach?.picks[0]?.player.team}.png`"
               loading="lazy"
             >
             </q-img>
             <p>•</p>
-            <p>#{{ $props.reach?.picks[0].player.number }}</p>
+            <p>#{{ $props.reach?.picks[0]?.player.number }}</p>
             <p>•</p>
-            <p>{{ $props.reach?.picks[0].player.position }}</p>
+            <p>{{ $props.reach?.picks[0]?.player.position }}</p>
           </div>
 
           <p>
             Drafted {{ reach?.draftedCount }} time(s). <br />
             Drafted at the {{ formattedPickSpot(reach?.picks[0]) }} spot,
             {{ Math.abs(reach?.picksAboveAdp ? reach?.picksAboveAdp : 0) }}
-            picks above his ADP of {{ reach?.picks[0].player.adp_formatted }}
+            picks above his ADP of {{ reach?.picks[0]?.player.adp_formatted }}
           </p>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default defineComponent({
     const flipOver = ref(false);
     const imageLoadError = ref(false);
     const imageUrl = computed(() => {
-      return getPlayerImageUrl(props.reach?.picks[0].player_id);
+      return getPlayerImageUrl(props.reach?.picks[0]?.player_id);
     });
 
     const openDrafts = () => {

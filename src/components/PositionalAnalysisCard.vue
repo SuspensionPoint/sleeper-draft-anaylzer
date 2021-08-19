@@ -53,7 +53,7 @@
               favoriteFormattedPickSpot(
                 $props.positionalPlayer.avgRoundNumber,
                 $props.positionalPlayer.avgPickNumber,
-                $props.positionalPlayer.picks[0].draftTeamCount
+                $props.positionalPlayer.picks[0]?.draftTeamCount
               )
             }}
             spot.
