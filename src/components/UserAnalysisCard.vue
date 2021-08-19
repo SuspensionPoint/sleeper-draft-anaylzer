@@ -162,7 +162,18 @@
                 </div>
 
                 <h5 class="text-center">Top Reaches</h5>
-                <q-scroll-area class="reach-scroll-area">
+                <div
+                  class="text-center"
+                  v-if="$props.userInfo.analysis.topFiveReaches.length <= 0"
+                >
+                  {{ $props.userInfo.display_name }} doesn't reach at the
+                  {{ $props.userInfo.draftSlot }} spot. 💪
+                </div>
+
+                <q-scroll-area
+                  v-if="$props.userInfo.analysis.topFiveReaches.length > 0"
+                  class="reach-scroll-area"
+                >
                   <div class="text-center row no-wrap justify-center">
                     <reach-analysis-card
                       v-for="reach in $props.userInfo.analysis.topFiveReaches"

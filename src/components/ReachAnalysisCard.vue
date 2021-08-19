@@ -8,48 +8,57 @@
       <div class="front">
         <div class="player-card">
           <h5 class="text-overline category">{{ $props.title }}</h5>
-          <h5 class="name">
-            {{ $props.reach?.picks[0]?.player.full_name }}
-          </h5>
 
-          <q-img
-            v-if="imageUrl && !imageLoadError"
-            class="player-img"
-            :src="imageUrl"
-            @error="imageLoadFailed()"
-            loading="lazy"
-          ></q-img>
-
-          <q-img
-            v-if="imageLoadError"
-            class="player-img"
-            src="~assets/player-placeholder.png"
-            @error="imageLoadError = true"
-            loading="lazy"
-          ></q-img>
-
-          <div
-            v-if="$props.reach?.picks[0]?.player.position"
-            class="row justify-around img-margin-bottom"
-          >
-            <q-img
-              class="logo-icon"
-              :src="`logos/${$props.reach?.picks[0]?.player.team}.png`"
-              loading="lazy"
-            >
-            </q-img>
-            <p>•</p>
-            <p>#{{ $props.reach?.picks[0]?.player.number }}</p>
-            <p>•</p>
-            <p>{{ $props.reach?.picks[0]?.player.position }}</p>
+          <div v-if="!$props.reach">
+            <div class="row items-center">
+              <div>This user has never reached for a player... 😲</div>
+            </div>
           </div>
 
-          <p>
-            Drafted {{ reach?.draftedCount }} time(s). <br />
-            Drafted at the {{ formattedPickSpot(reach?.picks[0]) }} spot,
-            {{ Math.abs(reach?.picksAboveAdp ? reach?.picksAboveAdp : 0) }}
-            picks above his ADP of {{ reach?.picks[0]?.player.adp_formatted }}
-          </p>
+          <div v-if="$props.reach">
+            <h5 class="name">
+              {{ $props.reach?.picks[0]?.player.full_name }}
+            </h5>
+
+            <q-img
+              v-if="imageUrl && !imageLoadError"
+              class="player-img"
+              :src="imageUrl"
+              @error="imageLoadFailed()"
+              loading="lazy"
+            ></q-img>
+
+            <q-img
+              v-if="imageLoadError"
+              class="player-img"
+              src="~assets/player-placeholder.png"
+              @error="imageLoadError = true"
+              loading="lazy"
+            ></q-img>
+
+            <div
+              v-if="$props.reach?.picks[0]?.player.position"
+              class="row justify-around img-margin-bottom"
+            >
+              <q-img
+                class="logo-icon"
+                :src="`logos/${$props.reach?.picks[0]?.player.team}.png`"
+                loading="lazy"
+              >
+              </q-img>
+              <p>•</p>
+              <p>#{{ $props.reach?.picks[0]?.player.number }}</p>
+              <p>•</p>
+              <p>{{ $props.reach?.picks[0]?.player.position }}</p>
+            </div>
+
+            <p>
+              Drafted {{ reach?.draftedCount }} time(s). <br />
+              Drafted at the {{ formattedPickSpot(reach?.picks[0]) }} spot,
+              {{ Math.abs(reach?.picksAboveAdp ? reach?.picksAboveAdp : 0) }}
+              picks above his ADP of {{ reach?.picks[0]?.player.adp_formatted }}
+            </p>
+          </div>
         </div>
       </div>
 
