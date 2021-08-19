@@ -191,21 +191,25 @@
                     <positional-analysis-card
                       class="player-analysis-card-horizontal"
                       :positionalPlayer="$props.userInfo.analysis.favoriteQB"
+                      title="Favorite QB"
                     />
 
                     <positional-analysis-card
                       class="player-analysis-card-horizontal"
                       :positionalPlayer="$props.userInfo.analysis.favoriteRB"
+                      title="Favorite RB"
                     />
 
                     <positional-analysis-card
                       class="player-analysis-card-horizontal"
                       :positionalPlayer="$props.userInfo.analysis.favoriteWR"
+                      title="Favorite WR"
                     />
 
                     <positional-analysis-card
                       class="player-analysis-card-horizontal"
                       :positionalPlayer="$props.userInfo.analysis.favoriteTE"
+                      title="Favorite TE"
                     />
                   </div>
                 </q-scroll-area>

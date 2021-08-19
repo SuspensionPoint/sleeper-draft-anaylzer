@@ -56,7 +56,7 @@ export interface Reach {
 }
 
 export interface FavoritePositionalPick {
-  player: DisplayedPlayer;
+  player?: DisplayedPlayer;
   picks: DisplayedPick[];
   position: string;
   avgRoundNumber: number;

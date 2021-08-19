@@ -8,56 +8,65 @@
       <div class="front">
         <div class="player-card">
           <h5 class="text-overline category">
-            Favorite {{ $props.positionalPlayer.position }}
+            {{ $props.title }}
           </h5>
-          <h5 class="name">
-            {{ $props.positionalPlayer.player.full_name }}
-          </h5>
-
-          <q-img
-            v-if="imageUrl && !imageLoadError"
-            class="player-img"
-            :src="imageUrl"
-            @error="imageLoadFailed()"
-            loading="lazy"
-          ></q-img>
-
-          <q-img
-            v-if="imageLoadError"
-            class="player-img"
-            src="~assets/player-placeholder.png"
-            @error="imageLoadError = true"
-            loading="lazy"
-          ></q-img>
 
           <div
-            v-if="$props.positionalPlayer.player.position"
-            class="row justify-around img-margin-bottom"
+            v-if="!$props.positionalPlayer || !$props.positionalPlayer.player"
           >
-            <q-img
-              class="logo-icon"
-              :src="`logos/${$props.positionalPlayer.player.team}.png`"
-              loading="lazy"
-            >
-            </q-img>
-            <p>•</p>
-            <p>#{{ $props.positionalPlayer.player.number }}</p>
-            <p>•</p>
-            <p>{{ $props.positionalPlayer.player.position }}</p>
+            They've never drafted any. 🤔
           </div>
 
-          <p>
-            Drafted {{ $props.positionalPlayer.picks.length }} time(s). <br />
-            On average at the
-            {{
-              favoriteFormattedPickSpot(
-                $props.positionalPlayer.avgRoundNumber,
-                $props.positionalPlayer.avgPickNumber,
-                $props.positionalPlayer.picks[0]?.draftTeamCount
-              )
-            }}
-            spot.
-          </p>
+          <div v-if="$props.positionalPlayer && $props.positionalPlayer.player">
+            <h5 class="name">
+              {{ $props.positionalPlayer.player.full_name }}
+            </h5>
+
+            <q-img
+              v-if="imageUrl && !imageLoadError"
+              class="player-img"
+              :src="imageUrl"
+              @error="imageLoadFailed()"
+              loading="lazy"
+            ></q-img>
+
+            <q-img
+              v-if="imageLoadError"
+              class="player-img"
+              src="~assets/player-placeholder.png"
+              @error="imageLoadError = true"
+              loading="lazy"
+            ></q-img>
+
+            <div
+              v-if="$props.positionalPlayer.player.position"
+              class="row justify-around img-margin-bottom"
+            >
+              <q-img
+                class="logo-icon"
+                :src="`logos/${$props.positionalPlayer.player.team}.png`"
+                loading="lazy"
+              >
+              </q-img>
+              <p>•</p>
+              <p>#{{ $props.positionalPlayer.player.number }}</p>
+              <p>•</p>
+              <p>{{ $props.positionalPlayer.player.position }}</p>
+            </div>
+
+            <p>
+              Drafted {{ $props.positionalPlayer.picks.length }} time(s). <br />
+              On average at the
+              {{
+                favoriteFormattedPickSpot(
+                  $props.positionalPlayer.avgRoundNumber,
+                  $props.positionalPlayer.avgPickNumber,
+                  $props.positionalPlayer.picks[0]?.draftTeamCount
+                )
+              }}
+              spot.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -86,6 +95,9 @@ import { FavoritePositionalPick } from './models';
 export default defineComponent({
   // name: 'ComponentName'
   props: {
+    title: {
+      type: String,
+    },
     positionalPlayer: {
       type: Object as PropType<FavoritePositionalPick>,
       required: true,
@@ -95,6 +107,10 @@ export default defineComponent({
     const flipOver = ref(false);
     const imageLoadError = ref(false);
     const imageUrl = computed(() => {
+      if (!props.positionalPlayer || !props.positionalPlayer.player) {
+        return '';
+      }
+
       return getPlayerImageUrl(props.positionalPlayer.player.player_id);
     });
 

@@ -370,7 +370,6 @@ export default store(function (/* { ssrContext } */) {
             const allPicksFromUser: DisplayedPick[] = [];
 
             let favoriteQB: FavoritePositionalPick = {
-              player: {} as DisplayedPlayer,
               picks: [],
               position: '',
               avgRoundNumber: 0,
@@ -378,7 +377,6 @@ export default store(function (/* { ssrContext } */) {
             };
 
             let favoriteRB: FavoritePositionalPick = {
-              player: {} as DisplayedPlayer,
               picks: [],
               position: '',
               avgRoundNumber: 0,
@@ -386,7 +384,6 @@ export default store(function (/* { ssrContext } */) {
             };
 
             let favoriteWR: FavoritePositionalPick = {
-              player: {} as DisplayedPlayer,
               picks: [],
               position: '',
               avgRoundNumber: 0,
@@ -394,7 +391,6 @@ export default store(function (/* { ssrContext } */) {
             };
 
             let favoriteTE: FavoritePositionalPick = {
-              player: {} as DisplayedPlayer,
               picks: [],
               position: '',
               avgRoundNumber: 0,
