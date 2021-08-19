@@ -29,7 +29,8 @@ export interface DisplayedPick extends Pick {
 export interface DisplayedUserInfo extends User {
   picks: DisplayedPick[];
   analysis: UserAnalysisReport;
-  draftSlot?: number;
+  draftSlot: number;
+  privateDraftsOnly: boolean;
 }
 
 export interface MostDraftedPlayer {

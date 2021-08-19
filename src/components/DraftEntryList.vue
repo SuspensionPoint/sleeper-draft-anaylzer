@@ -2,7 +2,7 @@
   <div class="row justify-between">
     <q-input
       v-model="enteredUserId"
-      class="col-9 q-pr-sm shadowed"
+      class="col-7 q-pr-sm shadowed"
       @keydown.enter.prevent="
         onUserIdSubmitted(enteredUserId, selectedDraftSlot)
       "
@@ -25,6 +25,14 @@
       outlined
     >
     </q-select>
+
+    <q-checkbox
+      class="col-2 checkbox"
+      dark
+      v-model="privateDraftsOnly"
+      label="Private Drafts Only"
+      color="green-2"
+    />
   </div>
 
   <div class="q-pa-md row items-start justify-between q-gutter-y-xl">
@@ -74,15 +82,16 @@ export default defineComponent({
       .map((a) => a + 1)
       .map((k) => String(k));
     const draftSlotOptions = ['All', ...teamNumberStrings];
+    const privateDraftsOnly = ref(false);
 
     // Track entered userIds
     watch(usersToAnalyze.value, () => {
       const infoList: DisplayedUserInfo[] =
         usersToAnalyze.value as DisplayedUserInfo[];
       const idList = infoList.map((info) => {
-        return info.draftSlot
-          ? `${info.user_id}:${info.draftSlot}`
-          : info.user_id;
+        return `${info.user_id}:${info.draftSlot}:${
+          info.privateDraftsOnly ? 'PrivateOnly' : 'Public'
+        }`;
       });
       const idListSet = new Set<string>();
       const path = route.path;
@@ -111,12 +120,16 @@ export default defineComponent({
         // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
         const isDraftUrl = userId.match(/(?!\/)\d+(?=)/);
         if (userId.includes('/') && isDraftUrl) {
-          void store.dispatch('getUserInfoFromDraft', isDraftUrl.shift());
+          void store.dispatch('getUserInfoFromDraft', {
+            draftId: isDraftUrl.shift(),
+            privateDraftsOnly: privateDraftsOnly.value,
+          });
         } else {
           void store.dispatch('getDraftsFromUserId', {
             userId,
             season,
             draftSlot,
+            privateDraftsOnly: privateDraftsOnly.value,
           });
         }
       }
@@ -137,6 +150,7 @@ export default defineComponent({
       usersLoading,
       selectedDraftSlot,
       draftSlotOptions,
+      privateDraftsOnly,
     };
   },
 });
@@ -153,5 +167,10 @@ export default defineComponent({
 
 .shadowed {
   box-shadow: -7px 7px 14px 0px #191527;
+}
+
+.checkbox {
+  text-align: center;
+  color: white;
 }
 </style>

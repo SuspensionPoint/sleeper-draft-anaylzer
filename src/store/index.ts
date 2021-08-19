@@ -330,7 +330,7 @@ export default store(function (/* { ssrContext } */) {
 
       async getDraftsFromUserId(
         { commit, state },
-        { userId, season, draftSlot }
+        { userId, season, draftSlot, privateDraftsOnly }
       ) {
         const isLoaded =
           state.userInfo.find((user) => user.user_id === userId) != undefined;
@@ -400,7 +400,11 @@ export default store(function (/* { ssrContext } */) {
             // Track rounds that the user has made a selection in
             const roundsDraftedIn = new Set<number>();
 
-            for (const draft of drafts) {
+            for (const userDraft of drafts) {
+              const draft = (
+                await draftsApi.draftDraftIdGet(userDraft.draft_id)
+              ).data as unknown as Draft;
+
               // For now, skip non-supported scoring types.
               // Can go back and update this to use proper ADPs for those leagues later.
               if (
@@ -411,9 +415,27 @@ export default store(function (/* { ssrContext } */) {
                 continue;
               }
 
+              // const privateOnly: boolean = privateDraftsOnly as boolean;
+              // const noDraftOrder = !draft.draft_order;
+              // const moreThanOne = _.keys(draft.draft_order).length > 1;
+
+              // const how =
+              //   !draft.draft_order || _.keys(draft.draft_order).length > 1;
+              // const wut =
+              //   privateDraftsOnly &&
+              //   (!draft.draft_order || _.keys(draft.draft_order).length > 1);
+
+              if (
+                privateDraftsOnly &&
+                (!draft.draft_order || _.keys(draft.draft_order).length > 1)
+              ) {
+                continue;
+              }
+
               const allPicksResponse = await draftsApi.draftDraftIdPicksGet(
                 draft.draft_id
               );
+
               if (allPicksResponse.data) {
                 const allPicks = allPicksResponse.data;
                 const usersPicksForThisDraft: Pick[] = allPicks.filter(
@@ -725,7 +747,9 @@ export default store(function (/* { ssrContext } */) {
                 roundAnalysis,
               },
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              draftSlot: draftSlot === 'All' ? undefined : draftSlot,
+              draftSlot: draftSlot === 'All' ? 'All' : draftSlot,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              privateDraftsOnly,
             });
           }
         } else {
@@ -740,7 +764,7 @@ export default store(function (/* { ssrContext } */) {
         commit('removeLoadingUser', userId);
       },
 
-      async getUserInfoFromDraft({ dispatch }, draftId: string) {
+      async getUserInfoFromDraft({ dispatch }, { draftId, privateDraftsOnly }) {
         const draftsApi = new DraftsApi();
 
         const draftResponse = await draftsApi.draftDraftIdGet(draftId);
@@ -753,6 +777,8 @@ export default store(function (/* { ssrContext } */) {
                 userId,
                 season: draft.season,
                 draftSlot: draftSlot,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                privateDraftsOnly: privateDraftsOnly,
               });
             }
           }

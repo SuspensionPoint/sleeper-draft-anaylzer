@@ -27,11 +27,13 @@ export default defineComponent({
         const split = id.split(':');
         const userId = split[0];
         const draftSlot = split[1];
+        const privateOnly = split[2];
         store
           .dispatch('getDraftsFromUserId', {
             userId: userId,
             season,
             draftSlot: draftSlot ? draftSlot : 'All',
+            privateOnly: privateOnly && privateOnly === 'PrivateOnly',
           })
           .catch((err) => {
             console.log(
