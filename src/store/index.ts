@@ -750,13 +750,16 @@ export default store(function (/* { ssrContext } */) {
         const draftResponse = await draftsApi.draftDraftIdGet(draftId);
         if (draftResponse.data) {
           const draft: Draft = draftResponse.data as unknown as Draft;
-          const draftOrder = _.keys(draft.draft_order);
-          draftOrder.forEach((userId) => {
-            void dispatch('getDraftsFromUserId', {
-              userId,
-              season: draft.season,
-            });
-          });
+          for (const userId in draft.draft_order) {
+            if (draft.draft_order.hasOwnProperty(userId)) {
+              const draftSlot = draft.draft_order[userId];
+              void dispatch('getDraftsFromUserId', {
+                userId,
+                season: draft.season,
+                draftSlot: draftSlot,
+              });
+            }
+          }
         }
       },
     },
