@@ -415,16 +415,6 @@ export default store(function (/* { ssrContext } */) {
                 continue;
               }
 
-              // const privateOnly: boolean = privateDraftsOnly as boolean;
-              // const noDraftOrder = !draft.draft_order;
-              // const moreThanOne = _.keys(draft.draft_order).length > 1;
-
-              // const how =
-              //   !draft.draft_order || _.keys(draft.draft_order).length > 1;
-              // const wut =
-              //   privateDraftsOnly &&
-              //   (!draft.draft_order || _.keys(draft.draft_order).length > 1);
-
               if (
                 privateDraftsOnly &&
                 (!draft.draft_order || _.keys(draft.draft_order).length > 1)

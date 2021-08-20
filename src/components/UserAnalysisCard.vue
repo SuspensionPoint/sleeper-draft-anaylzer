@@ -28,7 +28,7 @@
           </div>
         </q-item-section>
 
-        <q-item-section side>
+        <q-item-section v-if="$props.userInfo.picks.length > 0" side>
           <q-item-label
             class="
               row
@@ -72,7 +72,10 @@
       </q-card-actions>
 
       <div>
-        <div class="card-back-drop" v-show="expanded">
+        <div
+          class="card-back-drop"
+          v-show="expanded && $props.userInfo.picks.length > 0"
+        >
           <q-separator />
           <q-card-section class="text-subtitle2">
             <div class="row">
@@ -329,6 +332,17 @@
               </div>
             </div>
           </q-card-section>
+        </div>
+
+        <div
+          class="card-back-drop"
+          v-show="expanded && $props.userInfo.picks.length <= 0"
+        >
+          <p class="q-pa-md">
+            <b>{{ $props.userInfo.display_name }}</b> has either never drafted,
+            or if you have 'Private Only' selected, he's never drafted alone
+            before. 😔
+          </p>
         </div>
       </div>
     </q-card>

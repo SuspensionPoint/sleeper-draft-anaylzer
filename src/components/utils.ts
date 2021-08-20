@@ -32,6 +32,10 @@ export const formattedPickSpot = (pick: DisplayedPick | undefined): string => {
 };
 
 export const getSignedValueString = (value: number): string => {
+  if (value == undefined) {
+    return '';
+  }
+
   const decimalPlaces = 2;
   return `${value && value < 0 ? '' : '+'}${value.toFixed(decimalPlaces)}`;
 };

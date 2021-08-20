@@ -20,7 +20,6 @@ export default defineComponent({
     const route = useRoute();
     const season = 2021;
     const ids = route.params.idList as string;
-
     if (season && ids) {
       const idList = ids === '' ? [] : [...new Set(ids.split(','))];
       idList.forEach((id: string) => {
@@ -28,12 +27,13 @@ export default defineComponent({
         const userId = split[0];
         const draftSlot = split[1];
         const privateOnly = split[2];
+        const isPrivateOnly = privateOnly === 'PrivateOnly';
         store
           .dispatch('getDraftsFromUserId', {
             userId: userId,
             season,
             draftSlot: draftSlot ? draftSlot : 'All',
-            privateOnly: privateOnly && privateOnly === 'PrivateOnly',
+            privateDraftsOnly: isPrivateOnly,
           })
           .catch((err) => {
             console.log(
