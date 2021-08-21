@@ -15,3 +15,13 @@ $card-background: $theme-accent-light;
 // $card-text-color: #eef1f7;
 $card-text-color: $theme-dark;
 $accent-color: $theme-accent-medium;
+
+@font-face {
+  font-family: helvetica;
+  src: url(../fonts/helvetica.woff);
+}
+
+// declare a class which applies it
+.font-helvetica {
+  font-family: 'helvetica';
+}
