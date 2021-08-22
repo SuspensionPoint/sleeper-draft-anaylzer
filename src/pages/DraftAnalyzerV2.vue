@@ -1,8 +1,12 @@
 <template>
-  <q-page class="site-theme row justify-center">
-    <div class="font-helvetica col-9 self-center">
+  <q-page class="site-theme font-helvetica row justify-center">
+    <div class="col-9 self-center">
       <div class="row items-center text-center justify-center q-pb-md">
-        <q-img class="col-3" src="~assets/sleeper.png" loading="lazy"></q-img>
+        <q-img
+          class="col-3 logo"
+          src="~assets/sleeper.png"
+          loading="lazy"
+        ></q-img>
 
         <h2>Sleeper Stats</h2>
       </div>
@@ -35,7 +39,7 @@
         </q-select>
 
         <q-checkbox
-          class="col-2 checkbox"
+          class="col-1 checkbox"
           dark
           v-model="privateDraftsOnly"
           label="Private Drafts Only"
@@ -158,6 +162,11 @@ export default defineComponent({
 
 h2 {
   margin: 0;
+}
+
+.logo {
+  max-width: 10%;
+  margin: 0 30px 20px;
 }
 
 .center-input {
