@@ -1,23 +1,10 @@
 <template>
   <q-page class="site-theme font-helvetica row justify-center">
-    <div class="col-9 self-center">
-      <div class="row items-center text-center justify-center q-pb-md">
-        <q-img
-          class="col-3 logo"
-          src="~assets/sleeper.png"
-          loading="lazy"
-        ></q-img>
-
-        <h2>Sleeper Stats</h2>
-      </div>
-
+    <div class="col-12">
       <div class="row text-center justify-center">
         <q-input
           v-model="enteredUserId"
-          class="col-6 q-pr-sm shadowed"
-          @keydown.enter.prevent="
-            onUserIdSubmitted(enteredUserId, selectedDraftSlot)
-          "
+          class="col-4 q-pr-sm shadowed"
           label="Enter Sleeper User ID or Draft URL"
           label-color="black"
           bg-color="green-2"
@@ -39,7 +26,7 @@
         </q-select>
 
         <q-checkbox
-          class="col-1 checkbox"
+          class="col-2 checkbox"
           dark
           v-model="privateDraftsOnly"
           label="Private Drafts Only"
@@ -47,6 +34,7 @@
         />
 
         <q-btn
+          @click="onUserIdSubmitted()"
           class="col-2"
           color="red-5"
           text-color="white"
