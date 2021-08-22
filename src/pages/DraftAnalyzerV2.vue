@@ -1,7 +1,7 @@
 <template>
-  <q-page class="site-theme font-helvetica row justify-center">
+  <q-page class="site-theme font-helvetica">
     <div class="col-12">
-      <div class="row text-center justify-center">
+      <div class="user-input-field row text-center justify-center">
         <q-input
           v-model="enteredUserId"
           class="col-4 q-pr-sm shadowed"
@@ -34,18 +34,53 @@
         />
 
         <q-btn
-          @click="onUserIdSubmitted()"
+          @click="onUserIdSubmitted(enteredUserId, selectedDraftSlot)"
           class="col-2"
           color="red-5"
           text-color="white"
           unelevated
-          label="Go Home"
+          label="Get Stats"
           no-caps
         />
+      </div>
+
+      <div>
+        <q-tabs v-model="selectedTab" align="left" class="tab-bar">
+          <q-tab name="CodeMonkey">
+            <div class="row">
+              <span class="q-pr-sm">CodeMonkey</span>
+              <q-btn
+                @click="closeTab()"
+                unelevated
+                round
+                class="tab-close all-pointer-events"
+                icon="close"
+                size=".5rem"
+                glossy
+              />
+            </div>
+          </q-tab>
+          <q-tab name="alarms" label="Alarms" />
+          <q-tab v-if="$q.screen.gt.sm" name="movies" label="Movies" />
+          <q-tab v-if="$q.screen.gt.sm" name="photos" label="Photos" />
+        </q-tabs>
       </div>
     </div>
 
     <!-- content -->
+    <div class="full-height col-12">
+      <q-tab-panels v-model="selectedTab" animated>
+        <q-tab-panel class="user-tab-panel" name="CodeMonkey">
+          <div class="text-h6">Mails</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </q-tab-panel>
+
+        <q-tab-panel class="user-tab-panel" name="alarms">
+          <div class="text-h6">Alarms</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
   </q-page>
 </template>
 
@@ -73,6 +108,7 @@ export default defineComponent({
       .map((k) => String(k));
     const draftSlotOptions = ['All', ...teamNumberStrings];
     const privateDraftsOnly = ref(false);
+    const selectedTab = ref('CodeMonkey');
 
     watch(usersToAnalyze.value, () => {
       const infoList: DisplayedUserInfo[] =
@@ -131,6 +167,10 @@ export default defineComponent({
       }
     };
 
+    const closeTab = () => {
+      console.log('Closing a tab');
+    };
+
     return {
       enteredUserId,
       onUserIdSubmitted,
@@ -140,6 +180,8 @@ export default defineComponent({
       selectedDraftSlot,
       draftSlotOptions,
       privateDraftsOnly,
+      closeTab,
+      selectedTab,
     };
   },
 });
@@ -152,7 +194,29 @@ h2 {
   margin: 0;
 }
 
-.logo {
+.user-input-field {
+  padding: 10px 0;
+}
+
+.tab-bar {
+  background-color: $theme-sleeper-dark-blue;
+
+  .tab {
+    width: 40px;
+  }
+
+  .tab-close {
+    background-color: $theme-sleeper-green;
+  }
+}
+
+.user-tab-panel {
+  // background-color: $theme-sleeper-blue;
+  background-color: red;
+  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
+}
+
+å .logo {
   max-width: 10%;
   margin: 0 30px 20px;
 }
@@ -162,7 +226,7 @@ h2 {
 }
 
 .site-theme {
-  background-color: $theme-background-color;
+  background-color: $theme-sleeper-blue;
   color: white;
 }
 </style>

@@ -51,6 +51,6 @@ export default defineComponent({
 @import 'src/css/app.scss';
 
 .site-theme {
-  background-color: $theme-background-color;
+  background-color: $theme-sleeper-blue;
 }
 </style>
