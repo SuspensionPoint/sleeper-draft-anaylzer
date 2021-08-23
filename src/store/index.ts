@@ -5,7 +5,7 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex';
-import { DraftsApi, Pick, UserApi, Player, Draft } from 'src/api/';
+import { DraftsApi, Pick, UserApi, Player, Draft, User } from 'src/api/';
 import {
   DisplayedUserInfo,
   DisplayedPlayer,
@@ -49,7 +49,7 @@ export interface StateInterface {
   draftIds: Set<string>;
   idToPlayerName: Map<string, string>;
   userInfo: DisplayedUserInfo[];
-  userInfoLoading: string[];
+  userInfoLoading: User[];
   players: Record<string, Player>;
   playersAdp: PlayerADP[];
 }
@@ -335,7 +335,8 @@ export default store(function (/* { ssrContext } */) {
         const isLoaded =
           state.userInfo.find((user) => user.user_id === userId) != undefined;
         const isLoading =
-          state.userInfoLoading.find((id) => id === userId) != undefined;
+          state.userInfoLoading.find((user) => user.user_id === userId) !=
+          undefined;
 
         if (isLoaded || isLoading) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -351,7 +352,6 @@ export default store(function (/* { ssrContext } */) {
         }
 
         commit('setSeason', season);
-        commit('addUserBeingLoaded', userId);
 
         const draftsApi = new DraftsApi();
         const userApi = new UserApi();
@@ -368,6 +368,7 @@ export default store(function (/* { ssrContext } */) {
           if (userResponse.data) {
             const user = userResponse.data;
             const allPicksFromUser: DisplayedPick[] = [];
+            commit('addUserBeingLoaded', user);
 
             let favoriteQB: FavoritePositionalPick = {
               picks: [],
@@ -777,13 +778,13 @@ export default store(function (/* { ssrContext } */) {
     },
 
     mutations: {
-      addUserBeingLoaded(state, userId: string) {
-        state.userInfoLoading.push(userId);
+      addUserBeingLoaded(state, user: User) {
+        state.userInfoLoading.push(user);
       },
 
       removeLoadingUser(state, userId: string) {
         const userInfoLoadingIndex = state.userInfoLoading.findIndex(
-          (u) => u === userId
+          (u) => u.user_id === userId
         );
         if (userInfoLoadingIndex != -1) {
           state.userInfoLoading.splice(userInfoLoadingIndex, 1);
@@ -804,7 +805,7 @@ export default store(function (/* { ssrContext } */) {
         return state.userInfo;
       },
 
-      usersLoading: (state): string[] => {
+      usersLoading: (state): User[] => {
         return state.userInfoLoading;
       },
 

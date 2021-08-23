@@ -1,6 +1,7 @@
 <template>
-  <q-page class="site-theme font-helvetica">
-    <div class="col-12">
+  <q-page>
+    <!-- header -->
+    <q-header class="header" elevated height-hint="98">
       <div class="user-input-field row text-center justify-center">
         <q-input
           v-model="enteredUserId"
@@ -44,43 +45,43 @@
         />
       </div>
 
-      <div>
-        <q-tabs v-model="selectedTab" align="left" class="tab-bar">
-          <q-tab name="CodeMonkey">
-            <div class="row">
-              <span class="q-pr-sm">CodeMonkey</span>
-              <q-btn
-                @click="closeTab()"
-                unelevated
-                round
-                class="tab-close all-pointer-events"
-                icon="close"
-                size=".5rem"
-                glossy
-              />
-            </div>
-          </q-tab>
-          <q-tab name="alarms" label="Alarms" />
-          <q-tab v-if="$q.screen.gt.sm" name="movies" label="Movies" />
-          <q-tab v-if="$q.screen.gt.sm" name="photos" label="Photos" />
-        </q-tabs>
-      </div>
-    </div>
+      <q-tabs v-model="selectedTab" align="left" class="tab-bar">
+        <q-tab
+          v-for="user in userTabs"
+          :key="user.user_id"
+          :name="user.user_id"
+        >
+          <div class="row">
+            <span class="q-pr-sm">{{ user.display_name }}</span>
+            <q-btn
+              @click="closeTab()"
+              unelevated
+              round
+              class="tab-close all-pointer-events"
+              icon="close"
+              size=".5rem"
+              glossy
+            />
+          </div>
+        </q-tab>
+      </q-tabs>
+    </q-header>
 
     <!-- content -->
-    <div class="full-height col-12">
-      <q-tab-panels v-model="selectedTab" animated>
-        <q-tab-panel class="user-tab-panel" name="CodeMonkey">
-          <div class="text-h6">Mails</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </q-tab-panel>
-
-        <q-tab-panel class="user-tab-panel" name="alarms">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </q-tab-panel>
-      </q-tab-panels>
-    </div>
+    <q-tab-panels class="tab-page" v-model="selectedTab" animated>
+      <q-tab-panel
+        v-for="user in userTabs"
+        :key="user.user_id"
+        :name="user.user_id"
+        class="user-tab-panel"
+      >
+        <div class="text-h6">{{ user.display_name }}</div>
+        <div v-if="userIsLoading(user.user_id)">
+          <h1>user is loading breh</h1>
+        </div>
+        <div v-if="!userIsLoading(user.user_id)">user is loaded!</div>
+      </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 
@@ -89,6 +90,7 @@ import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { defineComponent, ref, computed, watch } from 'vue';
 import { DisplayedUserInfo } from 'src/components/models';
+import { User } from 'src/api';
 
 const MAX_NUM_TEAMS = 22;
 
@@ -99,8 +101,32 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
 
+    const selectedTab = ref('CodeMonkey');
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersToAnalyze = computed(() => store.getters.displayedUserInfo);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+    const usersLoading = computed(() => store.getters.usersLoading);
+
+    const userTabs = computed(() => {
+      const loaded: DisplayedUserInfo[] =
+        usersToAnalyze.value as DisplayedUserInfo[];
+      const loading: DisplayedUserInfo[] =
+        usersLoading.value as DisplayedUserInfo[];
+      const submittedUsers = new Set<User>();
+
+      loaded.forEach((loadedUser) => submittedUsers.add(loadedUser));
+      loading.forEach((loadingUser) => submittedUsers.add(loadingUser));
+
+      return [...submittedUsers];
+    });
+
+    const userIsLoading = (userId: string) => {
+      const loading: DisplayedUserInfo[] =
+        usersLoading.value as DisplayedUserInfo[];
+      return loading.find((user) => user.user_id === userId);
+    };
+
     const enteredUserId = ref('202523901442392064');
     const selectedDraftSlot = ref('All');
     const teamNumberStrings = [...Array(MAX_NUM_TEAMS).keys()]
@@ -108,7 +134,6 @@ export default defineComponent({
       .map((k) => String(k));
     const draftSlotOptions = ['All', ...teamNumberStrings];
     const privateDraftsOnly = ref(false);
-    const selectedTab = ref('CodeMonkey');
 
     watch(usersToAnalyze.value, () => {
       const infoList: DisplayedUserInfo[] =
@@ -137,8 +162,6 @@ export default defineComponent({
       }
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
-    const usersLoading = computed(() => store.getters.usersLoading);
     const season = 2021;
     const onUserIdSubmitted = (userId: string, draftSlot: string) => {
       if (userId) {
@@ -149,6 +172,8 @@ export default defineComponent({
             draftId: isDraftUrl.shift(),
             privateDraftsOnly: privateDraftsOnly.value,
           });
+
+          selectedTab.value = userId;
         } else {
           void store.dispatch('getDraftsFromUserId', {
             userId,
@@ -156,6 +181,8 @@ export default defineComponent({
             draftSlot,
             privateDraftsOnly: privateDraftsOnly.value,
           });
+
+          selectedTab.value = userId;
         }
       }
       enteredUserId.value = '';
@@ -182,6 +209,8 @@ export default defineComponent({
       privateDraftsOnly,
       closeTab,
       selectedTab,
+      userTabs,
+      userIsLoading,
     };
   },
 });
@@ -196,37 +225,34 @@ h2 {
 
 .user-input-field {
   padding: 10px 0;
+  box-shadow: inset 0px 0px 20px 4px rgb(24 28 40 / 54%);
 }
 
-.tab-bar {
-  background-color: $theme-sleeper-dark-blue;
-
-  .tab {
-    width: 40px;
-  }
-
-  .tab-close {
-    background-color: $theme-sleeper-green;
-  }
-}
-
-.user-tab-panel {
-  // background-color: $theme-sleeper-blue;
-  background-color: red;
-  box-shadow: -7px 7px 14px 0px rgb(58 58 58 / 75%);
-}
-
-å .logo {
-  max-width: 10%;
-  margin: 0 30px 20px;
-}
-
-.center-input {
-  background-color: transparent;
-}
-
-.site-theme {
+.header {
   background-color: $theme-sleeper-blue;
-  color: white;
+  .user-input-field {
+    padding: 10px 0;
+  }
+
+  .tab-bar {
+    background-color: $theme-sleeper-dark-blue;
+
+    .tab {
+      width: 40px;
+    }
+
+    .tab-close {
+      background-color: $theme-sleeper-green;
+    }
+  }
+}
+
+.tab-page {
+  min-height: inherit;
+  background-color: $theme-sleeper-blue;
+  box-shadow: inset 0px 0px 20px 12px rgb(24 28 40 / 54%);
+
+  // .user-tab-panel {
+  // }
 }
 </style>

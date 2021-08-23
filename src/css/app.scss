@@ -20,6 +20,10 @@ $card-background: $theme-accent-light;
 $card-text-color: $theme-dark;
 $accent-color: $theme-accent-medium;
 
+.full-size-page {
+  min-height: inherit;
+}
+
 @font-face {
   font-family: helvetica;
   src: url(../fonts/helvetica.woff);
