@@ -75,11 +75,77 @@
         :name="user.user_id"
         class="user-tab-panel"
       >
-        <div class="text-h6">{{ user.display_name }}</div>
         <div v-if="userIsLoading(user.user_id)">
+          <div class="text-h6">{{ user.display_name }}</div>
           <h1>user is loading breh</h1>
         </div>
-        <div v-if="!userIsLoading(user.user_id)">user is loaded!</div>
+        <div v-if="!userIsLoading(user.user_id)">
+          <!-- username and avatar -->
+          <div class="row items-start no-wrap q-mt-sm">
+            <div class="col-6">
+              <div class="row">
+                <q-skeleton size="56px" square animation="fade" />
+
+                <div class="col q-pl-sm q-pb-md">
+                  <q-skeleton type="text" square width="30%" animation="fade" />
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- fake data -->
+          <div class="row justify-center items-start no-wrap q-my-xl">
+            <div class="col-9">
+              <div class="row">
+                <formation-skeleton />
+              </div>
+            </div>
+          </div>
+
+          <!-- line break-->
+          <div class="row justify-center items-start no-wrap q-mt-sm">
+            <div class="col-11">
+              <div class="row">
+                <div class="col q-pl-sm q-py-lg">
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- line break-->
+          <div class="row justify-center items-start no-wrap q-mt-sm">
+            <div class="col-11">
+              <div class="row">
+                <div class="col q-pl-sm q-py-lg">
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -89,14 +155,15 @@
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { defineComponent, ref, computed, watch } from 'vue';
-import { DisplayedUserInfo } from 'src/components/models';
 import { User } from 'src/api';
+import { DisplayedUserInfo } from 'src/components/models';
+import FormationSkeleton from 'src/components/FormationSkeleton.vue';
 
 const MAX_NUM_TEAMS = 22;
 
 export default defineComponent({
   // name: 'PageName'
-
+  components: { FormationSkeleton },
   setup() {
     const store = useStore();
     const route = useRoute();
