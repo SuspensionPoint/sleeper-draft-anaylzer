@@ -83,29 +83,19 @@
           <!-- username and avatar -->
           <div class="row items-start no-wrap q-mt-sm">
             <div class="col-6">
-              <div class="row">
-                <q-skeleton size="56px" square animation="fade" />
+              <div class="row q-ml-md">
+                <q-skeleton type="QAvatar" size="56px" animation="fade" />
 
                 <div class="col q-pl-sm q-pb-md">
                   <q-skeleton type="text" square width="30%" animation="fade" />
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
+                  <q-skeleton type="text" square width="35%" animation="fade" />
+                  <q-skeleton type="text" square width="35%" animation="fade" />
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- fake data -->
+          <!-- formation -->
           <div class="row justify-center items-start no-wrap q-my-xl">
             <div class="col-9">
               <div class="row">
@@ -130,6 +120,14 @@
             </div>
           </div>
 
+          <div class="row justify-center items-start no-wrap q-my-xl">
+            <div class="col-9">
+              <div class="row">
+                <player-list-skeleton :numberOfPlayers="5" />
+              </div>
+            </div>
+          </div>
+
           <!-- line break-->
           <div class="row justify-center items-start no-wrap q-mt-sm">
             <div class="col-11">
@@ -145,6 +143,64 @@
               </div>
             </div>
           </div>
+
+          <div class="row justify-center items-start no-wrap q-my-xl">
+            <div class="col-9">
+              <div class="row">
+                <player-list-skeleton :numberOfPlayers="5" />
+              </div>
+            </div>
+          </div>
+
+          <!-- line break-->
+          <div class="row justify-center items-start no-wrap q-mt-sm">
+            <div class="col-11">
+              <div class="row">
+                <div class="col q-pl-sm q-py-lg">
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-center items-start no-wrap q-my-xl">
+            <div class="col-9">
+              <div class="row">
+                <player-list-skeleton :numberOfPlayers="3" />
+              </div>
+            </div>
+          </div>
+
+          <!-- line break-->
+          <div class="row justify-center items-start no-wrap q-mt-sm">
+            <div class="col-11">
+              <div class="row">
+                <div class="col q-pl-sm q-py-lg">
+                  <q-skeleton
+                    type="text"
+                    square
+                    height="12px"
+                    animation="fade"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-center items-start no-wrap q-my-xl">
+            <div class="col-9">
+              <div class="row">
+                <q-scroll-area style="height: 200px; width: 100%"
+                  ><player-list-skeleton :numberOfPlayers="15"
+                /></q-scroll-area>
+              </div>
+            </div>
+          </div>
         </div>
       </q-tab-panel>
     </q-tab-panels>
@@ -157,13 +213,14 @@ import { useRoute } from 'vue-router';
 import { defineComponent, ref, computed, watch } from 'vue';
 import { User } from 'src/api';
 import { DisplayedUserInfo } from 'src/components/models';
-import FormationSkeleton from 'src/components/FormationSkeleton.vue';
+import FormationSkeleton from 'src/components/v2/skeletons/FormationSkeleton.vue';
+import PlayerListSkeleton from 'src/components/v2/skeletons/PlayerListSkeleton.vue';
 
 const MAX_NUM_TEAMS = 22;
 
 export default defineComponent({
   // name: 'PageName'
-  components: { FormationSkeleton },
+  components: { FormationSkeleton, PlayerListSkeleton },
   setup() {
     const store = useStore();
     const route = useRoute();

@@ -24,12 +24,12 @@ $accent-color: $theme-accent-medium;
   min-height: inherit;
 }
 
-@font-face {
-  font-family: helvetica;
-  src: url(../fonts/helvetica.woff);
-}
+// @font-face {
+//   font-family: helvetica;
+//   src: url(../fonts/helvetica.woff);
+// }
 
-// declare a class which applies it
-.font-helvetica {
-  font-family: 'helvetica';
-}
+// // declare a class which applies it
+// .font-helvetica {
+//   font-family: 'helvetica';
+// }

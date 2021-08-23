@@ -1,6 +1,6 @@
 <template>
   <div class="col">
-    <div class="row justify-center">
+    <div class="row no-wrap justify-center">
       <!-- WR -->
       <q-skeleton class="q-mx-xl q-mr-xl" type="QAvatar" animation="fade" />
       <!-- TE -->
@@ -22,7 +22,7 @@
     </div>
 
     <!-- hidden row -->
-    <div class="row justify-center">
+    <div class="row no-wrap justify-center">
       <!-- WR -->
       <q-skeleton
         class="q-mx-xl q-mr-xl skeleton-hidden"
@@ -81,7 +81,7 @@
     </div>
 
     <!-- backfield -->
-    <div class="row justify-center">
+    <div class="row no-wrap justify-center">
       <!-- WR -->
       <q-skeleton
         class="q-mx-xl q-mr-xl skeleton-hidden"

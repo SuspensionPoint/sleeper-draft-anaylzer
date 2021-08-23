@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="site-theme font-helvetica">
+  <q-layout view="hHh lpR fFf" class="site-theme">
     <q-page-container>
       <router-view />
       <!-- <q-page style="background-color: pink">
