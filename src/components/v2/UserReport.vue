@@ -52,10 +52,12 @@
     </q-card>
   </div>
 
-  <div class="row items-start">
-    <div class="col-12">
-      <div class="row justify-center q-my-xl">
-        <dream-lineup :userInfo="$props.userInfo" />
+  <div class="col-12">
+    <div class="row items-start">
+      <div class="col-12">
+        <div class="row justify-center q-my-xl">
+          <dream-lineup :userInfo="$props.userInfo" />
+        </div>
       </div>
     </div>
   </div>
@@ -68,7 +70,7 @@ import { getAvatarUrl, getSignedValueString } from '../utils';
 import DreamLineup from './DreamLineup.vue';
 
 export default defineComponent({
-  // name: 'ComponentName'
+  // name: 'ComponentName's
   components: { DreamLineup },
   props: {
     userInfo: {
