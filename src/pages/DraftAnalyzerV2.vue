@@ -76,131 +76,10 @@
         class="user-tab-panel"
       >
         <div v-if="userIsLoading(user.user_id)">
-          <div class="text-h6">{{ user.display_name }}</div>
-          <h1>user is loading breh</h1>
+          <user-report-skeleton />
         </div>
         <div v-if="!userIsLoading(user.user_id)">
-          <!-- username and avatar -->
-          <div class="row items-start no-wrap q-mt-sm">
-            <div class="col-6">
-              <div class="row q-ml-md">
-                <q-skeleton type="QAvatar" size="56px" animation="fade" />
-
-                <div class="col q-pl-sm q-pb-md">
-                  <q-skeleton type="text" square width="30%" animation="fade" />
-                  <q-skeleton type="text" square width="35%" animation="fade" />
-                  <q-skeleton type="text" square width="35%" animation="fade" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- formation -->
-          <div class="row justify-center items-start no-wrap q-my-xl">
-            <div class="col-9">
-              <div class="row">
-                <formation-skeleton />
-              </div>
-            </div>
-          </div>
-
-          <!-- line break-->
-          <div class="row justify-center items-start no-wrap q-mt-sm">
-            <div class="col-11">
-              <div class="row">
-                <div class="col q-pl-sm q-py-lg">
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row justify-center items-start no-wrap q-my-xl">
-            <div class="col-9">
-              <div class="row">
-                <player-list-skeleton :numberOfPlayers="5" />
-              </div>
-            </div>
-          </div>
-
-          <!-- line break-->
-          <div class="row justify-center items-start no-wrap q-mt-sm">
-            <div class="col-11">
-              <div class="row">
-                <div class="col q-pl-sm q-py-lg">
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row justify-center items-start no-wrap q-my-xl">
-            <div class="col-9">
-              <div class="row">
-                <player-list-skeleton :numberOfPlayers="5" />
-              </div>
-            </div>
-          </div>
-
-          <!-- line break-->
-          <div class="row justify-center items-start no-wrap q-mt-sm">
-            <div class="col-11">
-              <div class="row">
-                <div class="col q-pl-sm q-py-lg">
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row justify-center items-start no-wrap q-my-xl">
-            <div class="col-9">
-              <div class="row">
-                <player-list-skeleton :numberOfPlayers="3" />
-              </div>
-            </div>
-          </div>
-
-          <!-- line break-->
-          <div class="row justify-center items-start no-wrap q-mt-sm">
-            <div class="col-11">
-              <div class="row">
-                <div class="col q-pl-sm q-py-lg">
-                  <q-skeleton
-                    type="text"
-                    square
-                    height="12px"
-                    animation="fade"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row justify-center items-start no-wrap q-my-xl">
-            <div class="col-9">
-              <div class="row">
-                <q-scroll-area style="height: 200px; width: 100%"
-                  ><player-list-skeleton :numberOfPlayers="15"
-                /></q-scroll-area>
-              </div>
-            </div>
-          </div>
+          <user-report :userInfo="user" />
         </div>
       </q-tab-panel>
     </q-tab-panels>
@@ -211,16 +90,15 @@
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
 import { defineComponent, ref, computed, watch } from 'vue';
-import { User } from 'src/api';
 import { DisplayedUserInfo } from 'src/components/models';
-import FormationSkeleton from 'src/components/v2/skeletons/FormationSkeleton.vue';
-import PlayerListSkeleton from 'src/components/v2/skeletons/PlayerListSkeleton.vue';
+import UserReportSkeleton from 'src/components/v2/skeletons/UserReportSkeleton.vue';
+import UserReport from 'src/components/v2/UserReport.vue';
 
 const MAX_NUM_TEAMS = 22;
 
 export default defineComponent({
   // name: 'PageName'
-  components: { FormationSkeleton, PlayerListSkeleton },
+  components: { UserReportSkeleton, UserReport },
   setup() {
     const store = useStore();
     const route = useRoute();
@@ -237,7 +115,7 @@ export default defineComponent({
         usersToAnalyze.value as DisplayedUserInfo[];
       const loading: DisplayedUserInfo[] =
         usersLoading.value as DisplayedUserInfo[];
-      const submittedUsers = new Set<User>();
+      const submittedUsers = new Set<DisplayedUserInfo>();
 
       loaded.forEach((loadedUser) => submittedUsers.add(loadedUser));
       loading.forEach((loadingUser) => submittedUsers.add(loadingUser));
