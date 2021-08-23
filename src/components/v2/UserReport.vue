@@ -51,15 +51,25 @@
       </q-item>
     </q-card>
   </div>
+
+  <div class="row items-start">
+    <div class="col-12">
+      <div class="row justify-center q-my-xl">
+        <dream-lineup :userInfo="$props.userInfo" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { DisplayedUserInfo } from '../models';
 import { getAvatarUrl, getSignedValueString } from '../utils';
+import DreamLineup from './DreamLineup.vue';
 
 export default defineComponent({
   // name: 'ComponentName'
+  components: { DreamLineup },
   props: {
     userInfo: {
       type: Object as PropType<DisplayedUserInfo>,
