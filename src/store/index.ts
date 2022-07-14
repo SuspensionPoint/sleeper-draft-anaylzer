@@ -320,7 +320,7 @@ export default store(function (/* { ssrContext } */) {
     actions: {
       gatherTheBoisData({ dispatch, state }) {
         state.idToPlayerName.forEach((value: string, key: string) => {
-          dispatch('getDraftsFromUserId', { userId: key, season: 2021 }).catch(
+          dispatch('getDraftsFromUserId', { userId: key, season: 2022 }).catch(
             (err) => {
               console.log('Error gathering the boys data:', err);
             }
