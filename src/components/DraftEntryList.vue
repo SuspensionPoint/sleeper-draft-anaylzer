@@ -114,7 +114,7 @@ export default defineComponent({
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
     const usersLoading = computed(() => store.getters.usersLoading);
-    const season = 2021;
+    const season = 2022;
     const onUserIdSubmitted = (userId: string, draftSlot: string) => {
       if (userId) {
         // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec

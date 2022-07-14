@@ -18,7 +18,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const route = useRoute();
-    const season = 2021;
+    const season = 2022;
     const ids = route.params.idList as string;
     if (season && ids) {
       const idList = ids === '' ? [] : [...new Set(ids.split(','))];

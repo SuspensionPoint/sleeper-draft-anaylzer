@@ -304,7 +304,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     state: {
       sport: 'nfl',
-      season: 2021,
+      season: 2022,
       supportedScoringTypes: ['ppr', 'std', 'half_ppr', '2qb'],
       draftIds: new Set<string>(),
       idToPlayerName: new Map<string, string>([
